@@ -1,5 +1,4 @@
-﻿using MRDL.Design;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -70,6 +69,7 @@ namespace MRDL.ControllerExamples
                     return;
 
                 currentStrokeColor = value;
+                brushRenderer.material.color = currentStrokeColor;
                 AddColorToGradient(currentStrokeColor);
             }
         }
@@ -90,32 +90,30 @@ namespace MRDL.ControllerExamples
             Vector3 startPosition = tip.position;
             // Create a new brush stroke
             GameObject newStroke = GameObject.Instantiate(strokePrefab) as GameObject;
-            LineBase line = newStroke.GetComponent<LineBase>();
-            Design.LineRenderer renderer = line.GetComponent<Design.LineRenderer>();
-            strokeGradient = renderer.LineColor;
+            LineRenderer line = newStroke.GetComponent<LineRenderer>();
             newStroke.transform.position = startPosition;
-            // Set the first 2 points to our last position / start position
-            line.SetFirstPoint(startPosition);
-            line.SetLastPoint(startPosition);
-            // Then force the line to interpolate between those two points
-            // This way if we're dealing with a spline (most likely) mid-points will catch up
-            line.MakeStraightLine();
+            line.SetPosition(0, tip.position);
+            // Update the color immediately
+            strokeGradient = line.colorGradient;
+            AddColorToGradient(currentStrokeColor);
 
             while (draw)
             {
                 // Move the last point to the draw point position
-                line.SetLastPoint(tip.position);
+                line.SetPosition(line.positionCount - 1, tip.position);
+                line.colorGradient = strokeGradient;
+
                 if (Vector3.Distance(lastPointPosition, tip.position) > minPositionDelta)
                 {
                     // Spawn a new point
                     lastPointPosition = tip.position;
-                    line.AppendPoint(lastPointPosition);
+                    line.positionCount += 1;
+                    line.SetPosition(line.positionCount - 1, lastPointPosition);
                 }
                 yield return null;
             }
             
             // Reset our stroke colors and gradient
-            strokeGradient = null;
             strokeColors.Clear();
         }
 
@@ -196,9 +194,6 @@ namespace MRDL.ControllerExamples
 
         private void AddColorToGradient(Color newColor)
         {
-            if (strokeGradient == null)
-                return;
-
             float newColorTime = Time.unscaledTime;
             
             GradientColorKey[] colorKeys = new GradientColorKey[MaxGradientKeys];
@@ -209,9 +204,12 @@ namespace MRDL.ControllerExamples
             }*/
             // TEMP just set all keys to color
             for (int i = 0; i < colorKeys.Length; i++) {
-                colorKeys[i] = new GradientColorKey(newColor, 1f / MaxGradientKeys * i);
-                alphaKeys[i] = new GradientAlphaKey(1f, 1f / MaxGradientKeys * i);
+                colorKeys[i] = new GradientColorKey(newColor, (1f / MaxGradientKeys) * i);
+                alphaKeys[i] = new GradientAlphaKey(1f, (1f / MaxGradientKeys) * i);
             }
+
+            strokeGradient.colorKeys = colorKeys;
+            strokeGradient.alphaKeys = alphaKeys;
         }
 
         [Header("Drawing settings")]
@@ -227,6 +225,9 @@ namespace MRDL.ControllerExamples
         private GameObject strokePrefab;
         [SerializeField]
         private Transform brushObjectTransform;
+        [SerializeField]
+        private Renderer brushRenderer;
+
         private bool draw = false;
 
         [Header("Mode settings")]
@@ -246,6 +247,7 @@ namespace MRDL.ControllerExamples
         private AnimationCurve transitionCurve;
 
         private float startTime;
+        [SerializeField]
         private Gradient strokeGradient;
         private Color currentStrokeColor = Color.white;
         private Dictionary<float,Color> strokeColors = new Dictionary<float, Color>();

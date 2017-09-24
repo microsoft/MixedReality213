@@ -91,9 +91,6 @@ namespace MRDL.ControllerExamples
                     activeBrush = null;
                 }
 
-                // TODO
-                // Move the current brush into drawing position
-
                 // Get the current offset and the target offset from our collection
                 startOffset = brushCollection.GetOffsetFromObjectIndex(displayBrushindex);
                 targetOffset = startOffset;
