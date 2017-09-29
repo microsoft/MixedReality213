@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using HoloToolkit.Unity.InputModule;
+using System.Collections;
+using UnityEngine;
+using UnityEngine.XR.WSA.Input;
 
 namespace MRDL.ControllerExamples
 {
-    [ExecuteInEditMode]
     public class ColorPickerWheel : MonoBehaviour
     {
         public bool Visible
@@ -14,6 +16,8 @@ namespace MRDL.ControllerExamples
             set
             {
                 visible = value;
+                if (value)
+                    lastTimeVisible = Time.unscaledTime;
             }
         }
 
@@ -33,20 +37,23 @@ namespace MRDL.ControllerExamples
         
         private void Update()
         {
-            if (Application.isPlaying)
-            {
-                if (visible != visibleLastFrame)
-                {
-                    if (visible)
-                        animator.SetTrigger("Show");
-                    else
-                        animator.SetTrigger("Hide");
-                }
-                visibleLastFrame = visible;
+            if (controller == null)
+                return;
 
-                if (!visible)
-                    return;
+            if (Time.unscaledTime > lastTimeVisible + timeout)
+                visible = false;
+
+            if (visible != visibleLastFrame)
+            {
+                if (visible)
+                    animator.SetTrigger("Show");
+                else
+                    animator.SetTrigger("Hide");
             }
+            visibleLastFrame = visible;
+
+            if (!visible)
+                return;
 
             // clamp selector position to a radius of 1
             Vector3 localPosition = new Vector3(selectorPosition.x * inputScale, 0f, selectorPosition.y * inputScale);
@@ -67,6 +74,46 @@ namespace MRDL.ControllerExamples
             }
         }
 
+        private IEnumerator Start()
+        {
+            // TODO replace this with a proper singleton
+            ControllerVisualizer visualizer = GameObject.FindObjectOfType<ControllerVisualizer>();
+
+            while (!visualizer.GetController(handedness, out controller))
+            {
+                visible = false;
+                yield return null;
+            }
+
+            // Parent the picker wheel under the element of choice
+            Transform elementTransform = controller.GetElement(element);
+            if (elementTransform == null)
+            {
+                Debug.LogError("Element " + element.ToString() + " not found in controller, can't proceed.");
+                gameObject.SetActive(false);
+                yield break;
+            }
+
+            transform.parent = elementTransform;
+            transform.localPosition = Vector3.zero;
+            transform.localRotation = Quaternion.identity;
+
+            // Subscribe to input now that we're parented under the controller
+            InteractionManager.InteractionSourceUpdated += InteractionSourceUpdated;
+        }
+
+        private void InteractionSourceUpdated(InteractionSourceUpdatedEventArgs obj)
+        {
+            if (obj.state.source.handedness == handedness)
+            {
+                if (obj.state.touchpadTouched)
+                {
+                    Visible = true;
+                    SelectorPosition = obj.state.touchpadPosition * 2;
+                }
+            }
+        }
+
         [SerializeField]
         private bool visible = false;
         [SerializeField]
@@ -83,7 +130,16 @@ namespace MRDL.ControllerExamples
         private GameObject colorWheelObject;
         [SerializeField]
         private Animator animator;
+        [SerializeField]
+        private float timeout = 2f;
 
+        private float lastTimeVisible;
         private bool visibleLastFrame = false;
+
+        [SerializeField]
+        private InteractionSourceHandedness handedness = InteractionSourceHandedness.Left;
+        [SerializeField]
+        private ControllerInfo.ControllerElementEnum element = ControllerInfo.ControllerElementEnum.Touchpad;
+        private ControllerInfo controller;
     }
 }

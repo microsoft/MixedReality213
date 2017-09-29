@@ -1,6 +1,8 @@
-﻿using MRDL.Design;
+﻿using HoloToolkit.Unity.InputModule;
+using MRDL.Design;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.XR.WSA.Input;
 
 namespace MRDL.ControllerExamples
 {
@@ -11,10 +13,6 @@ namespace MRDL.ControllerExamples
             None,
             Left,
             Right,
-        }
-
-        public void AttachToController(GameObject controller) {
-            //TODO find relevant transform, parent underneath, size appropriately
         }
 
         private void Update()
@@ -35,7 +33,7 @@ namespace MRDL.ControllerExamples
                 else
                     brush.DisplayMode = menuOpen ? Brush.DisplayModeEnum.InMenu : Brush.DisplayModeEnum.Hidden;
             }
-
+            
             // TEMP controller input
             if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
@@ -52,22 +50,44 @@ namespace MRDL.ControllerExamples
                     activeBrush.Draw = !activeBrush.Draw;
                 }
             }
-
-            // TEMP touchpad input
-            if (Input.GetKeyDown(KeyCode.LeftBracket))
-            {
-                colorPicker.SelectorPosition += Vector2.left * 0.1f;
-            }
-            if (Input.GetKeyDown(KeyCode.RightBracket))
-            {
-                colorPicker.SelectorPosition += Vector2.right * 0.1f;
-            }
         }
 
         private IEnumerator UpdateMenu()
         {
+            // TODO replace this with a proper singleton
+            ControllerVisualizer visualizer = GameObject.FindObjectOfType<ControllerVisualizer>();
+
+            while (!visualizer.GetController(handedness, out controller))
+            {
+                menuOpen = false;
+                yield return null;
+            }
+
+            // Parent the picker wheel under the element of choice
+            Transform elementTransform = controller.GetElement(element);
+            if (elementTransform == null)
+            {
+                Debug.LogError("Element " + element.ToString() + " not found in controller, can't proceed.");
+                gameObject.SetActive(false);
+                yield break;
+            }
+            
+            transform.parent = elementTransform;
+            transform.localPosition = Vector3.zero;
+            transform.localEulerAngles = new Vector3(0f, 180f, 0f);
+
+            // Turn off the ring
+            Transform ringElement = controller.GetElement(ControllerInfo.ControllerElementEnum.Ring);
+            if (ringElement != null)
+                ringElement.gameObject.SetActive(false);
+
+            // Subscribe to input now that we're parented under the controller
+            InteractionManager.InteractionSourceUpdated += InteractionSourceUpdated;
+            InteractionManager.InteractionSourcePressed += InteractionSourcePressed;
+
             while (isActiveAndEnabled)
             {
+                Debug.Log("Updating menus...");
                 while (currentAction == SwipeEnum.None)
                 {
                     if (activeBrush != null)
@@ -148,6 +168,30 @@ namespace MRDL.ControllerExamples
             StartCoroutine(UpdateMenu());
         }
 
+        private void OnDestroy()
+        {
+            Debug.Log("Destroying!");
+        }
+
+        private void InteractionSourcePressed(InteractionSourcePressedEventArgs obj)
+        {
+            if (obj.state.source.handedness == handedness && obj.pressType == InteractionSourcePressType.Select)
+            {
+                activeBrush.Draw = !activeBrush.Draw;
+            }
+        }
+
+        private void InteractionSourceUpdated(InteractionSourceUpdatedEventArgs obj)
+        {
+            if (obj.state.source.handedness == handedness){
+
+                if (obj.state.touchpadPressed)
+                {
+                    currentAction = SwipeEnum.Left;
+                }
+            }
+        }
+
         #if UNITY_EDITOR
         void OnDrawGizmos()
         {
@@ -175,12 +219,17 @@ namespace MRDL.ControllerExamples
         [SerializeField]
         private float menuTimeout = 2f;
 
+        [SerializeField]
+        private InteractionSourceHandedness handedness = InteractionSourceHandedness.Right;
+        [SerializeField]
+        private ControllerInfo.ControllerElementEnum element = ControllerInfo.ControllerElementEnum.PointingPose;
+        private ControllerInfo controller;
+
         private float menuOpenTime = 0f;
         private bool menuOpen = false;
         private float startOffset;
         private float targetOffset;
         private bool swiping = false;
         private Brush activeBrush;
-
     }
 }

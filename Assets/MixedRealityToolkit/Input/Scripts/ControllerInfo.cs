@@ -1,7 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System.Text.RegularExpressions;
 using UnityEngine;
+using UnityEngine.XR.WSA.Input;
 
 namespace HoloToolkit.Unity.InputModule
 {
@@ -102,6 +104,11 @@ namespace HoloToolkit.Unity.InputModule
             }
         }
 
+        public InteractionSourceHandedness Handedness
+        {
+            get { return handedness; }
+        }
+
         private GameObject home;
         private Transform homePressed;
         private Transform homeUnpressed;
@@ -163,153 +170,200 @@ namespace HoloToolkit.Unity.InputModule
         /// </summary>
         /// <param name="childTransforms">The transforms of the glTF model.</param>
         /// <param name="visualizerScript">The script containing references to any objects to spawn.</param>
-        public void LoadInfo(Transform[] childTransforms, ControllerVisualizer visualizerScript)
+        public void LoadInfo(Transform[] childTransforms, ControllerVisualizer visualizerScript, InteractionSourceHandedness handednessInfo)
         {
+            handedness = handednessInfo;
+            Regex numberRemover = new Regex(@"\d+$");
+
             foreach (Transform child in childTransforms)
             {
-                // Animation bounds are named in two pairs:
-                // pressed/unpressed and min/max. There is also a value
-                // transform, which is the transform to modify to
-                // animate the interactions. We also look for the
-                // touch transform, in order to spawn the touchpadTouched
-                // visualizer.
+                // First we look for the main body elements
+                // These transforms have very specific names that include numbers
+                // So we try them before stripping suffix numbers
                 switch (child.name.ToLower())
                 {
-                    case "pressed":
-                        switch (child.parent.name.ToLower())
+                    case "gltfnode 2"://TODO get this via transform / child order instead
+                        ringElement = child.gameObject;
+                        break;
+
+                    case "gltfnode 3"://TODO get this via transform / child order instead
+                        handlePose = child.gameObject;
+                        break;
+
+                    case "gltfnode 4"://TODO get this via transform / child order instead
+                        inputPose = child.gameObject;
+                        break;
+
+                    case "gltfnode 5"://TODO get this via transform / child order instead
+                        caseElement = child.gameObject;
+                        break;
+
+                    default:
+                        // Animation bounds are named in two pairs:
+                        // pressed/unpressed and min/max. There is also a value
+                        // transform, which is the transform to modify to
+                        // animate the interactions. We also look for the
+                        // touch transform, in order to spawn the touchpadTouched
+                        // visualizer.
+                        string numberlessChildName = numberRemover.Replace(child.name.ToLower(), string.Empty).Trim();
+                        switch (numberlessChildName)
                         {
-                            case "home":
-                                homePressed = child;
+                            case "pressed":
+                                switch (child.parent.name.ToLower())
+                                {
+                                    case "home":
+                                        homePressed = child;
+                                        break;
+                                    case "menu":
+                                        menuPressed = child;
+                                        break;
+                                    case "grasp":
+                                        graspPressed = child;
+                                        break;
+                                    case "select":
+                                        selectPressed = child;
+                                        break;
+                                    case "thumbstick_press":
+                                        thumbstickPressed = child;
+                                        break;
+                                    case "touchpad_press":
+                                        touchpadPressed = child;
+                                        break;
+                                    default:
+                                        Debug.LogWarning("Unknown parent " + child.parent.name + " for pressed transform");
+                                        break;
+                                }
                                 break;
-                            case "menu":
-                                menuPressed = child;
+                            case "unpressed":
+                                switch (child.parent.name.ToLower())
+                                {
+                                    case "home":
+                                        homeUnpressed = child;
+                                        break;
+                                    case "menu":
+                                        menuUnpressed = child;
+                                        break;
+                                    case "grasp":
+                                        graspUnpressed = child;
+                                        break;
+                                    case "select":
+                                        selectUnpressed = child;
+                                        break;
+                                    case "thumbstick_press":
+                                        thumbstickUnpressed = child;
+                                        break;
+                                    case "touchpad_press":
+                                        touchpadUnpressed = child;
+                                        break;
+                                    default:
+                                        Debug.LogWarning("Unknown parent " + child.parent.name + " for unpressed transform");
+                                        break;
+                                }
                                 break;
-                            case "grasp":
-                                graspPressed = child;
+                            case "min":
+                                switch (child.parent.name.ToLower())
+                                {
+                                    case "thumbstick_x":
+                                        thumbstickXMin = child;
+                                        break;
+                                    case "thumbstick_y":
+                                        thumbstickYMin = child;
+                                        break;
+                                    case "touchpad_press_x":
+                                        touchpadPressXMin = child;
+                                        break;
+                                    case "touchpad_press_y":
+                                        touchpadPressYMin = child;
+                                        break;
+                                    case "touchpad_touch_x":
+                                        touchpadTouchXMin = child;
+                                        break;
+                                    case "touchpad_touch_y":
+                                        touchpadTouchYMin = child;
+                                        break;
+                                    default:
+                                        Debug.LogWarning("Unknown parent " + child.parent.name + " for min transform");
+                                        break;
+                                }
                                 break;
-                            case "select":
-                                selectPressed = child;
+                            case "max":
+                                switch (child.parent.name.ToLower())
+                                {
+                                    case "thumbstick_x":
+                                        thumbstickXMax = child;
+                                        break;
+                                    case "thumbstick_y":
+                                        thumbstickYMax = child;
+                                        break;
+                                    case "touchpad_press_x":
+                                        touchpadPressXMax = child;
+                                        break;
+                                    case "touchpad_press_y":
+                                        touchpadPressYMax = child;
+                                        break;
+                                    case "touchpad_touch_x":
+                                        touchpadTouchXMax = child;
+                                        break;
+                                    case "touchpad_touch_y":
+                                        touchpadTouchYMax = child;
+                                        break;
+                                    default:
+                                        Debug.LogWarning("Unknown parent " + child.parent.name + " for max transform");
+                                        break;
+                                }
                                 break;
-                            case "thumbstick_press":
-                                thumbstickPressed = child;
+                            case "value":
+                                switch (child.parent.name.ToLower())
+                                {
+                                    case "home":
+                                        home = child.gameObject;
+                                        break;
+                                    case "menu":
+                                        menu = child.gameObject;
+                                        break;
+                                    case "grasp":
+                                        grasp = child.gameObject;
+                                        break;
+                                    case "select":
+                                        select = child.gameObject;
+                                        break;
+                                    case "thumbstick_press":
+                                        thumbstickPress = child.gameObject;
+                                        break;
+                                    case "thumbstick_x":
+                                        thumbstickX = child.gameObject;
+                                        break;
+                                    case "thumbstick_y":
+                                        thumbstickY = child.gameObject;
+                                        break;
+                                    case "touchpad_press":
+                                        touchpadPress = child.gameObject;
+                                        break;
+                                    case "touchpad_press_x":
+                                        touchpadPressX = child.gameObject;
+                                        break;
+                                    case "touchpad_press_y":
+                                        touchpadPressY = child.gameObject;
+                                        break;
+                                    case "touchpad_touch_x":
+                                        touchpadTouchX = child.gameObject;
+                                        break;
+                                    case "touchpad_touch_y":
+                                        touchpadTouchY = child.gameObject;
+                                        break;
+                                    default:
+                                        Debug.LogWarning("Unknown parent " + child.parent.name + " for value transform");
+                                        break;
+                                }
                                 break;
-                            case "touchpad_press":
-                                touchpadPressed = child;
+                            case "touch":
+                                touchpadTouchVisualizer = visualizerScript.SpawnTouchpadVisualizer(child);
+                                break;
+
+                            case "pointing_pose":
+                                pointingPose = child.gameObject;
                                 break;
                         }
-                        break;
-                    case "unpressed":
-                        switch (child.parent.name.ToLower())
-                        {
-                            case "home":
-                                homeUnpressed = child;
-                                break;
-                            case "menu":
-                                menuUnpressed = child;
-                                break;
-                            case "grasp":
-                                graspUnpressed = child;
-                                break;
-                            case "select":
-                                selectUnpressed = child;
-                                break;
-                            case "thumbstick_press":
-                                thumbstickUnpressed = child;
-                                break;
-                            case "touchpad_press":
-                                touchpadUnpressed = child;
-                                break;
-                        }
-                        break;
-                    case "min":
-                        switch (child.parent.name.ToLower())
-                        {
-                            case "thumbstick_x":
-                                thumbstickXMin = child;
-                                break;
-                            case "thumbstick_y":
-                                thumbstickYMin = child;
-                                break;
-                            case "touchpad_press_x":
-                                touchpadPressXMin = child;
-                                break;
-                            case "touchpad_press_y":
-                                touchpadPressYMin = child;
-                                break;
-                            case "touchpad_touch_x":
-                                touchpadTouchXMin = child;
-                                break;
-                            case "touchpad_touch_y":
-                                touchpadTouchYMin = child;
-                                break;
-                        }
-                        break;
-                    case "max":
-                        switch (child.parent.name.ToLower())
-                        {
-                            case "thumbstick_x":
-                                thumbstickXMax = child;
-                                break;
-                            case "thumbstick_y":
-                                thumbstickYMax = child;
-                                break;
-                            case "touchpad_press_x":
-                                touchpadPressXMax = child;
-                                break;
-                            case "touchpad_press_y":
-                                touchpadPressYMax = child;
-                                break;
-                            case "touchpad_touch_x":
-                                touchpadTouchXMax = child;
-                                break;
-                            case "touchpad_touch_y":
-                                touchpadTouchYMax = child;
-                                break;
-                        }
-                        break;
-                    case "value":
-                        switch (child.parent.name.ToLower())
-                        {
-                            case "home":
-                                home = child.gameObject;
-                                break;
-                            case "menu":
-                                menu = child.gameObject;
-                                break;
-                            case "grasp":
-                                grasp = child.gameObject;
-                                break;
-                            case "select":
-                                select = child.gameObject;
-                                break;
-                            case "thumbstick_press":
-                                thumbstickPress = child.gameObject;
-                                break;
-                            case "thumbstick_x":
-                                thumbstickX = child.gameObject;
-                                break;
-                            case "thumbstick_y":
-                                thumbstickY = child.gameObject;
-                                break;
-                            case "touchpad_press":
-                                touchpadPress = child.gameObject;
-                                break;
-                            case "touchpad_press_x":
-                                touchpadPressX = child.gameObject;
-                                break;
-                            case "touchpad_press_y":
-                                touchpadPressY = child.gameObject;
-                                break;
-                            case "touchpad_touch_x":
-                                touchpadTouchX = child.gameObject;
-                                break;
-                            case "touchpad_touch_y":
-                                touchpadTouchY = child.gameObject;
-                                break;
-                        }
-                        break;
-                    case "touch":
-                        touchpadTouchVisualizer = visualizerScript.SpawnTouchpadVisualizer(child);
                         break;
                 }
             }
@@ -408,5 +462,7 @@ namespace HoloToolkit.Unity.InputModule
 
             Destroy(gameObject);
         }
+        
+        private InteractionSourceHandedness handedness;
     }
 }

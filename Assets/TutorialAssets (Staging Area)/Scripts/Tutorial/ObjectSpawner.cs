@@ -1,6 +1,8 @@
-﻿using System;
+﻿using HoloToolkit.Unity.InputModule;
+using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.XR.WSA.Input;
 
 namespace MRDL.ControllerExamples
 {
@@ -8,6 +10,7 @@ namespace MRDL.ControllerExamples
     {
         public enum StateEnum
         {
+            Uninitialized,
             Idle,
             Switching,
             Spawning,
@@ -51,6 +54,38 @@ namespace MRDL.ControllerExamples
             instantiatedMaterial = new Material(objectMaterial);
             displayObject.sharedMesh = availableMeshes[meshIndex];
             displayObject.GetComponent<Renderer>().sharedMaterial = instantiatedMaterial;
+        }
+
+        private IEnumerator Start()
+        {
+            // TODO replace this with a proper singleton
+            ControllerVisualizer visualizer = GameObject.FindObjectOfType<ControllerVisualizer>();
+
+            while (!visualizer.GetController(handedness, out controller))
+            {
+                yield return null;
+            }
+
+            // Parent the picker wheel under the element of choice
+            Transform elementTransform = controller.GetElement(element);
+            if (elementTransform == null)
+            {
+                Debug.LogError("Element " + element.ToString() + " not found in controller, can't proceed.");
+                gameObject.SetActive(false);
+                yield break;
+            }
+
+            transform.parent = elementTransform;
+            transform.localPosition = Vector3.zero;
+            transform.localEulerAngles = new Vector3(0f, 180f, 0f);
+
+            // Turn off the ring
+            Transform ringElement = controller.GetElement(ControllerInfo.ControllerElementEnum.Ring);
+            if (ringElement != null)
+                ringElement.gameObject.SetActive(false);
+
+            // Subscribe to input now that we're parented under the controller
+            InteractionManager.InteractionSourcePressed += InteractionSourcePressed;
         }
 
         private void Update()
@@ -117,6 +152,14 @@ namespace MRDL.ControllerExamples
             yield break;
         }
 
+        private void InteractionSourcePressed(InteractionSourcePressedEventArgs obj)
+        {
+            if (obj.state.source.handedness == handedness && obj.pressType == InteractionSourcePressType.Touchpad)
+            {
+                SpawnObject();
+            }
+        }
+
         [Header("Objects and materials")]
         [SerializeField]
         private Transform displayParent;
@@ -139,8 +182,14 @@ namespace MRDL.ControllerExamples
         [SerializeField]
         private Animator animator;
 
+        [SerializeField]
+        private InteractionSourceHandedness handedness = InteractionSourceHandedness.Left;
+        [SerializeField]
+        private ControllerInfo.ControllerElementEnum element = ControllerInfo.ControllerElementEnum.PointingPose;
+        private ControllerInfo controller;
+
         private int meshIndex = 0;
-        private StateEnum state = StateEnum.Idle;
+        private StateEnum state = StateEnum.Uninitialized;
         private Material instantiatedMaterial;
     }
 

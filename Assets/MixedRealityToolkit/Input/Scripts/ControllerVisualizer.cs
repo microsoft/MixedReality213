@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,18 +25,49 @@ namespace HoloToolkit.Unity.InputModule
     /// </summary>
     public class ControllerVisualizer : MonoBehaviour
     {
+        public enum OverrideBehaviorEnum
+        {
+            EditorAndRuntime,
+            RuntimeOnly,
+            EditorOnly,
+        }
+
         [Tooltip("This setting will be used to determine if the model, override or otherwise, should attempt to be animated based on the user's input.")]
         public bool AnimateControllerModel = true;
 
         [Tooltip("Use a model with the tip in the positive Z direction and the front face in the positive Y direction. This will override the platform left controller model.")]
         [SerializeField]
         protected GameObject LeftControllerOverride;
+        [SerializeField]
+        protected OverrideBehaviorEnum LeftControllerBehavior = OverrideBehaviorEnum.EditorAndRuntime;
         [Tooltip("Use a model with the tip in the positive Z direction and the front face in the positive Y direction. This will override the platform right controller model.")]
         [SerializeField]
         protected GameObject RightControllerOverride;
+        [SerializeField]
+        protected OverrideBehaviorEnum RightControllerBehavior = OverrideBehaviorEnum.EditorAndRuntime;
         [Tooltip("Use this to override the indicator used to show the user's touch location on the touchpad. Default is a sphere.")]
         [SerializeField]
         protected GameObject TouchpadTouchedOverride;
+
+        public bool GetController(InteractionSourceHandedness handedness, out ControllerInfo controller)
+        {
+            controller = null;
+            if (controllerDictionary == null)
+                return false;
+
+            foreach (ControllerInfo c in controllerDictionary.Values)
+            {
+                if (c.Handedness == handedness)
+                {
+                    controller = c;
+                    break;
+                }
+            }
+            return controller != null;
+        }
+
+        [SerializeField]
+        protected OverrideBehaviorEnum TouchpadTouchBehavior = OverrideBehaviorEnum.EditorAndRuntime;
 
         [Tooltip("This material will be used on the loaded glTF controller model. This does not affect the above overrides.")]
         [SerializeField]
@@ -53,8 +85,8 @@ namespace HoloToolkit.Unity.InputModule
         {
             controllerDictionary = new Dictionary<uint, ControllerInfo>();
 
-#if UNITY_WSA
-#if !UNITY_EDITOR
+            #if UNITY_WSA
+            #if !UNITY_EDITOR
             if (GLTFMaterial == null)
             {
                 if (LeftControllerOverride == null && RightControllerOverride == null)
@@ -219,11 +251,15 @@ namespace HoloToolkit.Unity.InputModule
             if (obj.state.source.kind == InteractionSourceKind.Controller && controllerDictionary != null && !controllerDictionary.ContainsKey(obj.state.source.id))
             {
                 GameObject controllerModelGameObject;
-                if (obj.state.source.handedness == InteractionSourceHandedness.Left && LeftControllerOverride != null)
+                if (obj.state.source.handedness == InteractionSourceHandedness.Left 
+                    && LeftControllerOverride != null
+                    && (LeftControllerBehavior == OverrideBehaviorEnum.EditorAndRuntime || LeftControllerBehavior == OverrideBehaviorEnum.RuntimeOnly))
                 {
                     controllerModelGameObject = Instantiate(LeftControllerOverride);
                 }
-                else if (obj.state.source.handedness == InteractionSourceHandedness.Right && RightControllerOverride != null)
+                else if (obj.state.source.handedness == InteractionSourceHandedness.Right 
+                    && RightControllerOverride != null
+                    && (RightControllerBehavior == OverrideBehaviorEnum.EditorAndRuntime || RightControllerBehavior == OverrideBehaviorEnum.RuntimeOnly))
                 {
                     controllerModelGameObject = Instantiate(RightControllerOverride);
                 }
@@ -232,7 +268,7 @@ namespace HoloToolkit.Unity.InputModule
                     return;
                 }
 
-                FinishControllerSetup(controllerModelGameObject, obj.state.source.handedness.ToString(), obj.state.source.id);
+                FinishControllerSetup(controllerModelGameObject, obj.state.source.handedness, obj.state.source.id);
             }
         }
 
@@ -243,7 +279,8 @@ namespace HoloToolkit.Unity.InputModule
         /// <param name="obj">The source event args to be used to determine the controller model to be removed.</param>
         private void InteractionManager_InteractionSourceLost(InteractionSourceLostEventArgs obj)
         {
-            InteractionSource source = obj.state.source;
+            // TODO discuss this behavior
+            /*InteractionSource source = obj.state.source;
             if (source.kind == InteractionSourceKind.Controller)
             {
                 ControllerInfo controller;
@@ -253,7 +290,7 @@ namespace HoloToolkit.Unity.InputModule
 
                     Destroy(controller);
                 }
-            }
+            }*/
         }
 
         private void InteractionManager_InteractionSourceUpdated(InteractionSourceUpdatedEventArgs obj)
@@ -297,21 +334,22 @@ namespace HoloToolkit.Unity.InputModule
             }
         }
 
-        private void FinishControllerSetup(GameObject controllerModelGameObject, string handedness, uint id)
+        private void FinishControllerSetup(GameObject controllerModelGameObject, InteractionSourceHandedness handedness, uint id)
         {
             var parentGameObject = new GameObject
             {
-                name = handedness + "Controller"
+                name = handedness.ToString() + "Controller"
             };
 
             parentGameObject.transform.parent = transform;
             controllerModelGameObject.transform.parent = parentGameObject.transform;
 
             var newControllerInfo = parentGameObject.AddComponent<ControllerInfo>();
-            if (AnimateControllerModel)
-            {
-                newControllerInfo.LoadInfo(controllerModelGameObject.GetComponentsInChildren<Transform>(), this);
-            }
+            //if (AnimateControllerModel)
+            //{
+                // get this info regardless
+                newControllerInfo.LoadInfo(controllerModelGameObject.GetComponentsInChildren<Transform>(), this, handedness);
+            //}
             controllerDictionary.Add(id, newControllerInfo);
         }
 #endif
