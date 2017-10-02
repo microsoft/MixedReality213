@@ -70,7 +70,6 @@ namespace MRDL.ControllerExamples
 
                 currentStrokeColor = value;
                 brushRenderer.material.color = currentStrokeColor;
-                AddColorToGradient(currentStrokeColor);
             }
         }
 
@@ -79,10 +78,8 @@ namespace MRDL.ControllerExamples
             StartCoroutine(UpdateDisplayMode());
         }
 
-        private IEnumerator DrawOverTime()
+        protected virtual IEnumerator DrawOverTime()
         {
-            // Store the time when this stroke began so we can update our gradient
-            startTime = Time.time;
             // Get the position of the tip
             Vector3 lastPointPosition = tip.position;
             // Then wait one frame and get the position again
@@ -93,15 +90,12 @@ namespace MRDL.ControllerExamples
             LineRenderer line = newStroke.GetComponent<LineRenderer>();
             newStroke.transform.position = startPosition;
             line.SetPosition(0, tip.position);
-            // Update the color immediately
-            strokeGradient = line.colorGradient;
-            AddColorToGradient(currentStrokeColor);
 
             while (draw)
             {
                 // Move the last point to the draw point position
                 line.SetPosition(line.positionCount - 1, tip.position);
-                line.colorGradient = strokeGradient;
+                line.material.color = currentStrokeColor;
 
                 if (Vector3.Distance(lastPointPosition, tip.position) > minPositionDelta)
                 {
@@ -112,9 +106,6 @@ namespace MRDL.ControllerExamples
                 }
                 yield return null;
             }
-            
-            // Reset our stroke colors and gradient
-            strokeColors.Clear();
         }
 
         private IEnumerator UpdateDisplayMode()
@@ -192,26 +183,6 @@ namespace MRDL.ControllerExamples
             yield break;
         }
 
-        private void AddColorToGradient(Color newColor)
-        {
-            float newColorTime = Time.unscaledTime;
-            
-            GradientColorKey[] colorKeys = new GradientColorKey[MaxGradientKeys];
-            GradientAlphaKey[] alphaKeys = new GradientAlphaKey[MaxGradientKeys];
-            /*foreach (KeyValuePair<float,Color> color in strokeColors)
-            {
-                // TODO blend gradient keys based on time, since we can only have 8 keys (wtf unity...)
-            }*/
-            // TEMP just set all keys to color
-            for (int i = 0; i < colorKeys.Length; i++) {
-                colorKeys[i] = new GradientColorKey(newColor, (1f / MaxGradientKeys) * i);
-                alphaKeys[i] = new GradientAlphaKey(1f, (1f / MaxGradientKeys) * i);
-            }
-
-            strokeGradient.colorKeys = colorKeys;
-            strokeGradient.alphaKeys = alphaKeys;
-        }
-
         [Header("Drawing settings")]
         [SerializeField]
         private float maxStrokeLength = 10f;
@@ -228,7 +199,7 @@ namespace MRDL.ControllerExamples
         [SerializeField]
         private Renderer brushRenderer;
 
-        private bool draw = false;
+        protected bool draw = false;
 
         [Header("Mode settings")]
         [SerializeField]
@@ -245,12 +216,8 @@ namespace MRDL.ControllerExamples
         private float transitionDuration = 0.5f;
         [SerializeField]
         private AnimationCurve transitionCurve;
-
-        private float startTime;
-        [SerializeField]
-        private Gradient strokeGradient;
+        
         private Color currentStrokeColor = Color.white;
-        private Dictionary<float,Color> strokeColors = new Dictionary<float, Color>();
 
         #if UNITY_EDITOR
         [UnityEditor.CustomEditor(typeof(Brush))]

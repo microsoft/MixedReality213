@@ -66,7 +66,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4378770847440034}
-  - component: {fileID: 114259844537487554}
+  - component: {fileID: 114711277941485434}
   m_Layer: 0
   m_Name: Eraser
   m_TagString: Untagged
@@ -170,7 +170,7 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1383965867935630}
   m_Mesh: {fileID: 4300002, guid: 93e17204514ed844ea18db4bd66743f8, type: 3}
---- !u!114 &114259844537487554
+--- !u!114 &114711277941485434
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -178,15 +178,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1956922299587456}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ce12140b0d9e674e95902ac72679402, type: 3}
+  m_Script: {fileID: 11500000, guid: 35045fd9a384dc1429f339d16ed7dcf0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   maxStrokeLength: 10
   minColorDelta: 0.05
-  minPositionDelta: 0.125
+  minPositionDelta: 0.05
   tip: {fileID: 4672272320781912}
-  strokePrefab: {fileID: 1664498572788286, guid: 8af1374494aee79459de8e8c2464fdb9,
-    type: 2}
+  strokePrefab: {fileID: 1416552786540436}
   brushObjectTransform: {fileID: 4196730852240970}
   brushRenderer: {fileID: 23813356666595310}
   inMenuPosition: {x: 0, y: 0, z: 0}

@@ -87,12 +87,11 @@ namespace MRDL.ControllerExamples
 
             while (isActiveAndEnabled)
             {
-                Debug.Log("Updating menus...");
                 while (currentAction == SwipeEnum.None)
                 {
-                    if (activeBrush != null)
+                    foreach (Transform brushObject in brushCollection.Objects)
                     {
-                        activeBrush.StrokeColor = colorPicker.SelectedColor;
+                        brushObject.GetComponent<Brush>().StrokeColor = colorPicker.SelectedColor;
                     }
                     yield return null;
                 }
