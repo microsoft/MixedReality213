@@ -84,6 +84,7 @@ namespace MRDL.ControllerExamples
             // Subscribe to input now that we're parented under the controller
             InteractionManager.InteractionSourceUpdated += InteractionSourceUpdated;
             InteractionManager.InteractionSourcePressed += InteractionSourcePressed;
+            InteractionManager.InteractionSourceReleased += InteractionSourceReleased;
 
             while (isActiveAndEnabled)
             {
@@ -176,7 +177,7 @@ namespace MRDL.ControllerExamples
         {
             if (obj.state.source.handedness == handedness && obj.pressType == InteractionSourcePressType.Select)
             {
-                activeBrush.Draw = !activeBrush.Draw;
+                activeBrush.Draw = true;
             }
         }
 
@@ -188,6 +189,14 @@ namespace MRDL.ControllerExamples
                 {
                     currentAction = SwipeEnum.Left;
                 }
+            }
+        }
+
+        private void InteractionSourceReleased(InteractionSourceReleasedEventArgs obj)
+        {
+            if (obj.state.source.handedness == handedness && obj.pressType == InteractionSourcePressType.Select)
+            {
+                activeBrush.Draw = false;
             }
         }
 
