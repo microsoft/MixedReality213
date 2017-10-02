@@ -109,7 +109,7 @@ namespace MRDL.ControllerExamples
                 if (obj.state.touchpadTouched)
                 {
                     Visible = true;
-                    SelectorPosition = obj.state.touchpadPosition * 2;
+                    SelectorPosition = obj.state.touchpadPosition;
                 }
             }
         }
@@ -119,7 +119,7 @@ namespace MRDL.ControllerExamples
         [SerializeField]
         private Transform selectorTransform;
         [SerializeField]
-        private float inputScale = 0.4f;
+        private float inputScale = 1.1f;
         [SerializeField]
         private Vector2 selectorPosition;
         [SerializeField]

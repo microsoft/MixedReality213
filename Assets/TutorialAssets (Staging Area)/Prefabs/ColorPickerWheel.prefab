@@ -230,7 +230,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   visible: 1
   selectorTransform: {fileID: 4679133003569798}
-  inputScale: 0.4
+  inputScale: 1.1
   selectorPosition: {x: 0, y: 0}
   selectedColor: {r: 0.9882353, g: 0.9764706, b: 0.9647059, a: 1}
   colorWheelTexture: {fileID: 2800000, guid: e7bc94dceceb4ec4fbb4c9ada0caebd5, type: 3}

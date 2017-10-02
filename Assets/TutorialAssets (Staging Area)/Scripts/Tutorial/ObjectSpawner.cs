@@ -41,11 +41,12 @@ namespace MRDL.ControllerExamples
             get { return availableMeshes.Length; }
         }
 
-        public void SpawnObject()
+        private void SpawnObject()
         {
             if (state != StateEnum.Idle)
                 return;
 
+            state = StateEnum.Spawning;
             StartCoroutine(SpawnOverTime());
         }
 
@@ -86,6 +87,7 @@ namespace MRDL.ControllerExamples
 
             // Subscribe to input now that we're parented under the controller
             InteractionManager.InteractionSourcePressed += InteractionSourcePressed;
+            InteractionManager.InteractionSourceReleased += InteractionSourceReleased;
 
             state = StateEnum.Idle;
         }
@@ -128,8 +130,23 @@ namespace MRDL.ControllerExamples
 
         private IEnumerator SpawnOverTime()
         {
+            released = false;
+            timePressed = Time.unscaledTime;
             //AudioSource.PlayClipAtPoint(soundOnSpawn, transform.position);
             GameObject newObject = GameObject.Instantiate(displayObject.gameObject, spawnParent) as GameObject;
+            Vector3 startScale = scaleParent.localScale;
+            // Hide the display object while we're scaling up the newly spawned object
+            displayObject.gameObject.SetActive(false);
+
+            while (!released)
+            {
+                // Grow the object while the control is pressed
+                float normalizedGrowth = (Time.unscaledTime - timePressed) / growTime;
+                scaleParent.localScale = startScale + (Vector3.one * + growCurve.Evaluate(normalizedGrowth));
+                yield return null;
+            }
+
+            // Once we've released, start our spawn animation
             animator.SetTrigger("Spawn");
             yield return null;
             // Wait for the animation to play out
@@ -142,8 +159,16 @@ namespace MRDL.ControllerExamples
             {
                 yield return null;
             }
+
             // Detatch the newly spawned object
             newObject.transform.parent = null;
+            // Reset the scale transform to 1
+            scaleParent.localScale = Vector3.one;
+            // Set its material color so its material gets instantiated
+            newObject.GetComponent<Renderer>().material.color = colorSource.SelectedColor;
+
+            // Show our old display object again
+            displayObject.gameObject.SetActive(true);
             // Then wait for the new display object to show
             while (animator.GetCurrentAnimatorStateInfo(0).IsName("SpawnFinish"))
             {
@@ -176,9 +201,30 @@ namespace MRDL.ControllerExamples
             }
         }
 
+        private void InteractionSourceReleased(InteractionSourceReleasedEventArgs obj)
+        {
+            if (obj.state.source.handedness == handedness)
+            {
+                switch (obj.pressType)
+                {
+                    case InteractionSourcePressType.Grasp:
+                        if (state != StateEnum.Spawning)
+                            return;
+                        // Release object
+                        released = true;
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        }
+
         [Header("Objects and materials")]
         [SerializeField]
         private Transform displayParent;
+        [SerializeField]
+        private Transform scaleParent;
         [SerializeField]
         private Transform spawnParent;
         [SerializeField]
@@ -197,6 +243,10 @@ namespace MRDL.ControllerExamples
         private AudioClip soundOnSwitch;
         [SerializeField]
         private Animator animator;
+        [SerializeField]
+        private AnimationCurve growCurve;
+        [SerializeField]
+        private float growTime = 2f;
 
         [SerializeField]
         private InteractionSourceHandedness handedness = InteractionSourceHandedness.Left;
@@ -207,23 +257,7 @@ namespace MRDL.ControllerExamples
         private int meshIndex = 0;
         private StateEnum state = StateEnum.Uninitialized;
         private Material instantiatedMaterial;
+        private bool released;
+        private float timePressed;
     }
-
-    #if UNITY_EDITOR
-    [UnityEditor.CustomEditor(typeof(ObjectSpawner))]
-    public class ObjectSpawnerEditor : UnityEditor.Editor
-    {
-        public override void OnInspectorGUI()
-        {
-            base.OnInspectorGUI();
-
-            ObjectSpawner objectSpawner = (ObjectSpawner)target;
-            objectSpawner.MeshIndex = UnityEditor.EditorGUILayout.IntSlider("Mesh index", objectSpawner.MeshIndex, 0, objectSpawner.NumAvailableMeshes - 1);
-            if (GUILayout.Button ("Spawn Object"))
-            {
-                objectSpawner.SpawnObject();
-            }
-        }
-    }
-    #endif
 }
