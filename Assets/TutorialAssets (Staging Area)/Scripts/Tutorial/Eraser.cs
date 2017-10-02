@@ -14,16 +14,13 @@ namespace MRDL.ControllerExamples
 
             while (draw)
             {
-                Debug.Log("(Checking brush strokes...");
                 // Move backwards through the brush strokes, removing any we intersect with
                 for (int i = brushStrokes.Count - 1; i >= 0; i--)
                 {
-                    Debug.Log("Checking brush stroke " + i);
                     // Do a crude check for proximity with the brush stroke's render bounds
                     Bounds strokeBounds = brushStrokes[i].GetComponent<Renderer>().bounds;
                     if (strokeBounds.Contains (TipPosition))
                     {
-                        Debug.Log("In bounds of " + brushStrokes[i].name);
                         // If we're in bounds, check whether any point of the stroke is within range
                         LineRenderer lineRenderer = brushStrokes[i].GetComponent<LineRenderer>();
                         Vector3[] positions = new Vector3[lineRenderer.positionCount];
@@ -32,7 +29,6 @@ namespace MRDL.ControllerExamples
                         {
                             if (Vector3.Distance (positions[j], TipPosition) < eraseRange)
                             {
-                                Debug.Log("Within distance to point " + j);
                                 // Erase the brush stroke and remove it from our array
                                 GameObject.Destroy(brushStrokes[i]);
                                 brushStrokes.RemoveAt(i);
