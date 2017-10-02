@@ -77,7 +77,7 @@ namespace MRDL.ControllerExamples
 
             transform.parent = elementTransform;
             transform.localPosition = Vector3.zero;
-            transform.localEulerAngles = new Vector3(0f, 180f, 0f);
+            transform.localRotation = Quaternion.identity;
 
             // Turn off the ring
             Transform ringElement = controller.GetElement(ControllerInfo.ControllerElementEnum.Ring);
@@ -86,6 +86,8 @@ namespace MRDL.ControllerExamples
 
             // Subscribe to input now that we're parented under the controller
             InteractionManager.InteractionSourcePressed += InteractionSourcePressed;
+
+            state = StateEnum.Idle;
         }
 
         private void Update()
@@ -154,9 +156,23 @@ namespace MRDL.ControllerExamples
 
         private void InteractionSourcePressed(InteractionSourcePressedEventArgs obj)
         {
-            if (obj.state.source.handedness == handedness && obj.pressType == InteractionSourcePressType.Touchpad)
+            if (obj.state.source.handedness == handedness)
             {
-                SpawnObject();
+                switch (obj.pressType)
+                {
+                    case InteractionSourcePressType.Grasp:
+                        SpawnObject();
+                        break;
+
+                    case InteractionSourcePressType.Select:
+                        meshIndex++;
+                        if (meshIndex >= NumAvailableMeshes)
+                            meshIndex = 0;
+                        break;
+
+                    default:
+                        break;
+                }
             }
         }
 
