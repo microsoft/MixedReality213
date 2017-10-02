@@ -177,10 +177,12 @@ namespace HoloToolkit.Unity.InputModule
             if (source.Handedness == SpatialInteractionSourceHandedness.Left && LeftControllerOverride != null)
             {
                 controllerModelGameObject = Instantiate(LeftControllerOverride);
+                FinishControllerSetup(controllerModelGameObject, InteractionSourceHandedness.Left, source.Id);
             }
             else if (source.Handedness == SpatialInteractionSourceHandedness.Right && RightControllerOverride != null)
             {
                 controllerModelGameObject = Instantiate(RightControllerOverride);
+                FinishControllerSetup(controllerModelGameObject, InteractionSourceHandedness.Right, source.Id);
             }
             else
             {
@@ -240,8 +242,6 @@ namespace HoloToolkit.Unity.InputModule
 
                 yield return gltfScript.LoadModel();
             }
-
-            FinishControllerSetup(controllerModelGameObject, source.Handedness.ToString(), source.Id);
         }
 #endif
 
