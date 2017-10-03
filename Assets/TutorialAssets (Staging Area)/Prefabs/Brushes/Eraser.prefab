@@ -95,9 +95,9 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1956922299587456}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0.8564709, y: 0.120114185, z: 0.23074175, w: -0.44585705}
+  m_LocalPosition: {x: 0.0028284497, y: 0.0016506199, z: 0.010762442}
+  m_LocalScale: {x: 0.13111201, y: 0.13111201, z: 0.13111201}
   m_Children:
   - {fileID: 4196730852240970}
   m_Father: {fileID: 0}
@@ -213,3 +213,22 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 0
   eraseRange: 0.05
+  eraseTime: 0.45
+  eraseStrengthCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1.0083618
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.9977415
+      value: 0.10632157
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
