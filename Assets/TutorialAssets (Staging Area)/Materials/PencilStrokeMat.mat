@@ -6,15 +6,14 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: BrushMaterial
+  m_Name: PencilStrokeMat
   m_Shader: {fileID: 4800000, guid: f1f3948b20c230044bda31b620ddd37f, type: 3}
-  m_ShaderKeywords: _ALPHATEST_ON _USEAMBIENT_ON _USEDIFFUSE_ON _USEMAINCOLOR_ON _USEMAINTEX_ON
+  m_ShaderKeywords: _USEAMBIENT_ON _USEDIFFUSE_ON _USEMAINCOLOR_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2450
-  stringTagMap:
-    RenderType: TransparentCutout
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
@@ -52,7 +51,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: be542faec50f2e3448285cef526ed9cb, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -77,11 +76,11 @@ Material:
     - _BumpScale: 1
     - _CalibrationSpaceReflections: 0
     - _ColorWriteMask: 15
-    - _Cull: 2
+    - _Cull: 0
     - _Cutoff: 0.626
     - _DetailNormalMapScale: 1
-    - _DstBlend: 0
-    - _ForcePerPixel: 0
+    - _DstBlend: 10
+    - _ForcePerPixel: 1
     - _Gloss: 1
     - _GlossMapScale: 1
     - _Glossiness: 0.5
@@ -90,16 +89,16 @@ Material:
     - _MainTex_OFFSET: 0
     - _MainTex_SCALE: 0
     - _Metallic: 0
-    - _Mode: 1
+    - _Mode: 3
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _ReflectionScale: 2
-    - _RimPower: 0.7
+    - _ReflectionScale: 0.15
+    - _RimPower: 0.25
     - _Shade4: 0
     - _SmoothnessTextureChannel: 0
     - _Specular: 10
     - _SpecularHighlights: 0
-    - _SrcBlend: 1
+    - _SrcBlend: 5
     - _UVSec: 0
     - _UseAmbient: 1
     - _UseBumpMap: 0
@@ -120,8 +119,8 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _RimColor: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionColor: {r: 1, g: 0, b: 0, a: 1}
+    - _RimColor: {r: 0.38235295, g: 0.38235295, b: 0.38235295, a: 1}
     - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _SpecularColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _TextureScaleOffset: {r: 1, g: 1, b: 0, a: 0}

@@ -80,7 +80,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1416552786540436}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0.46174863, y: 0, z: 0, w: 0.8870109}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -88,16 +88,16 @@ Transform:
   - {fileID: 4677984587220766}
   m_Father: {fileID: 4378770847440034}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 55, y: 0, z: 0}
 --- !u!4 &4378770847440034
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1956922299587456}
-  m_LocalRotation: {x: -0.8564709, y: 0.120114185, z: 0.23074175, w: -0.44585705}
-  m_LocalPosition: {x: 0.0028284497, y: 0.0016506199, z: 0.010762442}
-  m_LocalScale: {x: 0.13111201, y: 0.13111201, z: 0.13111201}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4196730852240970}
   m_Father: {fileID: 0}
@@ -110,7 +110,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1196407883402170}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.0020238978, z: -0.12171626}
+  m_LocalPosition: {x: 0, y: 0, z: -0.12}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4196730852240970}
@@ -189,9 +189,9 @@ MonoBehaviour:
   brushObjectTransform: {fileID: 4196730852240970}
   brushRenderer: {fileID: 23813356666595310}
   inMenuPosition: {x: 0, y: 0, z: 0}
-  inMenuRotation: {x: -15, y: -15, z: 0}
+  inMenuRotation: {x: 55, y: 0, z: 0}
   inHandPosition: {x: 0, y: 0, z: 0}
-  inHandRotation: {x: -80, y: 0, z: 0}
+  inHandRotation: {x: 70, y: 0, z: 0}
   displayMode: 0
   transitionDuration: 0.35
   transitionCurve:
@@ -214,21 +214,3 @@ MonoBehaviour:
     m_RotationOrder: 0
   eraseRange: 0.05
   eraseTime: 0.45
-  eraseStrengthCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 2
-      time: 0
-      value: 1.0083618
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    - serializedVersion: 2
-      time: 0.9977415
-      value: 0.10632157
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 0

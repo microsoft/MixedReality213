@@ -13,7 +13,7 @@ Prefab:
   m_IsPrefabParent: 1
 --- !u!1 &1399634423300290
 GameObject:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
@@ -34,9 +34,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4963028933550254}
-  - component: {fileID: 114611540035016352}
-  - component: {fileID: 114996751016692868}
-  - component: {fileID: 114687239351151998}
+  - component: {fileID: 114661879801688092}
   m_Layer: 0
   m_Name: BrushSelector
   m_TagString: Untagged
@@ -44,6 +42,37 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1759047365439608
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4197359369901074}
+  - component: {fileID: 114263958003342106}
+  - component: {fileID: 114412594797402372}
+  m_Layer: 0
+  m_Name: MenuOffset
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4197359369901074
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1759047365439608}
+  m_LocalRotation: {x: -0, y: -0, z: 2.0876504e-14, w: 1}
+  m_LocalPosition: {x: -0, y: -0.1, z: -0.15}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 4619208353451588}
+  m_Father: {fileID: 4963028933550254}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4619208353451588
 Transform:
   m_ObjectHideFlags: 1
@@ -51,10 +80,10 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1399634423300290}
   m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: -0.0489334, y: 0.028244872, z: 0}
+  m_LocalPosition: {x: -0.025982335, y: 0.014997281, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 4963028933550254}
+  m_Father: {fileID: 4197359369901074}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4963028933550254
@@ -63,20 +92,20 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1554623883218694}
-  m_LocalRotation: {x: 0.30070642, y: 0.00000032026975, z: -0.00000028367572, w: 0.9537168}
-  m_LocalPosition: {x: 0.000054970806, y: -0.023584913, z: 0.079552256}
+  m_LocalRotation: {x: -0.006705106, y: 0.0000002483291, z: -0.00000037038293, w: 0.9999775}
+  m_LocalPosition: {x: -0.0001, y: 0.1652, z: 0.3422}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 4619208353451588}
+  - {fileID: 4197359369901074}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114611540035016352
+--- !u!114 &114263958003342106
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1554623883218694}
+  m_GameObject: {fileID: 1759047365439608}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cccf71c6020899a488d4caf5464be842, type: 3}
@@ -113,87 +142,13 @@ MonoBehaviour:
     m_RotationOrder: 4
   loops: 0
   Resolution: 36
-  Radius: {x: 0.0565, y: 0.0565}
---- !u!114 &114687239351151998
+  Radius: {x: 0.03, y: 0.03}
+--- !u!114 &114412594797402372
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1554623883218694}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2241eb5c410180c4dbd2a53787deb25d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  brushCollection: {fileID: 114996751016692868}
-  currentAction: 0
-  swipeCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 2
-      time: 0
-      value: 0
-      inSlope: 0.44065592
-      outSlope: 0.44065592
-      tangentMode: 0
-    - serializedVersion: 2
-      time: 0.2616839
-      value: 0.7030703
-      inSlope: 4.2307243
-      outSlope: 4.2307243
-      tangentMode: 0
-    - serializedVersion: 2
-      time: 0.34630072
-      value: 1.1623088
-      inSlope: 5.0791893
-      outSlope: 5.0791893
-      tangentMode: 0
-    - serializedVersion: 2
-      time: 0.4780403
-      value: 0.90566796
-      inSlope: -0.18335718
-      outSlope: -0.18335718
-      tangentMode: 0
-    - serializedVersion: 2
-      time: 0.60077304
-      value: 1.1096094
-      inSlope: -1.2465854
-      outSlope: -1.2465854
-      tangentMode: 0
-    - serializedVersion: 2
-      time: 0.69892895
-      value: 0.98935425
-      inSlope: 1.1235638
-      outSlope: 1.1235638
-      tangentMode: 0
-    - serializedVersion: 2
-      time: 0.8202404
-      value: 1.0088048
-      inSlope: -0.90024406
-      outSlope: -0.90024406
-      tangentMode: 0
-    - serializedVersion: 2
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 0
-  swipeDuration: 0.45
-  displayBrushindex: 0
-  activeBrushindex: 3
-  colorPicker: {fileID: 0}
-  menuTimeout: 2
-  handedness: 2
-  element: 0
---- !u!114 &114996751016692868
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1554623883218694}
+  m_GameObject: {fileID: 1759047365439608}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ca3666f103ce01d419b1fd9d4a33a5b3, type: 3}
@@ -289,4 +244,80 @@ MonoBehaviour:
   RotationTypeOverride: 0
   DistributionType: 0
   StepMode: 0
-  source: {fileID: 114611540035016352}
+  source: {fileID: 114263958003342106}
+--- !u!114 &114661879801688092
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1554623883218694}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2241eb5c410180c4dbd2a53787deb25d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  brushCollection: {fileID: 114412594797402372}
+  currentAction: 0
+  swipeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0.44065592
+      outSlope: 0.44065592
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.2616839
+      value: 0.7030703
+      inSlope: 4.2307243
+      outSlope: 4.2307243
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.34630072
+      value: 1.1623088
+      inSlope: 5.0791893
+      outSlope: 5.0791893
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.4780403
+      value: 0.90566796
+      inSlope: -0.18335718
+      outSlope: -0.18335718
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.60077304
+      value: 1.1096094
+      inSlope: -1.2465854
+      outSlope: -1.2465854
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.69892895
+      value: 0.98935425
+      inSlope: 1.1235638
+      outSlope: 1.1235638
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.8202404
+      value: 1.0088048
+      inSlope: -0.90024406
+      outSlope: -0.90024406
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  swipeDuration: 0.45
+  displayBrushindex: 0
+  activeBrushindex: 3
+  colorPicker: {fileID: 0}
+  menuTimeout: 2
+  handedness: 2
+  element: 0
+  touchpadMaterial: {fileID: 2100000, guid: 9ab2a9ffd08a18a4b897b448b582c956, type: 2}
+  touchpadGlowLossSpeed: 3

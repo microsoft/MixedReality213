@@ -48,6 +48,8 @@ namespace HoloToolkit.Unity.InputModule
         [Tooltip("Use this to override the indicator used to show the user's touch location on the touchpad. Default is a sphere.")]
         [SerializeField]
         protected GameObject TouchpadTouchedOverride;
+        [SerializeField]
+        protected bool ShowTouchpadTouched = true;
 
         public bool GetController(InteractionSourceHandedness handedness, out ControllerInfo controller)
         {
@@ -356,6 +358,9 @@ namespace HoloToolkit.Unity.InputModule
 
         public GameObject SpawnTouchpadVisualizer(Transform parentTransform)
         {
+            if (!ShowTouchpadTouched)
+                return null;
+
             GameObject touchVisualizer;
             if (TouchpadTouchedOverride != null)
             {

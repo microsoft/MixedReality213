@@ -369,6 +369,15 @@ namespace HoloToolkit.Unity.InputModule
             }
         }
 
+        public void SetRenderersVisible(bool visible)
+        {
+            MeshRenderer[] renderers = gameObject.GetComponentsInChildren<MeshRenderer>();
+            for (int i = 0; i < renderers.Length; i++)
+            {
+                renderers[i].enabled = visible;
+            }
+        }
+
         public void AnimateGrasp(bool isGrasped)
         {
             if (grasp != null && graspPressed != null && graspUnpressed != null && isGrasped != wasGrasped)

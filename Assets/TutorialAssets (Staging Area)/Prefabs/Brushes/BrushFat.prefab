@@ -94,7 +94,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1785408643184350}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0.46174863, y: 0, z: 0, w: 0.8870109}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -102,7 +102,7 @@ Transform:
   - {fileID: 4578386961578328}
   m_Father: {fileID: 4234550092727946}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 55, y: 0, z: 0}
 --- !u!4 &4578386961578328
 Transform:
   m_ObjectHideFlags: 1
@@ -190,9 +190,9 @@ MonoBehaviour:
   brushObjectTransform: {fileID: 4436462152087718}
   brushRenderer: {fileID: 23487227709885142}
   inMenuPosition: {x: 0, y: 0, z: 0}
-  inMenuRotation: {x: -15, y: -15, z: 0}
+  inMenuRotation: {x: 55, y: 0, z: 0}
   inHandPosition: {x: 0, y: 0, z: 0}
-  inHandRotation: {x: -80, y: 0, z: 0}
+  inHandRotation: {x: 70, y: 0, z: 0}
   displayMode: 0
   transitionDuration: 0.35
   transitionCurve:

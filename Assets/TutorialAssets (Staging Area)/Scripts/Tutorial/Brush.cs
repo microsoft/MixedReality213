@@ -84,6 +84,14 @@ namespace MRDL.ControllerExamples
             Vector3 lastPointPosition = tip.position;
             // Then wait one frame and get the position again
             yield return null;
+
+            // If we're not still drawing after one frame
+            if (!draw)
+            {
+                // This was a fluke, abort!
+                yield break;
+            }
+
             Vector3 startPosition = tip.position;
             // Create a new brush stroke
             GameObject newStroke = GameObject.Instantiate(strokePrefab) as GameObject;

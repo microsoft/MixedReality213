@@ -25,30 +25,21 @@ namespace MRDL.ControllerExamples
                 }
             }
 
-            for (int i = 0; i < brushCollection.Objects.Count; i++)
+            if (controller != null)
             {
-                Brush brush = brushCollection.Objects[i].GetComponent<Brush>();
-                if (brush == activeBrush)
-                    brush.DisplayMode = Brush.DisplayModeEnum.InHand;
-                else
-                    brush.DisplayMode = menuOpen ? Brush.DisplayModeEnum.InMenu : Brush.DisplayModeEnum.Hidden;
-            }
-            
-            // TEMP controller input
-            if (Input.GetKeyDown(KeyCode.LeftArrow))
-            {
-                currentAction = SwipeEnum.Left;
-            }
-            if (Input.GetKeyDown(KeyCode.RightArrow))
-            {
-                currentAction = SwipeEnum.Right;
-            }
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                if (!swiping && activeBrush != null)
+                for (int i = 0; i < brushCollection.Objects.Count; i++)
                 {
-                    activeBrush.Draw = !activeBrush.Draw;
+                    Brush brush = brushCollection.Objects[i].GetComponent<Brush>();
+                    if (brush == activeBrush)
+                        brush.DisplayMode = Brush.DisplayModeEnum.InHand;
+                    else
+                        brush.DisplayMode = menuOpen ? Brush.DisplayModeEnum.InMenu : Brush.DisplayModeEnum.Hidden;
                 }
+
+                // Update our touchpad material
+                Color glowColor = touchpadColor.Evaluate((Time.unscaledTime - touchpadTouchTime) / touchpadGlowLossTime);
+                touchpadMaterial.SetColor("_EmissionColor", glowColor);
+                touchpadMaterial.SetColor("_Color", glowColor);
             }
         }
 
@@ -74,13 +65,19 @@ namespace MRDL.ControllerExamples
             
             transform.parent = elementTransform;
             transform.localPosition = Vector3.zero;
-            transform.localEulerAngles = new Vector3(0f, 180f, 0f);
+            transform.localRotation = Quaternion.identity;
 
-            // Turn off the ring
-            Transform ringElement = controller.GetElement(ControllerInfo.ControllerElementEnum.Ring);
-            if (ringElement != null)
-                ringElement.gameObject.SetActive(false);
-
+            // Turn off the controller's renderers
+            controller.SetRenderersVisible(false);
+            // Get the touchpad and assign our custom material to it
+            Transform touchpad = controller.GetElement(ControllerInfo.ControllerElementEnum.Touchpad);
+            if (touchpad != null)
+            {
+                touchpadRenderer = touchpad.GetComponentInChildren<MeshRenderer>();
+                touchpadRenderer.material = touchpadMaterial;
+                touchpadRenderer.enabled = true;
+            }
+            
             // Subscribe to input now that we're parented under the controller
             InteractionManager.InteractionSourceUpdated += InteractionSourceUpdated;
             InteractionManager.InteractionSourcePressed += InteractionSourcePressed;
@@ -188,6 +185,8 @@ namespace MRDL.ControllerExamples
                 if (obj.state.touchpadPressed)
                 {
                     currentAction = SwipeEnum.Left;
+                    // Ping the touchpad material so it gets bright
+                    touchpadTouchTime = Time.unscaledTime;
                 }
             }
         }
@@ -232,6 +231,15 @@ namespace MRDL.ControllerExamples
         [SerializeField]
         private ControllerInfo.ControllerElementEnum element = ControllerInfo.ControllerElementEnum.PointingPose;
         private ControllerInfo controller;
+
+        [SerializeField]
+        private Material touchpadMaterial;
+        [SerializeField]
+        private Gradient touchpadColor;
+        [SerializeField]
+        private float touchpadGlowLossTime = 0.5f;
+        private float touchpadTouchTime;
+        private MeshRenderer touchpadRenderer;
 
         private float menuOpenTime = 0f;
         private bool menuOpen = false;
