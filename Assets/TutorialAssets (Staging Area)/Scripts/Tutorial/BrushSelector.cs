@@ -43,7 +43,7 @@ namespace MRDL.ControllerExamples
             }
         }
 
-        private IEnumerator UpdateMenu()
+        private IEnumerator Start()
         {
             // TODO replace this with a proper singleton
             ControllerVisualizer visualizer = GameObject.FindObjectOfType<ControllerVisualizer>();
@@ -162,7 +162,6 @@ namespace MRDL.ControllerExamples
         {
             displayBrushindex = -1;
             currentAction = SwipeEnum.Left;
-            StartCoroutine(UpdateMenu());
         }
 
         private void OnDestroy()

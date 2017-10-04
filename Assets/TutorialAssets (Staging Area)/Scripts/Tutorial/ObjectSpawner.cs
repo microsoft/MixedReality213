@@ -50,13 +50,6 @@ namespace MRDL.ControllerExamples
             StartCoroutine(SpawnOverTime());
         }
 
-        private void OnEnable()
-        {
-            instantiatedMaterial = new Material(objectMaterial);
-            displayObject.sharedMesh = availableMeshes[meshIndex];
-            displayObject.GetComponent<Renderer>().sharedMaterial = instantiatedMaterial;
-        }
-
         private IEnumerator Start()
         {
             // TODO replace this with a proper singleton
@@ -66,6 +59,10 @@ namespace MRDL.ControllerExamples
             {
                 yield return null;
             }
+
+            instantiatedMaterial = new Material(objectMaterial);
+            displayObject.sharedMesh = availableMeshes[meshIndex];
+            displayObject.GetComponent<Renderer>().sharedMaterial = instantiatedMaterial;
 
             // Parent the picker wheel under the element of choice
             Transform elementTransform = controller.GetElement(element);

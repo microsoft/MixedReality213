@@ -53,7 +53,7 @@ GameObject:
   - component: {fileID: 114263958003342106}
   - component: {fileID: 114412594797402372}
   m_Layer: 0
-  m_Name: MenuOffset
+  m_Name: Menu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
