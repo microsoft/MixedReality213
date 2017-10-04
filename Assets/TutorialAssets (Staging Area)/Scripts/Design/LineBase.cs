@@ -364,5 +364,36 @@ namespace MRDL.Design
         
         [SerializeField]
         protected bool loops = false;
+
+        #if UNITY_EDITOR
+        protected virtual void OnDrawGizmos()
+        {
+            if (Application.isPlaying)
+                return;
+
+            // Only draw a gizmo if we don't have a line renderer
+            LineRenderer lr = gameObject.GetComponent<LineRenderer>();
+            if (lr != null)
+                return;
+
+            Vector3 firstPos = GetPoint(0f);
+            Vector3 lastPos = firstPos;
+            Gizmos.color = Color.Lerp (Color.white, Color.clear, 0.25f);
+            int numSteps = 16;
+
+            for (int i = 1; i < numSteps; i++)
+            {
+                float normalizedLength = (1f / numSteps) * i;
+                Vector3 currentPos = GetPoint(normalizedLength);
+                Gizmos.DrawLine(lastPos, currentPos);
+                lastPos = currentPos;
+            }
+
+            if (Loops)
+            {
+                Gizmos.DrawLine(lastPos, firstPos);
+            }
+        }
+        #endif
     }
 }

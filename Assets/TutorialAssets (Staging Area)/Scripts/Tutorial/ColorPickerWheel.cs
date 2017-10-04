@@ -56,7 +56,7 @@ namespace MRDL.ControllerExamples
                 return;
 
             // clamp selector position to a radius of 1
-            Vector3 localPosition = new Vector3(selectorPosition.x * inputScale, 0f, selectorPosition.y * inputScale);
+            Vector3 localPosition = new Vector3(selectorPosition.x * inputScale, 0.15f, selectorPosition.y * inputScale);
             if (localPosition.magnitude > 1)
                 localPosition = localPosition.normalized;
             selectorTransform.localPosition = localPosition;

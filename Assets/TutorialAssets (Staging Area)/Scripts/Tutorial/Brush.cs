@@ -104,10 +104,12 @@ namespace MRDL.ControllerExamples
                 // Move the last point to the draw point position
                 line.SetPosition(line.positionCount - 1, tip.position);
                 line.material.color = currentStrokeColor;
+                lastPointAddedTime = Time.unscaledTime;
 
-                if (Vector3.Distance(lastPointPosition, tip.position) > minPositionDelta)
+                if (Vector3.Distance(lastPointPosition, tip.position) > minPositionDelta || Time.unscaledTime > lastPointAddedTime + maxTimeDelta)
                 {
                     // Spawn a new point
+                    lastPointAddedTime = Time.unscaledTime;
                     lastPointPosition = tip.position;
                     line.positionCount += 1;
                     line.SetPosition(line.positionCount - 1, lastPointPosition);
@@ -199,6 +201,8 @@ namespace MRDL.ControllerExamples
         [SerializeField]
         private float minPositionDelta = 0.01f;
         [SerializeField]
+        private float maxTimeDelta = 0.25f;
+        [SerializeField]
         private Transform tip;
         [SerializeField]
         private GameObject strokePrefab;
@@ -226,6 +230,7 @@ namespace MRDL.ControllerExamples
         private AnimationCurve transitionCurve;
         
         private Color currentStrokeColor = Color.white;
+        private float lastPointAddedTime = 0f;
 
         #if UNITY_EDITOR
         [UnityEditor.CustomEditor(typeof(Brush))]
