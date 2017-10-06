@@ -63,16 +63,7 @@ namespace HoloToolkit.Unity.InputModule
                 return false;
             }
 
-            foreach (MotionControllerInfo controllerInfo in controllerDictionary.Values)
-            {
-                if (controllerInfo.Handedness == handedness)
-                {
-                    controller = controllerInfo;
-                    break;
-                }
-            }
-
-            return controller != null;
+            return controllerDictionary.TryGetValue(handedness, out controller);
         }
 
         [SerializeField]
@@ -83,13 +74,13 @@ namespace HoloToolkit.Unity.InputModule
         protected UnityEngine.Material GLTFMaterial;
 
         // This will be used to keep track of our controllers, indexed by their unique source ID.
-        private Dictionary<uint, MotionControllerInfo> controllerDictionary;
+        private Dictionary<InteractionSourceHandedness, MotionControllerInfo> controllerDictionary;
 
         private void Start()
         {
             Application.onBeforeRender += Application_onBeforeRender;
 
-            controllerDictionary = new Dictionary<uint, MotionControllerInfo>();
+            controllerDictionary = new Dictionary<InteractionSourceHandedness, MotionControllerInfo>();
 
 #if UNITY_WSA
             if (!Application.isEditor)
@@ -132,7 +123,7 @@ namespace HoloToolkit.Unity.InputModule
             foreach (var sourceState in InteractionManager.GetCurrentReading())
             {
                 MotionControllerInfo currentController;
-                if (sourceState.source.kind == InteractionSourceKind.Controller && controllerDictionary.TryGetValue(sourceState.source.id, out currentController))
+                if (sourceState.source.kind == InteractionSourceKind.Controller && controllerDictionary.TryGetValue(sourceState.source.handedness, out currentController))
                 {
                     if (AnimateControllerModel)
                     {
@@ -190,7 +181,7 @@ namespace HoloToolkit.Unity.InputModule
             foreach (var sourceState in InteractionManager.GetCurrentReading())
             {
                 MotionControllerInfo currentController;
-                if (sourceState.source.kind == InteractionSourceKind.Controller && controllerDictionary.TryGetValue(sourceState.source.id, out currentController))
+                if (sourceState.source.kind == InteractionSourceKind.Controller && controllerDictionary.TryGetValue(sourceState.source.handedness, out currentController))
                 {
                     if (AnimateControllerModel)
                     {
@@ -234,53 +225,66 @@ namespace HoloToolkit.Unity.InputModule
         }
 
 #if UNITY_WSA
+        /// <summary>
+        /// When a controller is detected, we check for existing controller models
+        /// If one exists it is re-enabled
+        /// Otherwise it is loaded
+        /// </summary>
+        /// <param name="obj"></param>
         private void InteractionManager_InteractionSourceDetected(InteractionSourceDetectedEventArgs obj)
         {
             // We only want to attempt loading a model if this source is actually a controller.
-            if (obj.state.source.kind == InteractionSourceKind.Controller && !controllerDictionary.ContainsKey(obj.state.source.id))
+            if (obj.state.source.kind == InteractionSourceKind.Controller && !controllerDictionary.ContainsKey(obj.state.source.handedness))
             {
-                StartCoroutine(LoadControllerModel(obj.state.source));
+                MotionControllerInfo controller = null;
+                if (controllerDictionary.TryGetValue(obj.state.source.handedness, out controller))
+                {
+                    controller.ControllerParent.SetActive(true);
+                }
+                else
+                {
+                    StartCoroutine(LoadControllerModel(obj.state.source));
+                }
             }
         }
 
         /// <summary>
-        /// When a controller is lost, the model is destroyed and the controller object
-        /// is removed from the tracking dictionary.
+        /// When a controller is lost, the model is disabled
         /// </summary>
         /// <param name="obj">The source event args to be used to determine the controller model to be removed.</param>
         private void InteractionManager_InteractionSourceLost(InteractionSourceLostEventArgs obj)
         {
-            // TODO discuss this behavior 
-            /*
             InteractionSource source = obj.state.source;
             if (source.kind == InteractionSourceKind.Controller)
             {
                 MotionControllerInfo controller;
-                if (controllerDictionary != null && controllerDictionary.TryGetValue(source.id, out controller))
+                if (controllerDictionary != null && controllerDictionary.TryGetValue(source.handedness, out controller))
                 {
-                    controllerDictionary.Remove(source.id);
-
-                    Destroy(controller.ControllerParent);
+                    controller.ControllerParent.SetActive(false);
                 }
-            }*/
+            }
         }
 
         private IEnumerator LoadControllerModel(InteractionSource source)
         {
-            GameObject controllerModelGameObject;
-            if (source.handedness == InteractionSourceHandedness.Left && LeftControllerOverride != null &&
-                (LeftControllerBehavior == OverrideBehaviorEnum.EditorAndRuntime || 
-                (Application.isEditor && LeftControllerBehavior == OverrideBehaviorEnum.EditorOnly) || 
-                (!Application.isEditor && LeftControllerBehavior == OverrideBehaviorEnum.RuntimeOnly)))
+            GameObject controllerModelGameObject = null;
+            if (source.handedness == InteractionSourceHandedness.Left && LeftControllerOverride != null)
             {
-                controllerModelGameObject = Instantiate(LeftControllerOverride);
+                if (LeftControllerBehavior == OverrideBehaviorEnum.EditorAndRuntime
+                    || (LeftControllerBehavior == OverrideBehaviorEnum.EditorOnly && Application.isEditor)
+                    || (LeftControllerBehavior == OverrideBehaviorEnum.RuntimeOnly && !Application.isEditor))
+                {
+                    controllerModelGameObject = Instantiate(LeftControllerOverride);
+                }
             }
-            else if (source.handedness == InteractionSourceHandedness.Right && RightControllerOverride != null &&
-                (RightControllerBehavior == OverrideBehaviorEnum.EditorAndRuntime ||
-                (Application.isEditor && RightControllerBehavior == OverrideBehaviorEnum.EditorOnly) ||
-                (!Application.isEditor && RightControllerBehavior == OverrideBehaviorEnum.RuntimeOnly)))
+            else if (source.handedness == InteractionSourceHandedness.Right && RightControllerOverride != null)
             {
-                controllerModelGameObject = Instantiate(RightControllerOverride);
+                if (RightControllerBehavior == OverrideBehaviorEnum.EditorAndRuntime
+                    || (RightControllerBehavior == OverrideBehaviorEnum.EditorOnly && Application.isEditor)
+                    || (RightControllerBehavior == OverrideBehaviorEnum.RuntimeOnly && !Application.isEditor))
+                {
+                    controllerModelGameObject = Instantiate(RightControllerOverride);
+                }
             }
             else
             {
@@ -360,20 +364,16 @@ namespace HoloToolkit.Unity.InputModule
             controllerModelGameObject.transform.parent = parentGameObject.transform;
 
             var newControllerInfo = new MotionControllerInfo() { ControllerParent = parentGameObject, Handedness = handedness };
-            //if (AnimateControllerModel)
-            //{
-                // get this info regardless
-                newControllerInfo.LoadInfo(controllerModelGameObject.GetComponentsInChildren<Transform>(), this);
-            //}
-            controllerDictionary.Add(id, newControllerInfo);
+            newControllerInfo.LoadInfo(controllerModelGameObject.GetComponentsInChildren<Transform>(), this);
+            controllerDictionary.Add(handedness, newControllerInfo);
         }
 
         public GameObject SpawnTouchpadVisualizer(Transform parentTransform)
         {
-            if (!ShowTouchpadTouched)
-            {
+            if (!ShowTouchpadTouched 
+                || (Application.isEditor && TouchpadTouchBehavior == OverrideBehaviorEnum.RuntimeOnly)
+                || (!Application.isEditor && TouchpadTouchBehavior == OverrideBehaviorEnum.EditorOnly))
                 return null;
-            }
 
             GameObject touchVisualizer;
             if (TouchpadTouchedOverride != null)
