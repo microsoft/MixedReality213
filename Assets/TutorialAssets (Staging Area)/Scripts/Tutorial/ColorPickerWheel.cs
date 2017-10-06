@@ -1,11 +1,12 @@
 ﻿using HoloToolkit.Unity.InputModule;
+using MRDL.Controllers;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.XR.WSA.Input;
 
 namespace MRDL.ControllerExamples
 {
-    public class ColorPickerWheel : MonoBehaviour
+    public class ColorPickerWheel : MonoBehaviour, IPointerTarget
     {
         public bool Visible
         {
@@ -33,6 +34,13 @@ namespace MRDL.ControllerExamples
             {
                 return selectedColor;
             }
+        }
+
+        public void OnPointerTarget(PhysicsPointer source)
+        {
+            Visible = true;
+            Vector3 localHitPoint = selectorTransform.parent.InverseTransformPoint(source.TargetPoint);
+            SelectorPosition = new Vector2(localHitPoint.x, localHitPoint.z);
         }
         
         private void Update()

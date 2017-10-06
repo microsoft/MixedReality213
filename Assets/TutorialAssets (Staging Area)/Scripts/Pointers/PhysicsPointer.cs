@@ -2,6 +2,11 @@
 
 namespace MRDL.Controllers
 {
+    public interface IPointerTarget
+    {
+        void OnPointerTarget(PhysicsPointer source);
+    }
+
     public enum PointerSurfaceResultEnum
     {
         None,
@@ -20,6 +25,18 @@ namespace MRDL.Controllers
         public Vector3 PointerForward { get; protected set; }
         public PointerSurfaceResultEnum TargetResult { get; protected set; }
         public virtual float TargetPointOrientation { get; set; }
+
+        public Transform RaycastOrigin {
+            get {
+                if (raycastOrigin == null)
+                    return transform;
+
+                return raycastOrigin;
+            }
+            set {
+                raycastOrigin = value;
+            }
+        }
 
         public Gradient GetColor (PointerSurfaceResultEnum targetResult)
         {
@@ -45,6 +62,7 @@ namespace MRDL.Controllers
             set { active = value; }
         }
 
+        [Header("Colors")]
         [SerializeField]
         protected Gradient lineColorValid;
         [SerializeField]
@@ -53,14 +71,18 @@ namespace MRDL.Controllers
         protected Gradient lineColorHotSpot;
         [SerializeField]
         protected Gradient lineColorNoTarget;
+        [Header("Physics")]
         [SerializeField]
         protected LayerMask validLayers = 1; // Default
         [SerializeField]
         protected LayerMask invalidLayers = 1 << 2; // Ignore raycast
         [SerializeField]
         protected bool detectTriggers = false;
+        [Header ("Input")]
         [SerializeField]
         protected bool active;
+        [SerializeField]
+        private Transform raycastOrigin;
 
         protected RaycastHit targetHit;
 
@@ -77,6 +99,24 @@ namespace MRDL.Controllers
                 hotSpot = checkCollider.GetComponent<NavigationHotSpot>();
 
             return hotSpot != null;
+        }
+
+        public static bool CheckForPointerTarget(Collider checkCollider, PhysicsPointer pointer)
+        {
+            IPointerTarget target = null;
+
+            if (checkCollider == null)
+                return false;
+
+            if (checkCollider.attachedRigidbody != null)
+                target = checkCollider.attachedRigidbody.GetComponent(typeof(IPointerTarget)) as IPointerTarget;
+            else
+                target = checkCollider.GetComponent(typeof(IPointerTarget)) as IPointerTarget;
+
+            if (target != null)
+                target.OnPointerTarget(pointer);
+
+            return target != null;
         }
     }
 }

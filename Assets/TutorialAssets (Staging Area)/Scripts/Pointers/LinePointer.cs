@@ -11,33 +11,30 @@ namespace MRDL.Controllers
         {
             if (renderers == null || renderers.Length == 0)
                 renderers = gameObject.GetComponentsInChildren<Design.LineRenderer>();
+
+            if (line == null)
+                line = gameObject.GetComponent<Line>();
         }
 
         protected void OnDisable()
         {
-            for (int i = 0; i < renderers.Length; i++)
-                renderers[i].enabled = false;
+            if (line != null)
+                line.enabled = false;
         }
 
         protected void Update()
         {
             TargetResult = PointerSurfaceResultEnum.None;
 
-            if (line == null)
-                line = gameObject.GetComponent<Line>();
-
-            if (raycastOrigin == null)
-                return;
-
-            PointerForward = raycastOrigin.forward;
+            PointerForward = RaycastOrigin.forward;
             // Set the orientation based on our forward
             TargetPointOrientation = Quaternion.LookRotation(PointerForward).eulerAngles.y;
             // TODO use the controller to set additional orientation
 
             if (active)
             {
-                StartPoint = raycastOrigin.position;
-                StartPointNormal = raycastOrigin.forward;
+                StartPoint = RaycastOrigin.position;
+                StartPointNormal = RaycastOrigin.forward;
 
                 QueryTriggerInteraction queryTriggers = (detectTriggers ? QueryTriggerInteraction.Collide : QueryTriggerInteraction.Ignore);
                 // Try to detect valid layers
@@ -56,7 +53,8 @@ namespace MRDL.Controllers
                         TargetResult = PointerSurfaceResultEnum.HotSpot;
                     }
                     TotalLength = Vector3.Distance(StartPoint, TargetPoint);
-
+                    // Send a message to the thing we hit, if applicable
+                    PhysicsPointer.CheckForPointerTarget(targetHit.collider, this);
                 }
                 else if (Physics.Raycast(StartPoint, StartPointNormal, out targetHit, maxDistance, invalidLayers.value, queryTriggers))
                 {
@@ -65,6 +63,8 @@ namespace MRDL.Controllers
                     TargetPointNormal = targetHit.normal;
                     TargetResult = PointerSurfaceResultEnum.Invalid;
                     TotalLength = Vector3.Distance(StartPoint, TargetPoint);
+                    // Send a message to the thing we hit, if applicable
+                    PhysicsPointer.CheckForPointerTarget(targetHit.collider, this);
                 }
                 else
                 {
@@ -94,8 +94,6 @@ namespace MRDL.Controllers
         private Line line;
         [SerializeField]
         protected Design.LineRenderer[] renderers;
-        [SerializeField]
-        private Transform raycastOrigin;
         [SerializeField]
         private float maxDistance = 100f;
     }

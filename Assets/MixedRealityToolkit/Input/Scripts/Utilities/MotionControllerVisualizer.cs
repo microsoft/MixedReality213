@@ -30,8 +30,13 @@ namespace HoloToolkit.Unity.InputModule
             EditorOnly,
         }
 
+        public List<MotionControllerInfo> infos = new List<MotionControllerInfo>();
+
         [Tooltip("This setting will be used to determine if the model, override or otherwise, should attempt to be animated based on the user's input.")]
         public bool AnimateControllerModel = true;
+
+        [Tooltip("When an interaction source is lost, the controller model will be disabled.")]
+        public bool DisableControllersOnSourceLost = false;
 
         [Tooltip("Use a model with the tip in the positive Z direction and the front face in the positive Y direction. This will override the platform left controller model.")]
         [SerializeField]
@@ -254,6 +259,9 @@ namespace HoloToolkit.Unity.InputModule
         /// <param name="obj">The source event args to be used to determine the controller model to be removed.</param>
         private void InteractionManager_InteractionSourceLost(InteractionSourceLostEventArgs obj)
         {
+            if (!DisableControllersOnSourceLost)
+                return;
+
             InteractionSource source = obj.state.source;
             if (source.kind == InteractionSourceKind.Controller)
             {
@@ -364,8 +372,9 @@ namespace HoloToolkit.Unity.InputModule
             controllerModelGameObject.transform.parent = parentGameObject.transform;
 
             var newControllerInfo = new MotionControllerInfo() { ControllerParent = parentGameObject, Handedness = handedness };
-            newControllerInfo.LoadInfo(controllerModelGameObject.GetComponentsInChildren<Transform>(), this);
+            newControllerInfo.LoadInfo(controllerModelGameObject.GetComponentsInChildren<Transform>(true), this);
             controllerDictionary.Add(handedness, newControllerInfo);
+            infos.Add(newControllerInfo);
         }
 
         public GameObject SpawnTouchpadVisualizer(Transform parentTransform)

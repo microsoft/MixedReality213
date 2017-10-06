@@ -19,9 +19,9 @@ namespace MRDL.Controllers
             if (parabolaMain == null)
                 return;
 
-            PointerForward = raycastOrigin.forward;
-            StartPoint = raycastOrigin.position;
-            TargetPoint = raycastOrigin.position + (PointerForward * parabolaDistance) + (Vector3.down * parabolaDropDist);
+            PointerForward = RaycastOrigin.forward;
+            StartPoint = RaycastOrigin.position;
+            TargetPoint = RaycastOrigin.position + (PointerForward * parabolaDistance) + (Vector3.down * parabolaDropDist);
             parabolaMain.SetFirstPoint(StartPoint);
             parabolaMain.SetLastPoint(TargetPoint);
             
@@ -95,8 +95,6 @@ namespace MRDL.Controllers
             }
         }
         
-        [SerializeField]
-        private Transform raycastOrigin;
         // TODO get keyframes from prefab so this is 'correct' on startup
         [SerializeField]
         private AnimationCurve hotSpotMagnetismCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);

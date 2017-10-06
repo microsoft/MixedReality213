@@ -20,10 +20,12 @@ GameObject:
   m_Component:
   - component: {fileID: 4032885844940304}
   - component: {fileID: 114221813441956770}
+  - component: {fileID: 114252619641230810}
+  - component: {fileID: 114154045772793958}
   - component: {fileID: 114668976894459158}
   - component: {fileID: 114811848714529564}
   m_Layer: 0
-  m_Name: LinePointer
+  m_Name: LinePointerRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -42,6 +44,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114154045772793958
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1836252858122320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 925239cfb24ed9a47adb987a482c572c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  positionOffset: {x: 0, y: 0, z: 0}
+  rotationOffset: {x: 0, y: 0, z: 0}
+  setScaleOnAttach: 0
+  scale: {x: 1, y: 1, z: 1}
+  handedness: 2
+  element: 0
 --- !u!114 &114221813441956770
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -176,12 +195,26 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4
   detectTriggers: 0
-  active: 0
+  active: 1
+  raycastOrigin: {fileID: 0}
   line: {fileID: 114668976894459158}
   renderers:
   - {fileID: 114811848714529564}
-  raycastOrigin: {fileID: 0}
   maxDistance: 100
+--- !u!114 &114252619641230810
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1836252858122320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3cd01478dcfed14990ee756229ca04f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pointer: {fileID: 114221813441956770}
+  activePressType: 3
+  handedness: 2
 --- !u!114 &114668976894459158
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -224,7 +257,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   loops: 0
   Start: {x: 0, y: 0, z: 0}
-  End: {x: 1, y: 1, z: 1}
+  End: {x: 0, y: 0, z: 100}
 --- !u!114 &114811848714529564
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -238,7 +271,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LineColor:
     serializedVersion: 2
-    key0: {r: 1, g: 1, b: 1, a: 1}
+    key0: {r: 0.375, g: 0.375, b: 0.375, a: 1}
     key1: {r: 1, g: 1, b: 1, a: 1}
     key2: {r: 0, g: 0, b: 0, a: 0}
     key3: {r: 0, g: 0, b: 0, a: 0}
@@ -283,7 +316,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  WidthMultiplier: 0.025
+  WidthMultiplier: 0.05
   ColorOffset: 0
   WidthOffset: 0
   RotationOffset: 0
@@ -310,7 +343,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  source: {fileID: 0}
+  source: {fileID: 114668976894459158}
   LineMaterial: {fileID: 0}
   RoundedEdges: 1
   RoundedCaps: 1
