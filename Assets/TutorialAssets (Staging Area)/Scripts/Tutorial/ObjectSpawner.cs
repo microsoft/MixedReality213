@@ -126,7 +126,7 @@ namespace MRDL.ControllerExamples
         {
             released = false;
             timePressed = Time.unscaledTime;
-            //AudioSource.PlayClipAtPoint(soundOnSpawn, transform.position);
+
             GameObject newObject = GameObject.Instantiate(displayObject.gameObject, spawnParent) as GameObject;
             Vector3 startScale = scaleParent.localScale;
             // Hide the display object while we're scaling up the newly spawned object
@@ -148,7 +148,7 @@ namespace MRDL.ControllerExamples
             {
                 yield return null;
             }
-            //AudioSource.PlayClipAtPoint(soundOnSpawn, transform.position);
+
             while (animator.GetCurrentAnimatorStateInfo(0).IsName("SpawnStart"))
             {
                 yield return null;
@@ -230,11 +230,7 @@ namespace MRDL.ControllerExamples
         [SerializeField]
         private Mesh[] availableMeshes;
 
-        [Header("Sounds and animation")]
-        [SerializeField]
-        private AudioClip soundOnSpawn;
-        [SerializeField]
-        private AudioClip soundOnSwitch;
+        [Header("Animation")]
         [SerializeField]
         private Animator animator;
         [SerializeField]
