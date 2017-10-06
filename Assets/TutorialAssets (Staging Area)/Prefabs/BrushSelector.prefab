@@ -164,7 +164,7 @@ MonoBehaviour:
   DistributionOffset: 0
   LengthOffset: 0
   ScaleOffset: 0
-  ScaleMultiplier: 0.175
+  ScaleMultiplier: 1
   PositionMultiplier: 1
   ObjectScale:
     serializedVersion: 2
