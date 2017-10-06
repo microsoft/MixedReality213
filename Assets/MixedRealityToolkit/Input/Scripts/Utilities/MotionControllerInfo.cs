@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using UnityEngine;
+using UnityEngine.XR.WSA.Input;
 
 namespace HoloToolkit.Unity.InputModule
 {
@@ -12,6 +13,7 @@ namespace HoloToolkit.Unity.InputModule
     public class MotionControllerInfo
     {
         public GameObject ControllerParent;
+        public InteractionSourceHandedness Handedness;
 
         private GameObject home;
         private Transform homePressed;
@@ -45,6 +47,12 @@ namespace HoloToolkit.Unity.InputModule
         private Transform touchpadTouchYMax;
         private GameObject touchpadTouchVisualizer;
 
+        private GameObject caseElement;
+        private GameObject ringElement;
+        private GameObject inputPose;
+        private GameObject pointingPose;
+        private GameObject handlePose;
+
         // These values are used to determine if a button's state has changed.
         private bool wasGrasped;
         private bool wasMenuPressed;
@@ -55,6 +63,89 @@ namespace HoloToolkit.Unity.InputModule
         private Vector2 lastThumbstickPosition;
         private Vector2 lastTouchpadPosition;
         private double lastSelectPressedAmount;
+
+        public enum ControllerElementEnum
+        {
+            // body elements & poses
+            PointingPose,
+            HandlePose,
+            InputPose,
+            Ring,
+            Case,
+            // control elements
+            Home,
+            Menu,
+            Grasp,
+            Thumbstick,
+            Select,
+            Touchpad,
+            TouchpadTouchX,
+            TouchpadTouchY,
+            // control pressed / unpressed
+            HomePressed,
+            HomeUnpressed,
+            MenuPressed,
+            MenuUnpressed,
+            GraspPressed,
+            GraspUnpressed,
+            ThumbstickPressed,
+            ThumbstickUnpressed,
+            TouchpadPressed,
+            TouchpadUnpressed,
+            // control min max
+            ThumbstickXMin,
+            ThumbstickXMax,
+            ThumbstickYMin,
+            ThumbstickYMax,
+            TouchpadTouchXMin,
+            TouchpadTouchXMax,
+            TouchpadTouchYMin,
+            TouchpadTouchYMax,
+        }
+
+        public Transform GetElement(ControllerElementEnum element)
+        {
+            switch (element)
+            {
+                // body elements & poses
+                case ControllerElementEnum.PointingPose: return pointingPose.transform;
+                case ControllerElementEnum.HandlePose: return handlePose.transform;
+                case ControllerElementEnum.InputPose: return inputPose.transform;
+                case ControllerElementEnum.Case: return caseElement.transform;
+                case ControllerElementEnum.Ring: return ringElement.transform;
+                // control elements
+                case ControllerElementEnum.Home: return home.transform;
+                case ControllerElementEnum.Menu: return menu.transform;
+                case ControllerElementEnum.Grasp: return grasp.transform;
+                case ControllerElementEnum.Thumbstick: return thumbstickPress.transform;
+                case ControllerElementEnum.Touchpad: return touchpadPress.transform;
+                case ControllerElementEnum.TouchpadTouchX: return touchpadTouchX.transform;
+                case ControllerElementEnum.TouchpadTouchY: return touchpadTouchY.transform;
+                // control pressed / unpressed
+                case ControllerElementEnum.HomePressed: return homePressed;
+                case ControllerElementEnum.HomeUnpressed: return homeUnpressed;
+                case ControllerElementEnum.MenuPressed: return menuPressed;
+                case ControllerElementEnum.MenuUnpressed: return menuUnpressed;
+                case ControllerElementEnum.GraspPressed: return graspPressed;
+                case ControllerElementEnum.GraspUnpressed: return graspUnpressed;
+                case ControllerElementEnum.ThumbstickPressed: return thumbstickPressed;
+                case ControllerElementEnum.ThumbstickUnpressed: return thumbstickUnpressed;
+                case ControllerElementEnum.TouchpadPressed: return touchpadPressed;
+                case ControllerElementEnum.TouchpadUnpressed: return touchpadUnpressed;
+                // control min max
+                case ControllerElementEnum.ThumbstickXMin: return thumbstickXMin;
+                case ControllerElementEnum.ThumbstickXMax: return thumbstickXMax;
+                case ControllerElementEnum.ThumbstickYMin: return thumbstickYMin;
+                case ControllerElementEnum.ThumbstickYMax: return thumbstickYMax;
+                case ControllerElementEnum.TouchpadTouchXMin: return touchpadTouchXMin;
+                case ControllerElementEnum.TouchpadTouchXMax: return touchpadTouchXMax;
+                case ControllerElementEnum.TouchpadTouchYMin: return touchpadTouchYMin;
+                case ControllerElementEnum.TouchpadTouchYMax: return touchpadTouchYMax;
+
+                default:
+                    return null;
+            }
+        }
 
         /// <summary>
         /// Iterates through the Transform array to find specifically named GameObjects.
@@ -67,14 +158,31 @@ namespace HoloToolkit.Unity.InputModule
         {
             foreach (Transform child in childTransforms)
             {
-                // Animation bounds are named in two pairs:
+                // First we look for the main body elements
                 // pressed/unpressed and min/max. There is also a value
+                // These transforms have very specific names that include numbers
                 // transform, which is the transform to modify to
-                // animate the interactions. We also look for the
-                // touch transform, in order to spawn the touchpadTouched
-                // visualizer.
+                // So we try them before stripping suffix numbers 
                 switch (child.name.ToLower())
                 {
+                    case "gltfnode 2"://TODO get this via transform / child order instead
+                        ringElement = child.gameObject;
+                        break;
+                    case "gltfnode 3"://TODO get this via transform / child order instead
+                        handlePose = child.gameObject;
+                        break;
+                    case "gltfnode 4"://TODO get this via transform / child order instead
+                        inputPose = child.gameObject;
+                         break;
+                    case "gltfnode 5"://TODO get this via transform / child order instead
+                        caseElement = child.gameObject;
+                        break;
+                    // Animation bounds are named in two pairs:
+                    // pressed/unpressed and min/max. There is also a value
+                    // transform, which is the transform to modify to
+                    // animate the interactions. We also look for the
+                    // touch transform, in order to spawn the touchpadTouched
+                    // visualizer.
                     case "pressed":
                         switch (child.parent.name.ToLower())
                         {
@@ -95,6 +203,9 @@ namespace HoloToolkit.Unity.InputModule
                                 break;
                             case "touchpad_press":
                                 touchpadPressed = child;
+                                break;
+                            default:
+                                Debug.LogWarning("Unknown parent " + child.parent.name + " for pressed transform");
                                 break;
                         }
                         break;
@@ -119,6 +230,9 @@ namespace HoloToolkit.Unity.InputModule
                             case "touchpad_press":
                                 touchpadUnpressed = child;
                                 break;
+                            default:
+                                Debug.LogWarning("Unknown parent " + child.parent.name + " for unpressed transform");
+                                break;
                         }
                         break;
                     case "min":
@@ -136,6 +250,9 @@ namespace HoloToolkit.Unity.InputModule
                             case "touchpad_touch_y":
                                 touchpadTouchYMin = child;
                                 break;
+                            default:
+                                Debug.LogWarning("Unknown parent " + child.parent.name + " for min transform");
+                                break;
                         }
                         break;
                     case "max":
@@ -152,6 +269,9 @@ namespace HoloToolkit.Unity.InputModule
                                 break;
                             case "touchpad_touch_y":
                                 touchpadTouchYMax = child;
+                                break;
+                            default:
+                                Debug.LogWarning("Unknown parent " + child.parent.name + " for max transform");
                                 break;
                         }
                         break;
@@ -188,10 +308,16 @@ namespace HoloToolkit.Unity.InputModule
                             case "touchpad_touch_y":
                                 touchpadTouchY = child.gameObject;
                                 break;
+                            default:
+                                Debug.LogWarning("Unknown parent " + child.parent.name + " for value transform");
+                                break;
                         }
                         break;
                     case "touch":
                         touchpadTouchVisualizer = visualizerScript.SpawnTouchpadVisualizer(child);
+                        break;
+                    case "pointing_pose":
+                        pointingPose = child.gameObject;
                         break;
                 }
             }
@@ -288,6 +414,15 @@ namespace HoloToolkit.Unity.InputModule
         {
             buttonGameObject.transform.localPosition = newTransform.localPosition;
             buttonGameObject.transform.localRotation = newTransform.localRotation;
+        }
+
+        public void SetRenderersVisible(bool visible)
+        {
+            MeshRenderer[] renderers = ControllerParent.GetComponentsInChildren<MeshRenderer>();
+            for (int i = 0; i < renderers.Length; i++)
+            {
+                renderers[i].enabled = visible;
+            }
         }
     }
 }

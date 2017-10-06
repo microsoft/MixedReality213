@@ -76,10 +76,7 @@ namespace MRDL.ControllerExamples
 
         private IEnumerator Start()
         {
-            // TODO replace this with a proper singleton
-            ControllerVisualizer visualizer = GameObject.FindObjectOfType<ControllerVisualizer>();
-
-            while (!visualizer.GetController(handedness, out controller))
+            while (!MotionControllerVisualizer.Instance.TryGetController(handedness, out controller))
             {
                 visible = false;
                 yield return null;
@@ -139,7 +136,7 @@ namespace MRDL.ControllerExamples
         [SerializeField]
         private InteractionSourceHandedness handedness = InteractionSourceHandedness.Left;
         [SerializeField]
-        private ControllerInfo.ControllerElementEnum element = ControllerInfo.ControllerElementEnum.Touchpad;
-        private ControllerInfo controller;
+        private MotionControllerInfo.ControllerElementEnum element = MotionControllerInfo.ControllerElementEnum.Touchpad;
+        private MotionControllerInfo controller;
     }
 }

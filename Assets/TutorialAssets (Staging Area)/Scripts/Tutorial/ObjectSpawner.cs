@@ -52,10 +52,7 @@ namespace MRDL.ControllerExamples
 
         private IEnumerator Start()
         {
-            // TODO replace this with a proper singleton
-            ControllerVisualizer visualizer = GameObject.FindObjectOfType<ControllerVisualizer>();
-
-            while (!visualizer.GetController(handedness, out controller))
+            while (!MotionControllerVisualizer.Instance.TryGetController(handedness, out controller))
             {
                 yield return null;
             }
@@ -78,7 +75,7 @@ namespace MRDL.ControllerExamples
             transform.localRotation = Quaternion.identity;
 
             // Turn off the ring
-            Transform ringElement = controller.GetElement(ControllerInfo.ControllerElementEnum.Ring);
+            Transform ringElement = controller.GetElement(MotionControllerInfo.ControllerElementEnum.Ring);
             if (ringElement != null)
                 ringElement.gameObject.SetActive(false);
 
@@ -248,8 +245,8 @@ namespace MRDL.ControllerExamples
         [SerializeField]
         private InteractionSourceHandedness handedness = InteractionSourceHandedness.Left;
         [SerializeField]
-        private ControllerInfo.ControllerElementEnum element = ControllerInfo.ControllerElementEnum.PointingPose;
-        private ControllerInfo controller;
+        private MotionControllerInfo.ControllerElementEnum element = MotionControllerInfo.ControllerElementEnum.PointingPose;
+        private MotionControllerInfo controller;
 
         private int meshIndex = 0;
         private StateEnum state = StateEnum.Uninitialized;

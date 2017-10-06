@@ -45,10 +45,7 @@ namespace MRDL.ControllerExamples
 
         private IEnumerator Start()
         {
-            // TODO replace this with a proper singleton
-            ControllerVisualizer visualizer = GameObject.FindObjectOfType<ControllerVisualizer>();
-
-            while (!visualizer.GetController(handedness, out controller))
+            while (!MotionControllerVisualizer.Instance.TryGetController(handedness, out controller))
             {
                 menuOpen = false;
                 yield return null;
@@ -70,7 +67,7 @@ namespace MRDL.ControllerExamples
             // Turn off the controller's renderers
             controller.SetRenderersVisible(false);
             // Get the touchpad and assign our custom material to it
-            Transform touchpad = controller.GetElement(ControllerInfo.ControllerElementEnum.Touchpad);
+            Transform touchpad = controller.GetElement(MotionControllerInfo.ControllerElementEnum.Touchpad);
             if (touchpad != null)
             {
                 touchpadRenderer = touchpad.GetComponentInChildren<MeshRenderer>();
@@ -228,8 +225,8 @@ namespace MRDL.ControllerExamples
         [SerializeField]
         private InteractionSourceHandedness handedness = InteractionSourceHandedness.Right;
         [SerializeField]
-        private ControllerInfo.ControllerElementEnum element = ControllerInfo.ControllerElementEnum.PointingPose;
-        private ControllerInfo controller;
+        private MotionControllerInfo.ControllerElementEnum element = MotionControllerInfo.ControllerElementEnum.PointingPose;
+        private MotionControllerInfo controller;
 
         [SerializeField]
         private Material touchpadMaterial;
