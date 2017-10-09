@@ -39,6 +39,13 @@ namespace MRDL.ControllerExamples
         public void OnPointerTarget(PhysicsPointer source)
         {
             Visible = true;
+
+            // If we're opening or closing, don't set the color value
+            AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+            if (stateInfo.IsName("Show") || stateInfo.IsName("Hide")) {
+                return;
+            }
+            
             Vector3 localHitPoint = selectorTransform.parent.InverseTransformPoint(source.TargetPoint);
             SelectorPosition = new Vector2(localHitPoint.x, localHitPoint.z);
         }
@@ -137,6 +144,10 @@ namespace MRDL.ControllerExamples
         private Animator animator;
         [SerializeField]
         private float timeout = 2f;
+
+        [Header("Color Dabs")]
+        [SerializeField]
+        private Color[] colorDabs = new Color[8];
 
         private float lastTimeVisible;
         private bool visibleLastFrame = false;
