@@ -106,7 +106,7 @@ namespace MRDL.ControllerExamples
             {
                 yield return null;   
             }
-            //AudioSource.PlayClipAtPoint(soundOnSwitch, transform.position);
+
             while (animator.GetCurrentAnimatorStateInfo(0).IsName("SwitchStart"))
             {
                 yield return null;
