@@ -51,7 +51,7 @@ namespace MRDL.ControllerExamples
                 yield return null;
             }
 
-            // Parent the picker wheel under the element of choice
+            // Parent the brush tools under the element of choice
             Transform elementTransform = controller.GetElement(element);
             if (elementTransform == null)
             {
@@ -64,8 +64,9 @@ namespace MRDL.ControllerExamples
             transform.localPosition = Vector3.zero;
             transform.localRotation = Quaternion.identity;
 
-            // Turn off the controller's renderers
+            // Turn off the default controller's renderers
             controller.SetRenderersVisible(false);
+
             // Get the touchpad and assign our custom material to it
             Transform touchpad = controller.GetElement(MotionControllerInfo.ControllerElementEnum.Touchpad);
             if (touchpad != null)
