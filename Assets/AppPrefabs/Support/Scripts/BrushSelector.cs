@@ -180,7 +180,12 @@ namespace MRDL.ControllerExamples
 
                 if (obj.state.touchpadPressed)
                 {
-                    currentAction = SwipeEnum.Left;
+                    // Check which side we clicked
+                    if (obj.state.touchpadPosition.x < 0)
+                        currentAction = SwipeEnum.Left;
+                    else
+                        currentAction = SwipeEnum.Right;
+
                     // Ping the touchpad material so it gets bright
                     touchpadTouchTime = Time.unscaledTime;
                 }

@@ -80,7 +80,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1399634423300290}
   m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: -0.025982331, y: 0.014997289, z: 0}
+  m_LocalPosition: {x: -0.025982331, y: 0.014997281, z: -0.000000029802322}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4197359369901074}
@@ -93,7 +93,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1554623883218694}
   m_LocalRotation: {x: -0.006705106, y: 0.0000002483291, z: -0.00000037038293, w: 0.9999775}
-  m_LocalPosition: {x: -0.0001, y: 0.1652, z: 0.3422}
+  m_LocalPosition: {x: 0.24, y: 0.1652, z: 0.164}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4197359369901074}
@@ -323,8 +323,8 @@ MonoBehaviour:
   touchpadColor:
     serializedVersion: 2
     key0: {r: 0, g: 0.5448277, b: 1, a: 1}
-    key1: {r: 1, g: 1, b: 1, a: 1}
-    key2: {r: 0, g: 0, b: 0, a: 0}
+    key1: {r: 1, g: 1, b: 1, a: 0.5803922}
+    key2: {r: 0, g: 0, b: 0, a: 0.4862745}
     key3: {r: 0, g: 0, b: 0, a: 0}
     key4: {r: 0, g: 0, b: 0, a: 0}
     key5: {r: 0, g: 0, b: 0, a: 0}
@@ -339,8 +339,8 @@ MonoBehaviour:
     ctime6: 0
     ctime7: 0
     atime0: 0
-    atime1: 58789
-    atime2: 0
+    atime1: 16384
+    atime2: 65535
     atime3: 0
     atime4: 0
     atime5: 0
@@ -348,5 +348,5 @@ MonoBehaviour:
     atime7: 0
     m_Mode: 0
     m_NumColorKeys: 2
-    m_NumAlphaKeys: 2
+    m_NumAlphaKeys: 3
   touchpadGlowLossTime: 0.5
