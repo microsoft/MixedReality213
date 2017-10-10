@@ -60,15 +60,15 @@ namespace MRDL.ControllerExamples
                 Color32 newColor = value;
                 Color32 oldColor = currentStrokeColor;
 
-                float delta = (float)(Mathf.Abs(oldColor.r - currentStrokeColor.r)
-                    + Mathf.Abs(oldColor.g - currentStrokeColor.g)
-                    + Mathf.Abs(oldColor.b - currentStrokeColor.b)
-                    + Mathf.Abs(oldColor.a - currentStrokeColor.a)) / 4;
+                float delta = (float)(Mathf.Abs(oldColor.r - newColor.r)
+                    + Mathf.Abs(oldColor.g - newColor.g)
+                    + Mathf.Abs(oldColor.b - newColor.b)
+                    + Mathf.Abs(oldColor.a - newColor.a)) / 4;
 
                 if (delta < minColorDelta)
                     return;
 
-                currentStrokeColor = value;
+                currentStrokeColor = newColor;
                 brushRenderer.material.color = currentStrokeColor;
             }
         }
@@ -194,8 +194,6 @@ namespace MRDL.ControllerExamples
         }
 
         [Header("Drawing settings")]
-        [SerializeField]
-        private float maxStrokeLength = 10f;
         [SerializeField]
         private float minColorDelta = 0.01f;
         [SerializeField]

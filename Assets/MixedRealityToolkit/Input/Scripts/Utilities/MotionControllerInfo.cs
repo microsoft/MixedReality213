@@ -231,7 +231,7 @@ namespace HoloToolkit.Unity.InputModule
                                         thumbstickPressed = child;
                                         break;
                                     case "touchpad_press":
-                                        touchpadPressed = child;
+                                        touchpadPress = child.gameObject;
                                         break;
                                     default:
                                         Debug.LogWarning("Unknown parent " + child.parent.name + " for pressed transform");
@@ -327,9 +327,6 @@ namespace HoloToolkit.Unity.InputModule
                                         break;
                                     case "thumbstick_y":
                                         thumbstickY = child.gameObject;
-                                        break;
-                                    case "touchpad_press":
-                                        touchpadPress = child.gameObject;
                                         break;
                                     case "touchpad_touch_x":
                                         touchpadTouchX = child.gameObject;

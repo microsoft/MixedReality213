@@ -145,9 +145,9 @@ namespace MRDL.ControllerExamples
         [SerializeField]
         private float timeout = 2f;
 
-        [Header("Color Dabs")]
+        /*[Header("Color Dabs")]
         [SerializeField]
-        private Color[] colorDabs = new Color[8];
+        private Color[] colorDabs = new Color[8];*/
 
         private float lastTimeVisible;
         private bool visibleLastFrame = false;

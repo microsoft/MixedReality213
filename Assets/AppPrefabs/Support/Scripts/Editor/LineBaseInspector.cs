@@ -73,6 +73,5 @@ namespace MRDL.Design
         private bool mouseDown = false;
         private float rotationHandleLength = 2f;
         private float rotationHandleSize = 0.1f;
-        private Color rotationHandleColor = Color.gray;
     }
 }

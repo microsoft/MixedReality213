@@ -96,7 +96,6 @@ namespace MRDL.ControllerExamples
                     menuOpenTime = Time.unscaledTime;
                     menuOpen = true;
                 }
-                swiping = true;
 
                 // Stop the active brush if we have one
                 if (activeBrush != null)
@@ -147,9 +146,7 @@ namespace MRDL.ControllerExamples
                     menuOpenTime = Time.unscaledTime;
                     yield return null;
                 }
-                brushCollection.DistributionOffset = targetOffset;
-
-                swiping = false;
+                brushCollection.DistributionOffset = targetOffset;                
 
                 yield return null;
             }
@@ -246,7 +243,6 @@ namespace MRDL.ControllerExamples
         private bool menuOpen = false;
         private float startOffset;
         private float targetOffset;
-        private bool swiping = false;
         private Brush activeBrush;
     }
 }
