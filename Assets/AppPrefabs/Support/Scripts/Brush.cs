@@ -1,13 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿//
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+//
+using System.Collections;
 using UnityEngine;
 
 namespace MRDL.ControllerExamples
 {
     public class Brush : MonoBehaviour
     {
-        const int MaxGradientKeys = 8; // Unity restriction
-
         public enum DisplayModeEnum
         {
             InMenu,
@@ -229,22 +230,5 @@ namespace MRDL.ControllerExamples
         
         private Color currentStrokeColor = Color.white;
         private float lastPointAddedTime = 0f;
-
-        #if UNITY_EDITOR
-        [UnityEditor.CustomEditor(typeof(Brush))]
-        public class BrushEditor : UnityEditor.Editor
-        {
-            public override void OnInspectorGUI()
-            {
-                Brush brush = (Brush)target;
-
-                base.OnInspectorGUI();
-                if (GUILayout.Button("Start/Stop"))
-                {
-                    brush.Draw = !brush.Draw;
-                }
-            }
-        }
-        #endif
     }
 }
