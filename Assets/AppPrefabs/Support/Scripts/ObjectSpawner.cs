@@ -78,11 +78,6 @@ namespace MRDL.ControllerExamples
             transform.localPosition = Vector3.zero;
             transform.localRotation = Quaternion.identity;
 
-            // Turn off the ring
-            Transform ringElement = controller.GetElement(MotionControllerInfo.ControllerElementEnum.Ring);
-            if (ringElement != null)
-                ringElement.gameObject.SetActive(false);
-
             // Subscribe to input now that we're parented under the controller
             InteractionManager.InteractionSourcePressed += InteractionSourcePressed;
             InteractionManager.InteractionSourceReleased += InteractionSourceReleased;
