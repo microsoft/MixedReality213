@@ -125,7 +125,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4708411735140464}
   m_Layer: 0
-  m_Name: LController
+  m_Name: OasisControllerLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

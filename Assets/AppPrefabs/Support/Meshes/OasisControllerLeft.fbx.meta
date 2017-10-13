@@ -196,7 +196,12 @@ ModelImporter:
     4300010: Primitive
     4300012: Primitive
     4300014: Primitive
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: LController_Material_0
+    second: {fileID: 2100000, guid: bcdfc43896611c848bf19dae53e879e7, type: 2}
   materials:
     importMaterials: 1
     materialName: 1

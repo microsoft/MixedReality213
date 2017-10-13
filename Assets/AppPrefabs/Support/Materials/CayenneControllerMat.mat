@@ -6,7 +6,7 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: ControllerMaterial
+  m_Name: CayenneControllerMat
   m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: EMISSION_MAP_ON OCC_METAL_ROUGH_ON _EMISSION _NORMALMAP
   m_LightmapFlags: 1
@@ -19,7 +19,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: b4e0aef2e5705064ea59acc57cf18006, type: 3}
+        m_Texture: {fileID: 2800000, guid: 7b561efdf7a2257418b80dab6982bf81, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -35,11 +35,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
-        m_Texture: {fileID: 2800000, guid: 5be5af8672089eb4abb742a3c929412d, type: 3}
+        m_Texture: {fileID: 2800000, guid: 90f18dc99f3f3ea4bb4a661baf7e6f86, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 120c13c86d7c39d4b81454988dff213a, type: 3}
+        m_Texture: {fileID: 2800000, guid: 5574854ba146e344db621aa6302443ac, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
