@@ -52,6 +52,8 @@ namespace MRDL.ControllerExamples
                 colorPicker = GameObject.FindObjectOfType<ColorPickerWheel>();
                 yield return null;
             }
+
+            brushRenderer.material.color = colorPicker.SelectedColor;
         }
 
         private void InteractionSourcePressed(InteractionSourcePressedEventArgs obj) {
