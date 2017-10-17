@@ -27,10 +27,8 @@ namespace HoloToolkit.Unity.InputModule
         {
             EditorAndRuntime,
             RuntimeOnly,
-            EditorOnly,
+            EditorOnly
         }
-
-        public List<MotionControllerInfo> infos = new List<MotionControllerInfo>();
 
         [Tooltip("This setting will be used to determine if the model, override or otherwise, should attempt to be animated based on the user's input.")]
         public bool AnimateControllerModel = true;
@@ -276,23 +274,19 @@ namespace HoloToolkit.Unity.InputModule
         private IEnumerator LoadControllerModel(InteractionSource source)
         {
             GameObject controllerModelGameObject = null;
-            if (source.handedness == InteractionSourceHandedness.Left && LeftControllerOverride != null)
+            if (source.handedness == InteractionSourceHandedness.Left && LeftControllerOverride != null
+                && (LeftControllerBehavior == OverrideBehaviorEnum.EditorAndRuntime
+                || LeftControllerBehavior == OverrideBehaviorEnum.EditorOnly && Application.isEditor
+                || LeftControllerBehavior == OverrideBehaviorEnum.RuntimeOnly && !Application.isEditor))
             {
-                if (LeftControllerBehavior == OverrideBehaviorEnum.EditorAndRuntime
-                    || (LeftControllerBehavior == OverrideBehaviorEnum.EditorOnly && Application.isEditor)
-                    || (LeftControllerBehavior == OverrideBehaviorEnum.RuntimeOnly && !Application.isEditor))
-                {
-                    controllerModelGameObject = Instantiate(LeftControllerOverride);
-                }
+                controllerModelGameObject = Instantiate(LeftControllerOverride);
             }
-            else if (source.handedness == InteractionSourceHandedness.Right && RightControllerOverride != null)
+            else if (source.handedness == InteractionSourceHandedness.Right && RightControllerOverride != null
+                && (RightControllerBehavior == OverrideBehaviorEnum.EditorAndRuntime
+                || RightControllerBehavior == OverrideBehaviorEnum.EditorOnly && Application.isEditor
+                || RightControllerBehavior == OverrideBehaviorEnum.RuntimeOnly && !Application.isEditor))
             {
-                if (RightControllerBehavior == OverrideBehaviorEnum.EditorAndRuntime
-                    || (RightControllerBehavior == OverrideBehaviorEnum.EditorOnly && Application.isEditor)
-                    || (RightControllerBehavior == OverrideBehaviorEnum.RuntimeOnly && !Application.isEditor))
-                {
-                    controllerModelGameObject = Instantiate(RightControllerOverride);
-                }
+                controllerModelGameObject = Instantiate(RightControllerOverride);
             }
             else
             {
@@ -374,15 +368,16 @@ namespace HoloToolkit.Unity.InputModule
             var newControllerInfo = new MotionControllerInfo() { ControllerParent = parentGameObject, Handedness = handedness };
             newControllerInfo.LoadInfo(controllerModelGameObject.GetComponentsInChildren<Transform>(true), this);
             controllerDictionary.Add(handedness, newControllerInfo);
-            infos.Add(newControllerInfo);
         }
 
         public GameObject SpawnTouchpadVisualizer(Transform parentTransform)
         {
-            if (!ShowTouchpadTouched 
+            if (!ShowTouchpadTouched
                 || (Application.isEditor && TouchpadTouchBehavior == OverrideBehaviorEnum.RuntimeOnly)
                 || (!Application.isEditor && TouchpadTouchBehavior == OverrideBehaviorEnum.EditorOnly))
+            {
                 return null;
+            }
 
             GameObject touchVisualizer;
             if (TouchpadTouchedOverride != null)
