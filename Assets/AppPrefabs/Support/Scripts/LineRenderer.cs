@@ -14,7 +14,7 @@ namespace MRDL.Design
         [Range(0f, 1f)]
         public float WidthMultiplier = 0.025f;
 
-        [Header ("Offsets")]
+        [Header("Offsets")]
         [Range(0f, 10f)]
         public float ColorOffset = 0f;
         [Range(0f, 10f)]
@@ -22,35 +22,35 @@ namespace MRDL.Design
         [Range(0f, 10f)]
         public float RotationOffset = 0f;
 
-        [Header ("Point Placement")]
+        [Header("Point Placement")]
         public LineUtils.StepModeEnum StepMode = LineUtils.StepModeEnum.Interpolated;
 
         public LineUtils.InterpolationModeEnum InterpolationMode = LineUtils.InterpolationModeEnum.FromLength;
         [Range(0, 2048)]
         public int NumLineSteps = 10;
-        [Range(0.001f,1f)]
+        [Range(0.001f, 1f)]
         public float StepLength = 0.05f;
         [Range(1, 2048)]
         public int MaxLineSteps = 2048;
 
         public AnimationCurve StepLengthCurve = AnimationCurve.Linear(0f, 1f, 1f, 0.5f);
-
+        
+        [SerializeField]
+        protected LineBase source;
         public virtual LineBase Target
         {
-            get
-            {
-                return source;
-            }
-            set
-            {
-                source = value;
-            }
+            get { return source; }
+            set { source = value; }
         }
 
-        protected virtual Color GetColor (float normalizedLength)
+        private float[] normalizedLengths;
+
+        protected virtual Color GetColor(float normalizedLength)
         {
             if (LineColor == null)
+            {
                 LineColor = new Gradient();
+            }
 
             return LineColor.Evaluate(Mathf.Repeat(normalizedLength + ColorOffset, 1f));
         }
@@ -58,32 +58,38 @@ namespace MRDL.Design
         protected virtual float GetWidth(float normalizedLength)
         {
             if (LineWidth == null)
+            {
                 LineWidth = AnimationCurve.Linear(0f, 1f, 1f, 1f);
+            }
 
             return LineWidth.Evaluate(Mathf.Repeat(normalizedLength + WidthOffset, 1f)) * WidthMultiplier;
         }
-                      
+
         protected virtual void OnEnable()
         {
             if (source == null)
+            {
                 source = gameObject.GetComponent<LineBase>();
+            }
         }
 
-        [SerializeField]
-        protected LineBase source;
-
-        private float[] normalizedLengths;
-
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         protected virtual void OnDrawGizmos()
         {
             if (Application.isPlaying)
+            {
                 return;
-            
+            }
+
             if (source == null)
+            {
                 source = gameObject.GetComponent<LineBase>();
+            }
+
             if (source == null || !source.enabled)
+            {
                 return;
+            }
 
             GizmosDrawLineRenderer(source, this);
         }
@@ -155,6 +161,6 @@ namespace MRDL.Design
                 Gizmos.DrawLine(lastPos, firstPos);
             }
         }
-        #endif
+#endif
     }
 }

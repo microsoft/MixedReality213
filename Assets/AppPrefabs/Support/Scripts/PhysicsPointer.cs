@@ -15,7 +15,7 @@ namespace MRDL.Controllers
         None,
         Valid,
         Invalid,
-        HotSpot,
+        HotSpot
     }
 
     public class PhysicsPointer : MonoBehaviour
@@ -29,19 +29,22 @@ namespace MRDL.Controllers
         public PointerSurfaceResultEnum TargetResult { get; protected set; }
         public virtual float TargetPointOrientation { get; set; }
 
-        public Transform RaycastOrigin {
-            get {
+        public Transform RaycastOrigin
+        {
+            get
+            {
                 if (raycastOrigin == null)
                     return transform;
 
                 return raycastOrigin;
             }
-            set {
+            set
+            {
                 raycastOrigin = value;
             }
         }
 
-        public Gradient GetColor (PointerSurfaceResultEnum targetResult)
+        public Gradient GetColor(PointerSurfaceResultEnum targetResult)
         {
             switch (targetResult)
             {
@@ -60,7 +63,8 @@ namespace MRDL.Controllers
             }
         }
 
-        public bool Active {
+        public bool Active
+        {
             get { return active; }
             set { active = value; }
         }
@@ -81,7 +85,7 @@ namespace MRDL.Controllers
         protected LayerMask invalidLayers = 1 << 2; // Ignore raycast
         [SerializeField]
         protected bool detectTriggers = false;
-        [Header ("Input")]
+        [Header("Input")]
         [SerializeField]
         protected bool active;
         [SerializeField]
@@ -94,12 +98,18 @@ namespace MRDL.Controllers
             hotSpot = null;
 
             if (checkCollider == null)
+            {
                 return false;
+            }
 
             if (checkCollider.attachedRigidbody != null)
+            {
                 hotSpot = checkCollider.attachedRigidbody.GetComponent<NavigationHotSpot>();
+            }
             else
+            {
                 hotSpot = checkCollider.GetComponent<NavigationHotSpot>();
+            }
 
             return hotSpot != null;
         }
@@ -109,15 +119,23 @@ namespace MRDL.Controllers
             IPointerTarget target = null;
 
             if (checkCollider == null)
+            {
                 return false;
+            }
 
             if (checkCollider.attachedRigidbody != null)
+            {
                 target = checkCollider.attachedRigidbody.GetComponent(typeof(IPointerTarget)) as IPointerTarget;
+            }
             else
+            {
                 target = checkCollider.GetComponent(typeof(IPointerTarget)) as IPointerTarget;
+            }
 
             if (target != null)
+            {
                 target.OnPointerTarget(pointer);
+            }
 
             return target != null;
         }

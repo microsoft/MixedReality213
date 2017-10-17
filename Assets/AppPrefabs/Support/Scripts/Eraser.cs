@@ -9,6 +9,14 @@ namespace MRDL.ControllerExamples
 {
     public class Eraser : Brush
     {
+        [SerializeField]
+        private float eraseRange = 0.1f;
+        [SerializeField]
+        private float eraseTime = 0.15f;
+
+        private bool erasingStrokes = false;
+        private Queue<LineRenderer> erasedStrokes = new Queue<LineRenderer>();
+
         // Instead of drawing, the eraser will remove existing strokes
         protected override IEnumerator DrawOverTime()
         {
@@ -25,7 +33,7 @@ namespace MRDL.ControllerExamples
                     if (erasedStrokes.Contains(lineRenderer))
                         continue;
 
-                    if (lineRenderer.bounds.Contains (TipPosition))
+                    if (lineRenderer.bounds.Contains(TipPosition))
                     {
                         // If we're in bounds, check whether any point of the stroke is within range
                         Vector3[] positions = new Vector3[lineRenderer.positionCount];
@@ -87,13 +95,5 @@ namespace MRDL.ControllerExamples
             erasingStrokes = false;
             yield break;
         }
-
-        [SerializeField]
-        private float eraseRange = 0.1f;
-        [SerializeField]
-        private float eraseTime = 0.15f;
-
-        private bool erasingStrokes = false;        
-        private Queue<LineRenderer> erasedStrokes = new Queue<LineRenderer>();
     }
 }

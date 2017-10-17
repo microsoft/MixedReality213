@@ -12,6 +12,15 @@ namespace MRDL.Controllers
     [RequireComponent(typeof(AttachToController))]
     public class PointerInput : MonoBehaviour
     {
+        [SerializeField]
+        private PhysicsPointer pointer = null;
+        [SerializeField]
+        private InteractionSourcePressType activePressType = InteractionSourcePressType.Select;
+        [SerializeField]
+        private InteractionSourceHandedness handedness = InteractionSourceHandedness.Left;
+
+        private AttachToController attachToController;
+
         private void Awake()
         {
             attachToController = GetComponent<AttachToController>();
@@ -19,7 +28,9 @@ namespace MRDL.Controllers
             attachToController.OnAttach += OnAttach;
 
             if (pointer == null)
+            {
                 pointer = GetComponent<PhysicsPointer>();
+            }
 
             pointer.Active = false;
         }
@@ -73,14 +84,5 @@ namespace MRDL.Controllers
                 pointer.Active = false;
             }
         }
-
-        [SerializeField]
-        private PhysicsPointer pointer = null;
-        [SerializeField]
-        private InteractionSourcePressType activePressType = InteractionSourcePressType.Select;
-        [SerializeField]
-        private InteractionSourceHandedness handedness = InteractionSourceHandedness.Left;
-
-        private AttachToController attachToController;
     }
 }

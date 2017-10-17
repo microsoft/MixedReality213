@@ -115,18 +115,26 @@ namespace MRDL.Design
         public static Vector3 GetVectorCollectionBlend(Vector3[] vectorCollection, float normalizedLength, bool repeat)
         {
             if (vectorCollection.Length == 0)
+            {
                 return Vector3.zero;
+            }
             else if (vectorCollection.Length == 1)
+            {
                 return vectorCollection[0];
+            }
 
             float arrayValueLength = 1f / vectorCollection.Length;
             int indexA = Mathf.FloorToInt(normalizedLength * vectorCollection.Length);
             if (indexA >= vectorCollection.Length)
+            {
                 indexA = repeat ? 0 : vectorCollection.Length - 1;
+            }
 
             int indexB = indexA + 1;
             if (indexB >= vectorCollection.Length)
+            {
                 indexB = repeat ? 0 : vectorCollection.Length - 1;
+            }
 
             float blendAmount = (normalizedLength - (arrayValueLength * indexA)) / arrayValueLength;
             Vector3 blendedVector = Vector3.Lerp(vectorCollection[indexA], vectorCollection[indexB], blendAmount);
@@ -169,13 +177,18 @@ namespace MRDL.Design
 
         public static Vector3 GetPointAlongSpline(SplinePoint[] points, float normalizedLength, InterpolationEnum interpolation = InterpolationEnum.Bezeir)
         {
-            int pointIndex = (Mathf.RoundToInt (normalizedLength * points.Length));
+            int pointIndex = (Mathf.RoundToInt(normalizedLength * points.Length));
             float subnormalizedLength = normalizedLength - ((float)pointIndex / points.Length);
 
             if (pointIndex + 3 >= points.Length)
+            {
                 return points[points.Length - 1].Point;
+            }
+
             if (pointIndex < 0)
+            {
                 return points[0].Point;
+            }
 
             Vector3 point1 = points[pointIndex].Point;
             Vector3 point2 = points[pointIndex + 1].Point;
@@ -201,17 +214,21 @@ namespace MRDL.Design
             float arrayValueLength = 1f / points.Length;
             int indexA = Mathf.FloorToInt(normalizedLength * points.Length);
             if (indexA >= points.Length)
+            {
                 indexA = 0;
+            }
 
             int indexB = indexA + 1;
             if (indexB >= points.Length)
+            {
                 indexB = 0;
+            }
 
             float blendAmount = (normalizedLength - (arrayValueLength * indexA)) / arrayValueLength;
 
             return Vector3.Lerp(points[indexA], points[indexB], blendAmount);
         }
-        
+
         public static Vector3 InterpolateCatmullRomPoints(Vector3 point1, Vector3 point2, Vector3 point3, Vector3 point4, float normalizedLength)
         {
             Vector3 p1 = 2f * point2;
@@ -223,8 +240,9 @@ namespace MRDL.Design
 
             return point;
         }
-        
-        public static Vector3 InterpolateBezeirPoints(Vector3 point1, Vector3 point2, Vector3 point3, Vector3 point4, float normalizedLength) {
+
+        public static Vector3 InterpolateBezeirPoints(Vector3 point1, Vector3 point2, Vector3 point3, Vector3 point4, float normalizedLength)
+        {
             float invertedDistance = 1f - normalizedLength;
             return
                 invertedDistance * invertedDistance * invertedDistance * point1 +
@@ -233,7 +251,8 @@ namespace MRDL.Design
                 normalizedLength * normalizedLength * normalizedLength * point4;
         }
 
-        public static Vector3 InterpolateHermitePoints(Vector3 point1, Vector3 point2, Vector3 point3, Vector3 point4, float normalizedLength) {
+        public static Vector3 InterpolateHermitePoints(Vector3 point1, Vector3 point2, Vector3 point3, Vector3 point4, float normalizedLength)
+        {
             float invertedDistance = 1f - normalizedLength;
             return
                 invertedDistance * invertedDistance * invertedDistance * point1 +

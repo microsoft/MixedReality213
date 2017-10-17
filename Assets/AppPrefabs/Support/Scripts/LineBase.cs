@@ -24,7 +24,7 @@ namespace MRDL.Design
         public float LineStartClamp = 0f;
         [Range(0f, 1f)]
         public float LineEndClamp = 1f;
-        
+
         public virtual bool Loops
         {
             get
@@ -40,7 +40,7 @@ namespace MRDL.Design
 
         public Vector3 OriginOffset = Vector3.zero;
 
-        [Range(0f,1f)]
+        [Range(0f, 1f)]
         public float ManualUpVectorBlend = 0f;
 
         public Vector3[] ManualUpVectors = new Vector3[] { Vector3.up };
@@ -50,7 +50,7 @@ namespace MRDL.Design
         [Range(0f, 1f)]
         public float VelocityBlend = 0.5f;
 
-        [Header ("Distortion")]
+        [Header("Distortion")]
         public AnimationCurve DistortionStrength = AnimationCurve.Linear(0f, 1f, 1f, 1f);
 
         // Abstract
@@ -93,12 +93,12 @@ namespace MRDL.Design
         // Public
 
         // Convenience
-        public void SetFirstPoint (Vector3 point)
+        public void SetFirstPoint(Vector3 point)
         {
             SetPoint(0, point);
         }
 
-        public void SetLastPoint (Vector3 point)
+        public void SetLastPoint(Vector3 point)
         {
             SetPoint(NumPoints - 1, point);
         }
@@ -126,21 +126,25 @@ namespace MRDL.Design
         /// <param name="worldLength"></param>
         /// <param name="searchResolution"></param>
         /// <returns></returns>
-        public float GetNormalizedLengthFromWorldLength (float worldLength, int searchResolution = 10) {
+        public float GetNormalizedLengthFromWorldLength(float worldLength, int searchResolution = 10)
+        {
             Vector3 lastPoint = GetUnclampedPoint(0f);
             Vector3 currentPoint = Vector3.zero;
             float normalizedLength = 0f;
             float distanceSoFar = 0f;
-            for (int i = 1; i < searchResolution; i++) {
+            for (int i = 1; i < searchResolution; i++)
+            {
                 normalizedLength = (1f / searchResolution) * i;
                 currentPoint = GetUnclampedPoint(normalizedLength);
                 distanceSoFar += Vector3.Distance(lastPoint, currentPoint);
                 lastPoint = currentPoint;
-                if (distanceSoFar >= worldLength) {
+                if (distanceSoFar >= worldLength)
+                {
                     break;
                 }
-;            }
-            return Mathf.Clamp01 (normalizedLength);
+;
+            }
+            return Mathf.Clamp01(normalizedLength);
         }
 
         /// <summary>
@@ -218,7 +222,7 @@ namespace MRDL.Design
         /// <param name="pointIndex"></param>
         /// <param name="rotationType"></param>
         /// <returns></returns>
-        public Quaternion GetRotation (int pointIndex, LineUtils.RotationTypeEnum rotationType = LineUtils.RotationTypeEnum.None)
+        public Quaternion GetRotation(int pointIndex, LineUtils.RotationTypeEnum rotationType = LineUtils.RotationTypeEnum.None)
         {
             return GetRotation((float)pointIndex / NumPoints, (rotationType != LineUtils.RotationTypeEnum.None) ? rotationType : RotationType);
         }
@@ -250,12 +254,14 @@ namespace MRDL.Design
         /// </summary>
         /// <param name="normalizedLength"></param>
         /// <returns></returns>
-        public Vector3 GetUnclampedPoint(float normalizedLength) {
+        public Vector3 GetUnclampedPoint(float normalizedLength)
+        {
             if (distorters == null)
                 FindDistorters();
 
             normalizedLength = Mathf.Clamp01(normalizedLength);
-            switch (Space) {
+            switch (Space)
+            {
                 case LineUtils.SpaceEnum.Local:
                 default:
                     return transform.TransformPoint(DistortPoint(GetPointInternal(normalizedLength), normalizedLength));
@@ -270,7 +276,7 @@ namespace MRDL.Design
         /// </summary>
         /// <param name="pointIndex"></param>
         /// <returns></returns>
-        public Vector3 GetPoint (int pointIndex)
+        public Vector3 GetPoint(int pointIndex)
         {
             if (pointIndex < 0 || pointIndex >= NumPoints)
                 throw new System.IndexOutOfRangeException();
@@ -282,7 +288,7 @@ namespace MRDL.Design
 
                 case LineUtils.SpaceEnum.Global:
                 default:
-                   return GetPointInternal(pointIndex);
+                    return GetPointInternal(pointIndex);
             }
         }
 
@@ -292,7 +298,7 @@ namespace MRDL.Design
         /// </summary>
         /// <param name="pointIndex"></param>
         /// <param name="point"></param>
-        public void SetPoint (int pointIndex, Vector3 point)
+        public void SetPoint(int pointIndex, Vector3 point)
         {
             if (pointIndex < 0 || pointIndex >= NumPoints)
                 throw new System.IndexOutOfRangeException();
@@ -323,7 +329,7 @@ namespace MRDL.Design
             distorters = null;
         }
 
-        private Vector3 DistortPoint (Vector3 point, float normalizedLength)
+        private Vector3 DistortPoint(Vector3 point, float normalizedLength)
         {
             float strength = DistortionStrength.Evaluate(normalizedLength);
             for (int i = 0; i < distorters.Length; i++)
@@ -339,7 +345,7 @@ namespace MRDL.Design
 
         private float ClampedLength(float normalizedLength)
         {
-            return Mathf.Lerp(Mathf.Max (LineStartClamp, 0.0001f), Mathf.Min (LineEndClamp, 0.9999f), Mathf.Clamp01(normalizedLength));
+            return Mathf.Lerp(Mathf.Max(LineStartClamp, 0.0001f), Mathf.Min(LineEndClamp, 0.9999f), Mathf.Clamp01(normalizedLength));
         }
 
         private void FindDistorters()
@@ -358,13 +364,13 @@ namespace MRDL.Design
             });
             distorters = distorterList.ToArray();
         }
-        
+
         private IDistorter[] distorters;
-        
+
         [SerializeField]
         protected bool loops = false;
 
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         protected virtual void OnDrawGizmos()
         {
             if (Application.isPlaying)
@@ -377,7 +383,7 @@ namespace MRDL.Design
 
             Vector3 firstPos = GetPoint(0f);
             Vector3 lastPos = firstPos;
-            Gizmos.color = Color.Lerp (Color.white, Color.clear, 0.25f);
+            Gizmos.color = Color.Lerp(Color.white, Color.clear, 0.25f);
             int numSteps = 16;
 
             for (int i = 1; i < numSteps; i++)
@@ -393,6 +399,6 @@ namespace MRDL.Design
                 Gizmos.DrawLine(lastPos, firstPos);
             }
         }
-        #endif
+#endif
     }
 }

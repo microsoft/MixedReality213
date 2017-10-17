@@ -8,21 +8,37 @@ namespace MRDL.Controllers
     [ExecuteInEditMode]
     public class PointerCursor : MonoBehaviour
     {
+        [SerializeField]
+        protected PhysicsPointer pointer;
         public PhysicsPointer Pointer
         {
             get { return pointer; }
         }
+        
+        [SerializeField]
+        protected float sizeOnScreen = 0.015f;
+        [SerializeField]
+        protected float scaleAdjustTime = 0.5f;
+
+        [SerializeField]
+        private Renderer[] renderers;
+        [SerializeField]
+        private Transform pointerTransform;
 
         protected void OnEnable()
         {
             if (renderers == null || renderers.Length == 0)
+            {
                 renderers = pointerTransform.GetComponentsInChildren<Renderer>();
+            }
         }
 
         protected void Update()
         {
             if (pointer == null)
+            {
                 return;
+            }
 
             pointerTransform.position = pointer.TargetPoint;
             pointerTransform.forward = pointer.TargetPointNormal;
@@ -54,16 +70,5 @@ namespace MRDL.Controllers
                 renderers[i].enabled = pointer.TargetResult != PointerSurfaceResultEnum.None;
             }            
         }
-
-        [SerializeField]
-        protected float sizeOnScreen = 0.015f;
-        [SerializeField]
-        protected float scaleAdjustTime = 0.5f;
-        [SerializeField]
-        protected PhysicsPointer pointer;
-        [SerializeField]
-        private Renderer[] renderers;
-        [SerializeField]
-        private Transform pointerTransform;
     }
 }

@@ -23,10 +23,7 @@ namespace MRDL.Design
 
         public float DistributionOffsetPerObject
         {
-            get
-            {
-                return 1f / Objects.Count;
-            }
+            get { return 1f / Objects.Count; }
         }
 
         public AnimationCurve ObjectScale = AnimationCurve.Linear(0f, 1f, 1f, 1f);
@@ -45,17 +42,28 @@ namespace MRDL.Design
 
         [Header("Object Placement")]
         public LineUtils.StepModeEnum StepMode = LineUtils.StepModeEnum.Interpolated;
+        
+        [SerializeField]
+        private LineBase source;
+
+        private Transform transformHelper;
 
         // Convenience functions
         public float GetOffsetFromObjectIndex(int index, bool wrap = true)
         {
             if (Objects.Count == 0)
+            {
                 return 0;
+            }
 
             if (wrap)
+            {
                 index = WrapIndex(index, Objects.Count);
+            }
             else
+            {
                 index = Mathf.Clamp(index, 0, Objects.Count - 1);
+            }
 
             return (1f / Objects.Count * (index + 1));
         }
@@ -63,27 +71,39 @@ namespace MRDL.Design
         public int GetNextObjectIndex(int index, bool wrap = true)
         {
             if (Objects.Count == 0)
+            {
                 return 0;
+            }
 
             index++;
 
             if (wrap)
+            {
                 return WrapIndex(index, Objects.Count);
+            }
             else
+            {
                 return Mathf.Clamp(index, 0, Objects.Count - 1);
+            }
         }
 
         public int GetPrevObjectIndex(int index, bool wrap = true)
         {
             if (Objects.Count == 0)
+            {
                 return 0;
+            }
 
             index--;
 
             if (wrap)
+            {
                 return WrapIndex(index, Objects.Count);
+            }
             else
+            {
                 return Mathf.Clamp(index, 0, Objects.Count - 1);
+            }
         }
 
         public void Update()
@@ -94,9 +114,14 @@ namespace MRDL.Design
         public void UpdateCollection()
         {
             if (source == null)
+            {
                 source = gameObject.GetComponent<LineBase>();
+            }
+
             if (source == null)
+            {
                 return;
+            }
 
             if (transformHelper == null)
             {
@@ -139,29 +164,26 @@ namespace MRDL.Design
             }
         }
 
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         private void OnDrawGizmos()
         {
             if (Application.isPlaying)
+            {
                 return;
+            }
 
             UpdateCollection();
         }
-        #endif
+#endif
 
         private static int WrapIndex(int index, int numObjects)
         {
             return ((index % numObjects) + numObjects) % numObjects;
         }
-
-        [SerializeField]
-        private LineBase source;
-
-        private Transform transformHelper;
     }
 
-    #if UNITY_EDITOR
-    [UnityEditor.CustomEditor(typeof (LineObjectCollection))]
+#if UNITY_EDITOR
+    [UnityEditor.CustomEditor(typeof(LineObjectCollection))]
     public class LineObjectCollectionEditor : UnityEditor.Editor
     {
         public void OnSceneGUI()
@@ -172,10 +194,10 @@ namespace MRDL.Design
             {
                 if (loc.Objects[i] != null)
                 {
-                    UnityEditor.Handles.Label(loc.Objects[i].position, "Index: "+ i.ToString("000") + "\nOffset: " + loc.GetOffsetFromObjectIndex(i).ToString("00.00"));
+                    UnityEditor.Handles.Label(loc.Objects[i].position, "Index: " + i.ToString("000") + "\nOffset: " + loc.GetOffsetFromObjectIndex(i).ToString("00.00"));
                 }
             }
         }
     }
-    #endif
+#endif
 }

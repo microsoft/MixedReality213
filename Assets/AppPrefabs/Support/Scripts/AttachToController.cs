@@ -22,10 +22,31 @@ namespace MRDL.Controllers
 
         public InteractionSourceHandedness Handedness { set { handedness = value; } }
 
+        [SerializeField]
+        private Vector3 positionOffset = Vector3.zero;
+
+        [SerializeField]
+        private Vector3 rotationOffset = Vector3.zero;
+
+        [SerializeField]
+        private bool setScaleOnAttach = false;
+
+        [SerializeField]
+        private Vector3 scale = Vector3.one;
+
+        [SerializeField]
+        private InteractionSourceHandedness handedness = InteractionSourceHandedness.Left;
+
+        [SerializeField]
+        private MotionControllerInfo.ControllerElementEnum element = MotionControllerInfo.ControllerElementEnum.PointingPose;
+
+        private MotionControllerInfo controller;
+        private Transform elementTransform;
+
         private IEnumerator Start()
         {
             // Wait for our controller to appear
-            while (!MotionControllerVisualizer.Instance.TryGetController (handedness, out controller))
+            while (!MotionControllerVisualizer.Instance.TryGetController(handedness, out controller))
             {
                 yield return null;
             }
@@ -43,29 +64,17 @@ namespace MRDL.Controllers
             transform.localPosition = positionOffset;
             transform.localEulerAngles = rotationOffset;
             if (setScaleOnAttach)
+            {
                 transform.localScale = scale;
+            }
 
             // Announce that we're attached
             if (OnAttach != null)
+            {
                 OnAttach();
+            }
 
             yield break;
         }
-        
-        [SerializeField]
-        private Vector3 positionOffset = Vector3.zero;
-        [SerializeField]
-        private Vector3 rotationOffset = Vector3.zero;
-        [SerializeField]
-        private bool setScaleOnAttach = false;
-        [SerializeField]
-        private Vector3 scale = Vector3.one;
-        [SerializeField]
-        private InteractionSourceHandedness handedness = InteractionSourceHandedness.Left;
-        [SerializeField]
-        private MotionControllerInfo.ControllerElementEnum element = MotionControllerInfo.ControllerElementEnum.PointingPose;
-
-        private MotionControllerInfo controller;
-        private Transform elementTransform;
     }
 }
