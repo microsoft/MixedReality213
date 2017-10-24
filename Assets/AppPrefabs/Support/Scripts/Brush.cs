@@ -12,23 +12,17 @@ namespace MRDL.ControllerExamples
         {
             InMenu,
             InHand,
-            Hidden,
+            Hidden
         }
 
         public DisplayModeEnum DisplayMode
         {
-            set
-            {
-                displayMode = value;
-            }
+            set { displayMode = value; }
         }
 
         public bool Draw
         {
-            get
-            {
-                return draw;
-            }
+            get { return draw; }
             set
             {
                 if (displayMode != DisplayModeEnum.InHand)
@@ -47,10 +41,7 @@ namespace MRDL.ControllerExamples
 
         public Vector3 TipPosition
         {
-            get
-            {
-                return tip.position;
-            }
+            get { return tip.position; }
         }
 
         public Color StrokeColor
@@ -66,12 +57,51 @@ namespace MRDL.ControllerExamples
                     + Mathf.Abs(oldColor.a - newColor.a)) / 4;
 
                 if (delta < minColorDelta)
+                {
                     return;
+                }
 
                 currentStrokeColor = newColor;
                 brushRenderer.material.color = currentStrokeColor;
             }
         }
+
+        [Header("Drawing settings")]
+        [SerializeField]
+        private float minColorDelta = 0.01f;
+        [SerializeField]
+        private float minPositionDelta = 0.01f;
+        [SerializeField]
+        private float maxTimeDelta = 0.25f;
+        [SerializeField]
+        private Transform tip;
+        [SerializeField]
+        private GameObject strokePrefab;
+        [SerializeField]
+        private Transform brushObjectTransform;
+        [SerializeField]
+        private Renderer brushRenderer;
+
+        protected bool draw = false;
+
+        [Header("Mode settings")]
+        [SerializeField]
+        private Vector3 inMenuPosition;
+        [SerializeField]
+        private Vector3 inMenuRotation;
+        [SerializeField]
+        private Vector3 inHandPosition;
+        [SerializeField]
+        private Vector3 inHandRotation;
+        [SerializeField]
+        private DisplayModeEnum displayMode = DisplayModeEnum.InMenu;
+        [SerializeField]
+        private float transitionDuration = 0.5f;
+        [SerializeField]
+        private AnimationCurve transitionCurve;
+
+        private Color currentStrokeColor = Color.white;
+        private float lastPointAddedTime = 0f;
 
         private void OnEnable()
         {
@@ -174,9 +204,9 @@ namespace MRDL.ControllerExamples
                 while ((Time.unscaledTime < startTime + transitionDuration) && lastDisplayMode == displayMode)
                 {
                     float normalizedTime = (Time.unscaledTime - startTime) / transitionDuration;
-                    brushObjectTransform.localPosition = Vector3.Lerp(startPosition, targetPosition, transitionCurve.Evaluate (normalizedTime));
+                    brushObjectTransform.localPosition = Vector3.Lerp(startPosition, targetPosition, transitionCurve.Evaluate(normalizedTime));
                     brushObjectTransform.localScale = Vector3.Lerp(startScale, targetScale, transitionCurve.Evaluate(normalizedTime));
-                    brushObjectTransform.localRotation = Quaternion.Lerp(startRotation, targetRotation, transitionCurve.Evaluate(normalizedTime));                  
+                    brushObjectTransform.localRotation = Quaternion.Lerp(startRotation, targetRotation, transitionCurve.Evaluate(normalizedTime));
                     yield return null;
                 }
                 brushObjectTransform.localPosition = targetPosition;
@@ -192,42 +222,5 @@ namespace MRDL.ControllerExamples
             }
             yield break;
         }
-
-        [Header("Drawing settings")]
-        [SerializeField]
-        private float minColorDelta = 0.01f;
-        [SerializeField]
-        private float minPositionDelta = 0.01f;
-        [SerializeField]
-        private float maxTimeDelta = 0.25f;
-        [SerializeField]
-        private Transform tip;
-        [SerializeField]
-        private GameObject strokePrefab;
-        [SerializeField]
-        private Transform brushObjectTransform;
-        [SerializeField]
-        private Renderer brushRenderer;
-
-        protected bool draw = false;
-
-        [Header("Mode settings")]
-        [SerializeField]
-        private Vector3 inMenuPosition;
-        [SerializeField]
-        private Vector3 inMenuRotation;
-        [SerializeField]
-        private Vector3 inHandPosition;
-        [SerializeField]
-        private Vector3 inHandRotation;
-        [SerializeField]
-        private DisplayModeEnum displayMode = DisplayModeEnum.InMenu;
-        [SerializeField]
-        private float transitionDuration = 0.5f;
-        [SerializeField]
-        private AnimationCurve transitionCurve;
-        
-        private Color currentStrokeColor = Color.white;
-        private float lastPointAddedTime = 0f;
     }
 }

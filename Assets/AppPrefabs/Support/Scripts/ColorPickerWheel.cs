@@ -13,15 +13,14 @@ namespace MRDL.ControllerExamples
     {
         public bool Visible
         {
-            get
-            {
-                return visible;
-            }
+            get { return visible; }
             set
             {
                 visible = value;
                 if (value)
+                {
                     lastTimeVisible = Time.unscaledTime;
+                }
             }
         }
 
@@ -33,11 +32,40 @@ namespace MRDL.ControllerExamples
 
         public Color SelectedColor
         {
-            get
-            {
-                return selectedColor;
-            }
+            get { return selectedColor; }
         }
+
+        [SerializeField]
+        private bool visible = false;
+        [SerializeField]
+        private Transform selectorTransform;
+        [SerializeField]
+        private float inputScale = 1.1f;
+        [SerializeField]
+        private Vector2 selectorPosition;
+        [SerializeField]
+        private Color selectedColor = Color.white;
+        [SerializeField]
+        private Texture2D colorWheelTexture;
+        [SerializeField]
+        private GameObject colorWheelObject;
+        [SerializeField]
+        private Animator animator;
+        [SerializeField]
+        private float timeout = 2f;
+
+        /*[Header("Color Dabs")]
+        [SerializeField]
+        private Color[] colorDabs = new Color[8];*/
+
+        private float lastTimeVisible;
+        private bool visibleLastFrame = false;
+
+        [SerializeField]
+        private InteractionSourceHandedness handedness = InteractionSourceHandedness.Left;
+        [SerializeField]
+        private MotionControllerInfo.ControllerElementEnum element = MotionControllerInfo.ControllerElementEnum.Touchpad;
+        private MotionControllerInfo controller;
 
         public void OnPointerTarget(PhysicsPointer source)
         {
@@ -45,38 +73,51 @@ namespace MRDL.ControllerExamples
 
             // If we're opening or closing, don't set the color value
             AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-            if (stateInfo.IsName("Show") || stateInfo.IsName("Hide")) {
+            if (stateInfo.IsName("Show") || stateInfo.IsName("Hide"))
+            {
                 return;
             }
-            
+
             Vector3 localHitPoint = selectorTransform.parent.InverseTransformPoint(source.TargetPoint);
             SelectorPosition = new Vector2(localHitPoint.x, localHitPoint.z);
         }
-        
+
         private void Update()
         {
             if (controller == null)
+            {
                 return;
+            }
 
             if (Time.unscaledTime > lastTimeVisible + timeout)
+            {
                 visible = false;
+            }
 
             if (visible != visibleLastFrame)
             {
                 if (visible)
+                {
                     animator.SetTrigger("Show");
+                }
                 else
+                {
                     animator.SetTrigger("Hide");
+                }
             }
             visibleLastFrame = visible;
 
             if (!visible)
+            {
                 return;
+            }
 
             // clamp selector position to a radius of 1
             Vector3 localPosition = new Vector3(selectorPosition.x * inputScale, 0.15f, selectorPosition.y * inputScale);
             if (localPosition.magnitude > 1)
+            {
                 localPosition = localPosition.normalized;
+            }
             selectorTransform.localPosition = localPosition;
             // Raycast the wheel mesh and get its UV coordinates
             Vector3 raycastStart = selectorTransform.position + selectorTransform.up * 0.15f;
@@ -128,37 +169,5 @@ namespace MRDL.ControllerExamples
                 }
             }
         }
-
-        [SerializeField]
-        private bool visible = false;
-        [SerializeField]
-        private Transform selectorTransform;
-        [SerializeField]
-        private float inputScale = 1.1f;
-        [SerializeField]
-        private Vector2 selectorPosition;
-        [SerializeField]
-        private Color selectedColor = Color.white;
-        [SerializeField]
-        private Texture2D colorWheelTexture;
-        [SerializeField]
-        private GameObject colorWheelObject;
-        [SerializeField]
-        private Animator animator;
-        [SerializeField]
-        private float timeout = 2f;
-
-        /*[Header("Color Dabs")]
-        [SerializeField]
-        private Color[] colorDabs = new Color[8];*/
-
-        private float lastTimeVisible;
-        private bool visibleLastFrame = false;
-
-        [SerializeField]
-        private InteractionSourceHandedness handedness = InteractionSourceHandedness.Left;
-        [SerializeField]
-        private MotionControllerInfo.ControllerElementEnum element = MotionControllerInfo.ControllerElementEnum.Touchpad;
-        private MotionControllerInfo controller;
     }
 }

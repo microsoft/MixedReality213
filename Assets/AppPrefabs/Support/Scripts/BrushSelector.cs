@@ -18,6 +18,46 @@ namespace MRDL.ControllerExamples
             Right,
         }
 
+        [SerializeField]
+        private LineObjectCollection brushCollection;
+        [SerializeField]
+        private SwipeEnum currentAction;
+        [SerializeField]
+        private AnimationCurve swipeCurve;
+        [SerializeField]
+        private float swipeDuration = 0.5f;
+        [SerializeField]
+        private int displayBrushindex = 0;
+        [SerializeField]
+        private int activeBrushindex = 3;
+        [SerializeField]
+        private ColorPickerWheel colorPicker;
+        [SerializeField]
+        private float menuTimeout = 2f;
+
+        [SerializeField]
+        private InteractionSourceHandedness handedness = InteractionSourceHandedness.Right;
+        [SerializeField]
+        private MotionControllerInfo.ControllerElementEnum element = MotionControllerInfo.ControllerElementEnum.PointingPose;
+        private MotionControllerInfo controller;
+
+        [SerializeField]
+        private Material touchpadMaterial;
+        [SerializeField]
+        private Gradient touchpadColor;
+        [SerializeField]
+        private float touchpadGlowLossTime = 0.5f;
+        private float touchpadTouchTime;
+        private MeshRenderer touchpadRenderer;
+
+        private float menuOpenTime = 0f;
+        private bool menuOpen = false;
+
+        private float startOffset;
+        private float targetOffset;
+
+        private Brush activeBrush;
+
         private void Update()
         {
             if (menuOpen)
@@ -62,7 +102,7 @@ namespace MRDL.ControllerExamples
                 gameObject.SetActive(false);
                 yield break;
             }
-            
+
             transform.parent = elementTransform;
             transform.localPosition = Vector3.zero;
             transform.localRotation = Quaternion.identity;
@@ -78,7 +118,7 @@ namespace MRDL.ControllerExamples
                 touchpadRenderer.material = touchpadMaterial;
                 touchpadRenderer.enabled = true;
             }
-            
+
             // Subscribe to input now that we're parented under the controller
             InteractionManager.InteractionSourceUpdated += InteractionSourceUpdated;
             InteractionManager.InteractionSourcePressed += InteractionSourcePressed;
@@ -150,7 +190,7 @@ namespace MRDL.ControllerExamples
                     menuOpenTime = Time.unscaledTime;
                     yield return null;
                 }
-                brushCollection.DistributionOffset = targetOffset;                
+                brushCollection.DistributionOffset = targetOffset;
 
                 yield return null;
             }
@@ -177,7 +217,8 @@ namespace MRDL.ControllerExamples
 
         private void InteractionSourceUpdated(InteractionSourceUpdatedEventArgs obj)
         {
-            if (obj.state.source.handedness == handedness){
+            if (obj.state.source.handedness == handedness)
+            {
 
                 if (obj.state.touchpadPressed)
                 {
@@ -201,7 +242,7 @@ namespace MRDL.ControllerExamples
             }
         }
 
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         void OnDrawGizmos()
         {
             if (activeBrush != null)
@@ -209,44 +250,6 @@ namespace MRDL.ControllerExamples
                 Gizmos.DrawWireSphere(activeBrush.TipPosition, 0.01f);
             }
         }
-        #endif
-
-        [SerializeField]
-        private LineObjectCollection brushCollection;
-        [SerializeField]
-        private SwipeEnum currentAction;
-        [SerializeField]
-        private AnimationCurve swipeCurve;
-        [SerializeField]
-        private float swipeDuration = 0.5f;
-        [SerializeField]
-        private int displayBrushindex = 0;
-        [SerializeField]
-        private int activeBrushindex = 3;
-        [SerializeField]
-        private ColorPickerWheel colorPicker;
-        [SerializeField]
-        private float menuTimeout = 2f;
-
-        [SerializeField]
-        private InteractionSourceHandedness handedness = InteractionSourceHandedness.Right;
-        [SerializeField]
-        private MotionControllerInfo.ControllerElementEnum element = MotionControllerInfo.ControllerElementEnum.PointingPose;
-        private MotionControllerInfo controller;
-
-        [SerializeField]
-        private Material touchpadMaterial;
-        [SerializeField]
-        private Gradient touchpadColor;
-        [SerializeField]
-        private float touchpadGlowLossTime = 0.5f;
-        private float touchpadTouchTime;
-        private MeshRenderer touchpadRenderer;
-
-        private float menuOpenTime = 0f;
-        private bool menuOpen = false;
-        private float startOffset;
-        private float targetOffset;
-        private Brush activeBrush;
+#endif
     }
 }

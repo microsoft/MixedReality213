@@ -21,14 +21,13 @@ namespace MRDL.ControllerExamples
 
         public int MeshIndex
         {
-            get
-            {
-                return meshIndex;
-            }
+            get            {                return meshIndex;            }
             set
             {
                 if (state != StateEnum.Idle)
+                {
                     return;
+                }
 
                 if (meshIndex != value)
                 {
@@ -44,10 +43,48 @@ namespace MRDL.ControllerExamples
             get { return availableMeshes.Length; }
         }
 
+        [Header("Objects and materials")]
+        [SerializeField]
+        private Transform displayParent;
+        [SerializeField]
+        private Transform scaleParent;
+        [SerializeField]
+        private Transform spawnParent;
+        [SerializeField]
+        private MeshFilter displayObject;
+        [SerializeField]
+        private Material objectMaterial;
+        [SerializeField]
+        private ColorPickerWheel colorSource;
+        [SerializeField]
+        private Mesh[] availableMeshes;
+
+        [Header("Animation")]
+        [SerializeField]
+        private Animator animator;
+        [SerializeField]
+        private AnimationCurve growCurve;
+        [SerializeField]
+        private float growTime = 2f;
+
+        [SerializeField]
+        private InteractionSourceHandedness handedness = InteractionSourceHandedness.Left;
+        [SerializeField]
+        private MotionControllerInfo.ControllerElementEnum element = MotionControllerInfo.ControllerElementEnum.PointingPose;
+        private MotionControllerInfo controller;
+
+        private int meshIndex = 0;
+        private StateEnum state = StateEnum.Uninitialized;
+        private Material instantiatedMaterial;
+        private bool released;
+        private float timePressed;
+
         private void SpawnObject()
         {
             if (state != StateEnum.Idle)
+            {
                 return;
+            }
 
             state = StateEnum.Spawning;
             StartCoroutine(SpawnOverTime());
@@ -87,11 +124,15 @@ namespace MRDL.ControllerExamples
         private void Update()
         {
             if (state != StateEnum.Idle)
+            {
                 return;
+            }
 
             if (meshIndex < 0 || meshIndex >= availableMeshes.Length)
+            {
                 throw new IndexOutOfRangeException();
-            
+            }
+
             displayObject.sharedMesh = availableMeshes[meshIndex];
             instantiatedMaterial.color = colorSource.SelectedColor;
         }
@@ -102,7 +143,7 @@ namespace MRDL.ControllerExamples
             // Wait for the animation to play out
             while (!animator.GetCurrentAnimatorStateInfo(0).IsName("SwitchStart"))
             {
-                yield return null;   
+                yield return null;
             }
 
             while (animator.GetCurrentAnimatorStateInfo(0).IsName("SwitchStart"))
@@ -134,7 +175,7 @@ namespace MRDL.ControllerExamples
             {
                 // Grow the object while the control is pressed
                 float normalizedGrowth = (Time.unscaledTime - timePressed) / growTime;
-                scaleParent.localScale = startScale + (Vector3.one * + growCurve.Evaluate(normalizedGrowth));
+                scaleParent.localScale = startScale + (Vector3.one * +growCurve.Evaluate(normalizedGrowth));
                 yield return null;
             }
 
@@ -201,7 +242,9 @@ namespace MRDL.ControllerExamples
                 {
                     case InteractionSourcePressType.Grasp:
                         if (state != StateEnum.Spawning)
+                        {
                             return;
+                        }
                         // Release object
                         released = true;
                         break;
@@ -211,41 +254,5 @@ namespace MRDL.ControllerExamples
                 }
             }
         }
-
-        [Header("Objects and materials")]
-        [SerializeField]
-        private Transform displayParent;
-        [SerializeField]
-        private Transform scaleParent;
-        [SerializeField]
-        private Transform spawnParent;
-        [SerializeField]
-        private MeshFilter displayObject;
-        [SerializeField]
-        private Material objectMaterial;
-        [SerializeField]
-        private ColorPickerWheel colorSource;
-        [SerializeField]
-        private Mesh[] availableMeshes;
-
-        [Header("Animation")]
-        [SerializeField]
-        private Animator animator;
-        [SerializeField]
-        private AnimationCurve growCurve;
-        [SerializeField]
-        private float growTime = 2f;
-
-        [SerializeField]
-        private InteractionSourceHandedness handedness = InteractionSourceHandedness.Left;
-        [SerializeField]
-        private MotionControllerInfo.ControllerElementEnum element = MotionControllerInfo.ControllerElementEnum.PointingPose;
-        private MotionControllerInfo controller;
-
-        private int meshIndex = 0;
-        private StateEnum state = StateEnum.Uninitialized;
-        private Material instantiatedMaterial;
-        private bool released;
-        private float timePressed;
     }
 }

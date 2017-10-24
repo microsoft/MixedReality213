@@ -13,10 +13,7 @@ namespace MRDL.Design
 
         public override int NumPoints
         {
-            get
-            {
-                return 2;
-            }
+            get { return 2; }
         }
 
         protected override Vector3 GetPointInternal(int pointIndex)

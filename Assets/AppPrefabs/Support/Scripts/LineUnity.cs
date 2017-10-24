@@ -17,16 +17,25 @@ namespace MRDL.Design
         public bool RoundedEdges = true;
         public bool RoundedCaps = true;
 
+        [SerializeField]
+        private UnityEngine.LineRenderer lineRenderer;
+        private Vector3[] positions;
+
         protected override void OnEnable()
         {
             base.OnEnable();
 
             if (lineRenderer == null)
+            {
                 lineRenderer = gameObject.GetComponent<UnityEngine.LineRenderer>();
+            }
             if (lineRenderer == null)
+            {
                 lineRenderer = gameObject.AddComponent<UnityEngine.LineRenderer>();
+            }
 
-            if (LineMaterial == null) {
+            if (LineMaterial == null)
+            {
                 LineMaterial = new Material(Shader.Find(DefaultLineShader));
                 LineMaterial.SetColor(DefaultLineShaderColor, Color.white);
             }
@@ -46,7 +55,7 @@ namespace MRDL.Design
                 {
                     lineRenderer.enabled = true;
 
-                    switch (this.StepMode)
+                    switch (StepMode)
                     {
                         case LineUtils.StepModeEnum.FromSource:
                             lineRenderer.positionCount = source.NumPoints;
@@ -96,9 +105,5 @@ namespace MRDL.Design
                 yield return null;
             }
         }
-
-        [SerializeField]
-        private UnityEngine.LineRenderer lineRenderer;
-        private Vector3[] positions;
     }
 }

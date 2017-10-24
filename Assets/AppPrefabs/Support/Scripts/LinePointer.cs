@@ -8,21 +8,34 @@ namespace MRDL.Controllers
 {
     [RequireComponent(typeof(Line))]
     [ExecuteInEditMode]
-    public class LinePointer : PhysicsPointer {
+    public class LinePointer : PhysicsPointer
+    {
+        [SerializeField]
+        private Line line;
+        [SerializeField]
+        protected Design.LineRenderer[] renderers;
+        [SerializeField]
+        private float maxDistance = 100f;
 
         protected void OnEnable()
         {
             if (renderers == null || renderers.Length == 0)
+            {
                 renderers = gameObject.GetComponentsInChildren<Design.LineRenderer>();
+            }
 
             if (line == null)
+            {
                 line = gameObject.GetComponent<Line>();
+            }
         }
 
         protected void OnDisable()
         {
             if (line != null)
+            {
                 line.enabled = false;
+            }
         }
 
         protected void Update()
@@ -49,8 +62,8 @@ namespace MRDL.Controllers
                     TargetResult = PointerSurfaceResultEnum.Valid;
                     // Then see if we've hit a hotspot that overrides this target point
                     NavigationHotSpot hotSpot = null;
-                    if (PhysicsPointer.CheckForHotSpot (targetHit.collider, out hotSpot))
-                    {   
+                    if (PhysicsPointer.CheckForHotSpot(targetHit.collider, out hotSpot))
+                    {
                         TargetPoint = hotSpot.transform.position;
                         TargetPointNormal = hotSpot.transform.up;
                         TargetResult = PointerSurfaceResultEnum.HotSpot;
@@ -92,12 +105,5 @@ namespace MRDL.Controllers
                 line.enabled = false;
             }
         }
-
-        [SerializeField]
-        private Line line;
-        [SerializeField]
-        protected Design.LineRenderer[] renderers;
-        [SerializeField]
-        private float maxDistance = 100f;
     }
 }
