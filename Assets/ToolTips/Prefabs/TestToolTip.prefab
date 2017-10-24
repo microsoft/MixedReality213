@@ -87,6 +87,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4015493888224476}
+  - component: {fileID: 114297314268380856}
+  - component: {fileID: 114688644982233374}
   m_Layer: 0
   m_Name: TestToolTip
   m_TagString: Untagged
@@ -245,7 +247,7 @@ Transform:
   m_GameObject: {fileID: 1167109203041942}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.0075, y: 0.0075, z: 0.0075}
+  m_LocalScale: {x: 0.005, y: 0.005, z: 0.005}
   m_Children: []
   m_Father: {fileID: 4773091282930244}
   m_RootOrder: 0
@@ -332,7 +334,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 6a62b754d66af504a9e928929f494965, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -401,6 +403,51 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &114297314268380856
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1724371267623458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59ec37f2702943646bb382f4f3342048, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Target: {fileID: 0}
+  FollowType: 0
+  PivotMode: 0
+  PivotDirection: 1
+  PivotDirectionOrient: 0
+  ManualPivotDirection: {x: 0, y: 1, z: 0}
+  ManualPivotLocalPosition: {x: 0, y: 1, z: 0}
+  PivotDistance: 0.25
+  toolTip: {fileID: 114688644982233374}
+--- !u!114 &114688644982233374
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1724371267623458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f3ef1f946978f84cb6cfe2e2a480e9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tipState: 0
+  groupTipState: 0
+  masterTipState: 0
+  anchor: {fileID: 1062334407734428}
+  pivot: {fileID: 1979676956671760}
+  label: {fileID: 1167109203041942}
+  contentParent: {fileID: 1740257566672574}
+  toolTipText: 
+  backgroundPadding: {x: 0, y: 0}
+  backgroundOffset: {x: 0, y: 0, z: 0}
+  contentScale: 1
+  fontSize: 30
+  attachPointType: 9
+  toolTipLine: {fileID: 0}
 --- !u!135 &135170006872244988
 SphereCollider:
   m_ObjectHideFlags: 1

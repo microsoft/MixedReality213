@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using HoloToolkit.Unity.InputModule;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-
+using UnityEngine.XR.WSA.Input;
 
 namespace MRDL.ToolTips
 {
@@ -133,6 +134,7 @@ namespace MRDL.ToolTips
 
         }
 
+
         private ControllerToolTipGroupManager.ToolTipTemplate DrawTemplateEditor(ControllerToolTipGroupManager.ToolTipTemplate template)
         {
             GUI.color = Color.white;
@@ -173,7 +175,9 @@ namespace MRDL.ToolTips
                 }
                 //bool 
                 //if(EditorGUILayout.Toggle)
-                template.Anchor = (Transform)EditorGUILayout.ObjectField("Anchor object", template.Anchor, typeof(Transform), true);
+                template.Handedness = (InteractionSourceHandedness)EditorGUILayout.EnumPopup("Handedness",template.Handedness);
+                template.ControllerElement = (MotionControllerInfo.ControllerElementEnum)EditorGUILayout.EnumPopup("Element", template.ControllerElement);
+                //template.Anchor = (Transform)EditorGUILayout.ObjectField("Anchor object", template.Anchor, typeof(Transform), true);
             }
             return template;
 

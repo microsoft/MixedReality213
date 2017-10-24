@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using MRDL.ToolTips;
+using HoloToolkit.Unity.InputModule;
+using UnityEngine.XR.WSA.Input;
 
 public class ControllerToolTipGroupManager : MonoBehaviour {
 
@@ -41,7 +43,7 @@ public class ControllerToolTipGroupManager : MonoBehaviour {
         {
             get
             {
-                return Anchor != null;
+                return true;
             }
         }
 
@@ -49,9 +51,12 @@ public class ControllerToolTipGroupManager : MonoBehaviour {
         public PositionModeEnum PositionMode;
         [Tooltip("Object that tooltip will attach to")]
         public Transform Anchor;
+        public Transform Pivot;
         public float LineLength;
         public Vector3 PivotPoint;
         public Vector3 LocalPosition;
+        public InteractionSourceHandedness Handedness;
+        public MotionControllerInfo.ControllerElementEnum ControllerElement;
         //[NonSerialized]
         //[HideInInspector]
         public GameObject AssociatedGameObject;
@@ -282,9 +287,111 @@ public class ControllerToolTipGroupManager : MonoBehaviour {
     //#endif
     #endregion
 
+
+
+
+    public bool Visible
+    {
+        get
+        {
+            return visible;
+        }
+        set
+        {
+            visible = value;
+            if (value)
+                lastTimeVisible = Time.unscaledTime;
+        }
+    }
+
+
+    public Vector2 SelectorPosition
+    {
+        get { return selectorPosition; }
+        set { selectorPosition = value; }
+    }
+
+
+    bool On = true;
+    private IEnumerator Start()
+    {
+        Debug.Log("START - On : " + On);
+        while (!MotionControllerVisualizer.Instance.TryGetController(InteractionSourceHandedness.Left, out controller))
+        {
+            visible = false;
+            // Hide all ToolTips
+            if (On)
+            {
+                for (int i = 0; i < groups.Count; i++)
+                {
+                    for (int j = 0; j < groups[i].ToolTips.Length; j++)
+                    {
+                        if (!(groups[i].ToolTips[j].IsEmpty))
+                        {
+                            groups[i].ToolTips[j].AssociatedGameObject.SetActive(false);
+                        }
+                    }
+                }
+                On = false;
+            }
+            yield return null;
+        }
+
+        if (visible && !On)
+        {
+            Debug.Log("Is Visible and Off");
+            for (int i = 0; i < groups.Count; i++)
+            {
+                for (int j = 0; j < groups[i].ToolTips.Length; j++)
+                {
+                    if (!(groups[i].ToolTips[j].IsEmpty))
+                    {
+                        groups[i].ToolTips[j].AssociatedGameObject.SetActive(true);
+                        // Move Pivot under the anchor (is only needed if anchor is not at 0,0,0
+                        // groups[i].ToolTips[j].Pivot.SetParent(groups[i].ToolTips[j].Anchor);
+                        MotionControllerVisualizer.Instance.TryGetController(groups[i].ToolTips[j].Handedness, out controller);
+                        Transform controllerElementTransform = controller.GetElement(groups[i].ToolTips[j].ControllerElement);
+                        groups[i].ToolTips[j].AssociatedGameObject.transform.position = controllerElementTransform.position;
+
+                    }
+                }
+            }
+            On = true;
+        }
+        //// Parent the picker wheel under the element of choice
+        //Transform elementTransform = controller.GetElement(element);
+        //if (elementTransform == null)
+        //{
+        //    Debug.LogError("Element " + element.ToString() + " not found in controller, can't proceed.");
+        //    gameObject.SetActive(false);
+        //    yield break;
+        //}
+
+        //transform.parent = elementTransform;
+        //transform.localPosition = Vector3.zero;
+        //transform.localRotation = Quaternion.identity;
+
+        // Subscribe to input now that we're parented under the controller
+        //InteractionManager.InteractionSourceUpdated += InteractionSourceUpdated;
+    }
+
+    //private void InteractionSourceUpdated(InteractionSourceUpdatedEventArgs obj)
+    //{
+    //    if (obj.state.source.handedness == handedness)
+    //    {
+    //        if (obj.state.touchpadTouched)
+    //        {
+    //            Visible = true;
+    //            SelectorPosition = obj.state.touchpadPosition;
+    //        }
+    //    }
+    //}
+
     // Use this for initialization
     void Awake()
     {
+        Debug.Log("START - On : " + On);
+
         for (int i = 0; i < groups.Count; i++)
         {
             for (int j = 0; j < groups[i].ToolTips.Length; j++)
@@ -296,7 +403,7 @@ public class ControllerToolTipGroupManager : MonoBehaviour {
                     ToolTip toolTip = toolTipGo.GetComponent<ToolTip>();
                     toolTip.ToolTipText = groups[i].ToolTips[j].Text;
                     toolTip.PivotPosition = groups[i].ToolTips[j].PivotPoint;
-                    toolTip.Anchor.transform.position = groups[i].ToolTips[j].Anchor.position;
+                    //toolTip.Anchor.transform.position = groups[i].ToolTips[j].Anchor.position;
 
 
                     groups[i].ToolTips[j].AssociatedGameObject = toolTipGo;
@@ -320,7 +427,7 @@ public class ControllerToolTipGroupManager : MonoBehaviour {
 
             //toolTip.GroupTipState = ToolTip.TipDisplayModeEnum.OnFocus;
         }
-
+        this.enabled = true;
     }
 
     // Update is called once per frame
@@ -428,9 +535,9 @@ public class ControllerToolTipGroupManager : MonoBehaviour {
                     switch (template.PositionMode)
                     {
                         case PositionModeEnum.Automatic:
-                            anchorPosition = template.Anchor.position;
-                            startPosition = template.Anchor.position;
-                            direction = (startPosition - template.Anchor.position).normalized;
+                            anchorPosition = Vector3.zero;
+                            startPosition = Vector3.zero;
+                            direction = (startPosition - anchorPosition).normalized;
                             endPosition = anchorPosition + (direction * template.LineLength * lineLength);
                             Gizmos.DrawLine(startPosition, endPosition);
                             // TODO - make the cube the size of the tooltip 
@@ -449,6 +556,18 @@ public class ControllerToolTipGroupManager : MonoBehaviour {
             }
         }
     }
+
+    [SerializeField]
+    private bool visible = false;
+
+    private float lastTimeVisible;
+    private bool visibleLastFrame = false;
+
+    [SerializeField]
+    private MotionControllerInfo.ControllerElementEnum element = MotionControllerInfo.ControllerElementEnum.Touchpad;
+    private MotionControllerInfo controller;
+
+    private Vector2 selectorPosition;
 
     // The prefab we'll use to create tooltips
     [SerializeField]
