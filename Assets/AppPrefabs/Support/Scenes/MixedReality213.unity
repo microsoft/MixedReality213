@@ -361,7 +361,7 @@ Prefab:
     - target: {fileID: 114895734277317420, guid: fa4aec5413103264c884daee464826d9,
         type: 2}
       propertyPath: LeftControllerBehavior
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 114895734277317420, guid: fa4aec5413103264c884daee464826d9,
         type: 2}
@@ -372,7 +372,7 @@ Prefab:
         type: 2}
       propertyPath: GLTFMaterial
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 2100000, guid: 2ac78523d661e954c83d799f582b22e8, type: 2}
     - target: {fileID: 114895734277317420, guid: fa4aec5413103264c884daee464826d9,
         type: 2}
       propertyPath: TouchpadTouchBehavior
