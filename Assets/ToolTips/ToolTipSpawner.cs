@@ -3,69 +3,77 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 //
 
+using System;
 using System.Collections;
 using UnityEngine;
 
 namespace MRDL.ToolTips
 {
+    public enum TipVanishBehaviorEnum
+    {
+        Manual,
+        VanishOnFocusExit,
+        VanishOnTap,
+    }
+
+    public enum TipAppearBehaviorEnum
+    {
+        Manual,
+        AppearOnFocusEnter,
+        AppearOnTap,
+    }
+
+    public enum TipRemainBehaviorEnum
+    {
+        Indefinite,
+        Timeout,
+    }
+
+    public class TipSpawnSettings : TipConnectionSettings
+    {
+        public bool IsEmpty
+        {
+            get { return string.IsNullOrEmpty(Text); }
+        }
+
+        public bool IsInstantiated
+        {
+            get { return InstantiatedToolTip != null; }
+        }
+        
+        [Header("Content")]
+        public string Text;
+        [Header("Visibility settings")]
+        public TipAppearBehaviorEnum AppearBehavior = TipAppearBehaviorEnum.Manual;
+        public TipVanishBehaviorEnum VanishBehavior = TipVanishBehaviorEnum.Manual;
+        public TipRemainBehaviorEnum RemainBehavior = TipRemainBehaviorEnum.Indefinite;
+        [Range(0f, 5f)]
+        public float AppearDelay = 1.25f;
+        [Range(0f, 5f)]
+        public float VanishDelay = 2f;
+
+        [NonSerialized]
+        public ToolTip InstantiatedToolTip;
+    }
+
     /// <summary>
     /// Add to any InteractibleObject to spawn ToolTips on tap or on focus, according to preference
     /// Applies its follow settings to the spawned ToolTip's ToolTipConnector component
     /// </summary>
     public class ToolTipSpawner : MonoBehaviour
     {
-        public enum VanishBehaviorEnum
-        {
-            VanishOnFocusExit,
-            VanishOnTap,
-        }
-
-        public enum AppearBehaviorEnum
-        {
-            AppearOnFocusEnter,
-            AppearOnTap,
-        }
-
-        public enum RemainBehaviorEnum
-        {
-            Indefinite,
-            Timeout,
-        }
-
-        [Range(0f, 5f)]
-        public float AppearDelay = 1.25f;
-
-        [Range(0f, 5f)]
-        public float VanishDelay = 2f;
-
-        [Range (0f, 1f)]
-        public float PivotDistance = 0.25f;
-
-        public AppearBehaviorEnum AppearBehavior = AppearBehaviorEnum.AppearOnFocusEnter;
-        public VanishBehaviorEnum VanishBehavior = VanishBehaviorEnum.VanishOnFocusExit;
-        public RemainBehaviorEnum RemainBehavior = RemainBehaviorEnum.Indefinite;
-
-        public ToolTipConnector.FollowTypeEnum FollowType = ToolTipConnector.FollowTypeEnum.AnchorOnly;
-        public ToolTipConnector.PivotModeEnum PivotMode = ToolTipConnector.PivotModeEnum.Manual;
-        public ToolTipConnector.PivotDirectionEnum PivotDirection = ToolTipConnector.PivotDirectionEnum.North;
-        public ToolTipConnector.OrientTypeEnum PivotDirectionOrient = ToolTipConnector.OrientTypeEnum.OrientToObject;
-        public Vector3 ManualPivotDirection = Vector3.up;
-        public Vector3 ManualPivotLocalPosition = Vector3.up;
-
-        public string ToolTipText = "New Tooltip";
+        public TipSpawnSettings Settings;
 
         public GameObject ToolTipPrefab;
-
-        public Transform Anchor;
-
+        
         public void Tapped()
         {
             tappedTime = Time.unscaledTime;
-            if (toolTip == null || !toolTip.gameObject.activeSelf)
+            if (!Settings.IsInstantiated || !Settings.InstantiatedToolTip.gameObject.activeSelf)
             {
-                switch (AppearBehavior)
+                switch (Settings.AppearBehavior)
                 {
-                    case AppearBehaviorEnum.AppearOnTap:
+                    case TipAppearBehaviorEnum.AppearOnTap:
                         ShowToolTip();
                         return;
 
@@ -79,11 +87,11 @@ namespace MRDL.ToolTips
         {
             focusEnterTime = Time.unscaledTime;
             hasFocus = true;
-            if (toolTip == null || !toolTip.gameObject.activeSelf)
+            if (!Settings.IsInstantiated || !Settings.InstantiatedToolTip.gameObject.activeSelf)
             {
-                switch (AppearBehavior)
+                switch (Settings.AppearBehavior)
                 {
-                    case AppearBehaviorEnum.AppearOnFocusEnter:
+                    case TipAppearBehaviorEnum.AppearOnFocusEnter:
                         ShowToolTip();
                         break;
 
@@ -106,20 +114,21 @@ namespace MRDL.ToolTips
 
         private IEnumerator UpdateTooltip(float focusEnterTimeOnStart, float tappedTimeOnStart)
         {
-            if (toolTip == null)
+            if (!Settings.IsInstantiated)
             {
                 GameObject toolTipGo = GameObject.Instantiate(ToolTipPrefab) as GameObject;
-                toolTip = toolTipGo.GetComponent<ToolTip>();                
+                ToolTip toolTip = toolTipGo.GetComponent<ToolTip>();                
                 toolTip.transform.position = transform.position;
                 toolTip.transform.parent = transform;
                 toolTip.gameObject.SetActive(false);
+                Settings.InstantiatedToolTip = toolTip;
             }
 
-            switch (AppearBehavior)
+            switch (Settings.AppearBehavior)
             {
-                case AppearBehaviorEnum.AppearOnFocusEnter:
+                case TipAppearBehaviorEnum.AppearOnFocusEnter:
                     // Wait for the appear delay
-                    yield return new WaitForSeconds(AppearDelay);
+                    yield return new WaitForSeconds(Settings.AppearDelay);
                     // If we don't have focus any more, get out of here
                     if (!hasFocus)
                     {
@@ -128,39 +137,33 @@ namespace MRDL.ToolTips
                     break;
             }
             
-            toolTip.gameObject.SetActive(true);
-            toolTip.ToolTipText = ToolTipText;
-            ToolTipConnector connector = toolTip.GetComponent<ToolTipConnector>();
-            connector.Target = (Anchor != null) ? Anchor.gameObject : gameObject;
-            connector.PivotDirection = PivotDirection;
-            connector.PivotDirectionOrient = PivotDirectionOrient;
-            connector.ManualPivotLocalPosition = ManualPivotLocalPosition;
-            connector.ManualPivotDirection = ManualPivotDirection;
-            connector.FollowType = FollowType;
-            connector.PivotMode = PivotMode;
-            if (PivotMode == ToolTipConnector.PivotModeEnum.Manual)
-                toolTip.PivotPosition = transform.TransformPoint(ManualPivotLocalPosition);
+            Settings.InstantiatedToolTip.gameObject.SetActive(true);
+            Settings.InstantiatedToolTip.ToolTipText = Settings.Text;
+            ToolTipConnector connector = Settings.InstantiatedToolTip.GetComponent<ToolTipConnector>();
+            connector.Settings = Settings;
+            if (Settings.PivotMode == TipPivotModeEnum.Manual)
+                Settings.InstantiatedToolTip.PivotPosition = transform.TransformPoint(Settings.ManualPivotLocalPosition);
 
-            while (toolTip.gameObject.activeSelf)
+            while (Settings.InstantiatedToolTip.gameObject.activeSelf)
             {
                 //check whether we're suppose to disappear
-                switch (VanishBehavior)
+                switch (Settings.VanishBehavior)
                 {
-                    case VanishBehaviorEnum.VanishOnFocusExit:
+                    case TipVanishBehaviorEnum.VanishOnFocusExit:
                     default:
                         if (!hasFocus)
                         {
-                            if (Time.time - focusExitTime > VanishDelay)
+                            if (Time.time - focusExitTime > Settings.VanishDelay)
                             {
-                                toolTip.gameObject.SetActive(false);
+                                Settings.InstantiatedToolTip.gameObject.SetActive(false);
                             }
                         }
                         break;
 
-                    case VanishBehaviorEnum.VanishOnTap:
+                    case TipVanishBehaviorEnum.VanishOnTap:
                         if (tappedTime != tappedTimeOnStart)
                         {
-                            toolTip.gameObject.SetActive(false);
+                            Settings.InstantiatedToolTip.gameObject.SetActive(false);
                         }
                         break;
                 }
@@ -168,49 +171,48 @@ namespace MRDL.ToolTips
             }
             yield break;
         }
-
-        #if UNITY_EDITOR
+        
         private void OnDrawGizmos()
         {
             if (Application.isPlaying)
                 return;
 
-            if (gameObject == UnityEditor.Selection.activeGameObject)
+            Gizmos.color = Color.cyan;
+            Transform relativeTo = null;
+            switch (Settings.PivotDirectionOrient)
             {
-                Gizmos.color = Color.cyan;
-                Transform relativeTo = null;
-                switch (PivotDirectionOrient) {
-                    case ToolTipConnector.OrientTypeEnum.OrientToCamera:
-                        relativeTo = Camera.main.transform;//Veil.Instance.HeadTransform;
-                        break;
+                case TipOrientTypeEnum.OrientToCamera:
+                    relativeTo = Camera.main.transform;//Veil.Instance.HeadTransform;
+                    break;
 
-                    case ToolTipConnector.OrientTypeEnum.OrientToObject:
-                        relativeTo = (Anchor != null) ? Anchor.transform : transform;
-                        break;
-                }
-                if (PivotMode == ToolTipConnector.PivotModeEnum.Automatic) {
-                    Vector3 targetPosition = (Anchor != null) ? Anchor.transform.position : transform.position;
-                    Vector3 toolTipPosition = targetPosition + ToolTipConnector.GetDirectionFromPivotDirection(
-                                    PivotDirection,
-                                    ManualPivotDirection,
-                                    relativeTo) * PivotDistance;
-                    Gizmos.DrawLine(targetPosition, toolTipPosition);
-                    Gizmos.DrawWireCube(toolTipPosition, Vector3.one * 0.05f);
-                } else {
-                    Vector3 targetPosition = (Anchor != null) ? Anchor.transform.position : transform.position;
-                    Vector3 toolTipPosition = transform.TransformPoint (ManualPivotLocalPosition);
-                    Gizmos.DrawLine(targetPosition, toolTipPosition);
-                    Gizmos.DrawWireCube(toolTipPosition, Vector3.one * 0.05f);
-                }
+                case TipOrientTypeEnum.OrientToObject:
+                    relativeTo = (Settings.Target != null) ? Settings.Target.transform : transform;
+                    break;
+            }
+
+            if (Settings.PivotMode == TipPivotModeEnum.Automatic)
+            {
+                Vector3 targetPosition = (Settings.Target != null) ? Settings.Target.transform.position : transform.position;
+                Vector3 toolTipPosition = targetPosition + ToolTipConnector.GetDirectionFromPivotDirection(
+                                Settings.PivotDirection,
+                                Settings.ManualPivotDirection,
+                                relativeTo) * Settings.PivotDistance;
+                Gizmos.DrawLine(targetPosition, toolTipPosition);
+                Gizmos.DrawWireCube(toolTipPosition, Vector3.one * 0.05f);
+            }
+            else
+            {
+                Vector3 targetPosition = (Settings.Target != null) ? Settings.Target.transform.position : transform.position;
+                Vector3 toolTipPosition = transform.TransformPoint(Settings.ManualPivotLocalPosition);
+                Gizmos.DrawLine(targetPosition, toolTipPosition);
+                Gizmos.DrawWireCube(toolTipPosition, Vector3.one * 0.05f);
             }
         }
-        #endif
 
         private float focusEnterTime = 0f;
         private float focusExitTime = 0f;
         private float tappedTime = 0f;
         private float targetDisappearTime = Mathf.Infinity;
         private bool hasFocus;
-        private ToolTip toolTip;
     }
 }

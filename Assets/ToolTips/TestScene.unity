@@ -112,6 +112,56 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1001 &426434687
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4015493888224476, guid: 897b8e365dc77d446af181c5875b63ae, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4015493888224476, guid: 897b8e365dc77d446af181c5875b63ae, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0.241
+      objectReference: {fileID: 0}
+    - target: {fileID: 4015493888224476, guid: 897b8e365dc77d446af181c5875b63ae, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4015493888224476, guid: 897b8e365dc77d446af181c5875b63ae, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4015493888224476, guid: 897b8e365dc77d446af181c5875b63ae, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4015493888224476, guid: 897b8e365dc77d446af181c5875b63ae, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4015493888224476, guid: 897b8e365dc77d446af181c5875b63ae, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4015493888224476, guid: 897b8e365dc77d446af181c5875b63ae, type: 2}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1724371267623458, guid: 897b8e365dc77d446af181c5875b63ae, type: 2}
+      propertyPath: m_Name
+      value: BasicToolTip
+      objectReference: {fileID: 0}
+    - target: {fileID: 1724371267623458, guid: 897b8e365dc77d446af181c5875b63ae, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 897b8e365dc77d446af181c5875b63ae, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1001 &876727802
 Prefab:
   m_ObjectHideFlags: 0
@@ -176,7 +226,7 @@ GameObject:
   - component: {fileID: 1062896883}
   - component: {fileID: 1062896882}
   m_Layer: 0
-  m_Name: GroupManager
+  m_Name: ControllerTips
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -193,232 +243,133 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f67c430541119064ba2382d424159d1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visible: 0
-  element: 5
-  toolTipPrefab: {fileID: 0}
-  lineLength: 1
-  OriginTransform: {fileID: 0}
-  groupIndex: 0
   groups:
-  - GroupName: New Group
-    GroupDisplayMode: 0
-    ToolTips:
-    - Text: 'TEST TEST '
-      PositionMode: 0
-      Anchor: {fileID: 0}
-      Pivot: {fileID: 0}
-      LineLength: 1
-      PivotPoint: {x: 0, y: 0, z: 0.34923244}
-      LocalPosition: {x: 0, y: 0, z: 0}
-      Handedness: 0
-      ControllerElement: 0
-      AssociatedGameObject: {fileID: 0}
-    - Text: 
-      PositionMode: 0
-      Anchor: {fileID: 0}
-      Pivot: {fileID: 0}
-      LineLength: 0
-      PivotPoint: {x: 0, y: 0, z: 0}
-      LocalPosition: {x: 0, y: 0, z: 0}
-      Handedness: 0
-      ControllerElement: 0
-      AssociatedGameObject: {fileID: 0}
-    - Text: 
-      PositionMode: 0
-      Anchor: {fileID: 0}
-      Pivot: {fileID: 0}
-      LineLength: 1
-      PivotPoint: {x: 0, y: 0, z: 0}
-      LocalPosition: {x: 0, y: 0, z: 0}
-      Handedness: 0
-      ControllerElement: 0
-      AssociatedGameObject: {fileID: 0}
-    - Text: 
-      PositionMode: 0
-      Anchor: {fileID: 0}
-      Pivot: {fileID: 0}
-      LineLength: 1
-      PivotPoint: {x: 0, y: 0, z: 0}
-      LocalPosition: {x: 0, y: 0, z: 0}
-      Handedness: 0
-      ControllerElement: 0
-      AssociatedGameObject: {fileID: 0}
-    - Text: 
-      PositionMode: 0
-      Anchor: {fileID: 0}
-      Pivot: {fileID: 0}
-      LineLength: 1
-      PivotPoint: {x: 0, y: 0, z: 0}
-      LocalPosition: {x: 0, y: 0, z: 0}
-      Handedness: 0
-      ControllerElement: 0
-      AssociatedGameObject: {fileID: 0}
-    - Text: 
-      PositionMode: 0
-      Anchor: {fileID: 0}
-      Pivot: {fileID: 0}
-      LineLength: 1
-      PivotPoint: {x: 0, y: 0, z: 0}
-      LocalPosition: {x: 0, y: 0, z: 0}
-      Handedness: 0
-      ControllerElement: 0
-      AssociatedGameObject: {fileID: 0}
-    - Text: 
-      PositionMode: 0
-      Anchor: {fileID: 0}
-      Pivot: {fileID: 0}
-      LineLength: 1
-      PivotPoint: {x: 0, y: 0, z: 0}
-      LocalPosition: {x: 0, y: 0, z: 0}
-      Handedness: 0
-      ControllerElement: 0
-      AssociatedGameObject: {fileID: 0}
-    - Text: 
-      PositionMode: 0
-      Anchor: {fileID: 0}
-      Pivot: {fileID: 0}
-      LineLength: 1
-      PivotPoint: {x: 0, y: 0, z: 0}
-      LocalPosition: {x: 0, y: 0, z: 0}
-      Handedness: 0
-      ControllerElement: 0
-      AssociatedGameObject: {fileID: 0}
-    - Text: 
-      PositionMode: 0
-      Anchor: {fileID: 0}
-      Pivot: {fileID: 0}
-      LineLength: 1
-      PivotPoint: {x: 0, y: 0, z: 0}
-      LocalPosition: {x: 0, y: 0, z: 0}
-      Handedness: 0
-      ControllerElement: 0
-      AssociatedGameObject: {fileID: 0}
-    - Text: 
-      PositionMode: 0
-      Anchor: {fileID: 0}
-      Pivot: {fileID: 0}
-      LineLength: 1
-      PivotPoint: {x: 0, y: 0, z: 0}
-      LocalPosition: {x: 0, y: 0, z: 0}
-      Handedness: 0
-      ControllerElement: 0
-      AssociatedGameObject: {fileID: 0}
-    - Text: 
-      PositionMode: 0
-      Anchor: {fileID: 0}
-      Pivot: {fileID: 0}
-      LineLength: 1
-      PivotPoint: {x: 0, y: 0, z: 0}
-      LocalPosition: {x: 0, y: 0, z: 0}
-      Handedness: 0
-      ControllerElement: 0
-      AssociatedGameObject: {fileID: 0}
-    - Text: 
-      PositionMode: 0
-      Anchor: {fileID: 0}
-      Pivot: {fileID: 0}
-      LineLength: 1
-      PivotPoint: {x: 0, y: 0, z: 0}
-      LocalPosition: {x: 0, y: 0, z: 0}
-      Handedness: 0
-      ControllerElement: 0
-      AssociatedGameObject: {fileID: 0}
-    - Text: 
-      PositionMode: 0
-      Anchor: {fileID: 0}
-      Pivot: {fileID: 0}
-      LineLength: 1
-      PivotPoint: {x: 0, y: 0, z: 0}
-      LocalPosition: {x: 0, y: 0, z: 0}
-      Handedness: 0
-      ControllerElement: 0
-      AssociatedGameObject: {fileID: 0}
-    - Text: 
-      PositionMode: 0
-      Anchor: {fileID: 0}
-      Pivot: {fileID: 0}
-      LineLength: 1
-      PivotPoint: {x: 0, y: 0, z: 0}
-      LocalPosition: {x: 0, y: 0, z: 0}
-      Handedness: 0
-      ControllerElement: 0
-      AssociatedGameObject: {fileID: 0}
-    - Text: 
-      PositionMode: 0
-      Anchor: {fileID: 0}
-      Pivot: {fileID: 0}
-      LineLength: 1
-      PivotPoint: {x: 0, y: 0, z: 0}
-      LocalPosition: {x: 0, y: 0, z: 0}
-      Handedness: 0
-      ControllerElement: 0
-      AssociatedGameObject: {fileID: 0}
-    - Text: 
-      PositionMode: 0
-      Anchor: {fileID: 0}
-      Pivot: {fileID: 0}
-      LineLength: 1
-      PivotPoint: {x: 0, y: 0, z: 0}
-      LocalPosition: {x: 0, y: 0, z: 0}
-      Handedness: 0
-      ControllerElement: 0
-      AssociatedGameObject: {fileID: 0}
-    - Text: 
-      PositionMode: 0
-      Anchor: {fileID: 0}
-      Pivot: {fileID: 0}
-      LineLength: 1
-      PivotPoint: {x: 0, y: 0, z: 0}
-      LocalPosition: {x: 0, y: 0, z: 0}
-      Handedness: 0
-      ControllerElement: 0
-      AssociatedGameObject: {fileID: 0}
-    - Text: 
-      PositionMode: 0
-      Anchor: {fileID: 0}
-      Pivot: {fileID: 0}
-      LineLength: 1
-      PivotPoint: {x: 0, y: 0, z: 0}
-      LocalPosition: {x: 0, y: 0, z: 0}
-      Handedness: 0
-      ControllerElement: 0
-      AssociatedGameObject: {fileID: 0}
-    - Text: 
-      PositionMode: 0
-      Anchor: {fileID: 0}
-      Pivot: {fileID: 0}
-      LineLength: 1
-      PivotPoint: {x: 0, y: 0, z: 0}
-      LocalPosition: {x: 0, y: 0, z: 0}
-      Handedness: 0
-      ControllerElement: 0
-      AssociatedGameObject: {fileID: 0}
-    - Text: 
-      PositionMode: 0
-      Anchor: {fileID: 0}
-      Pivot: {fileID: 0}
-      LineLength: 1
-      PivotPoint: {x: 0, y: 0, z: 0}
-      LocalPosition: {x: 0, y: 0, z: 0}
-      Handedness: 0
-      ControllerElement: 0
-      AssociatedGameObject: {fileID: 0}
-    visibleToolTipsCount: 1
-    groupPrefab: {fileID: 1724371267623458, guid: 897b8e365dc77d446af181c5875b63ae,
+  - Name: Blah
+    TipPrefab: {fileID: 1724371267623458, guid: 897b8e365dc77d446af181c5875b63ae,
       type: 2}
+    Templates:
+    - FollowType: 2
+      PivotMode: 1
+      PivotDirection: 1
+      PivotDirectionOrient: 0
+      ManualPivotDirection: {x: 0, y: 1, z: 0}
+      ManualPivotLocalPosition: {x: 0.79, y: 3.61, z: -0.5}
+      PivotDistance: 0.1
+      Target: {fileID: 0}
+      Text: Blah de blah
+      AppearBehavior: 0
+      VanishBehavior: 0
+      RemainBehavior: 0
+      AppearDelay: 1.25
+      VanishDelay: 2
+      ControllerElement: 0
+    - FollowType: 1
+      PivotMode: 1
+      PivotDirection: 3
+      PivotDirectionOrient: 1
+      ManualPivotDirection: {x: 0, y: 1, z: 0}
+      ManualPivotLocalPosition: {x: 0, y: 1, z: 0}
+      PivotDistance: 0.25
+      Target: {fileID: 0}
+      Text: New ToolTip
+      AppearBehavior: 0
+      VanishBehavior: 0
+      RemainBehavior: 0
+      AppearDelay: 1.25
+      VanishDelay: 2
+      ControllerElement: 2
+    - FollowType: 1
+      PivotMode: 1
+      PivotDirection: 1
+      PivotDirectionOrient: 1
+      ManualPivotDirection: {x: 0, y: 1, z: 0}
+      ManualPivotLocalPosition: {x: 0, y: 1, z: 0}
+      PivotDistance: 0.25
+      Target: {fileID: 0}
+      Text: Yippee
+      AppearBehavior: 0
+      VanishBehavior: 0
+      RemainBehavior: 0
+      AppearDelay: 1.25
+      VanishDelay: 2
+      ControllerElement: 4
+    DisplayMode: 0
+    EditorColor: {r: 0.5310346, g: 1, b: 0, a: 1}
+  - Name: New Group
+    TipPrefab: {fileID: 0}
+    Templates:
+    - FollowType: 1
+      PivotMode: 1
+      PivotDirection: 3
+      PivotDirectionOrient: 0
+      ManualPivotDirection: {x: 0, y: 1, z: 0}
+      ManualPivotLocalPosition: {x: 0, y: 1, z: 0}
+      PivotDistance: 0.25
+      Target: {fileID: 0}
+      Text: Another ToolTip
+      AppearBehavior: 0
+      VanishBehavior: 0
+      RemainBehavior: 0
+      AppearDelay: 1.25
+      VanishDelay: 2
+      ControllerElement: 0
+    - FollowType: 1
+      PivotMode: 1
+      PivotDirection: 8
+      PivotDirectionOrient: 0
+      ManualPivotDirection: {x: 0, y: 1, z: 0}
+      ManualPivotLocalPosition: {x: 0, y: 1, z: 0}
+      PivotDistance: 0.25
+      Target: {fileID: 0}
+      Text: Home Tool Tip
+      AppearBehavior: 0
+      VanishBehavior: 0
+      RemainBehavior: 0
+      AppearDelay: 1.25
+      VanishDelay: 2
+      ControllerElement: 0
+    DisplayMode: 0
+    EditorColor: {r: 0, g: 1, b: 1, a: 1}
+  - Name: New Group
+    TipPrefab: {fileID: 0}
+    Templates:
+    - FollowType: 1
+      PivotMode: 1
+      PivotDirection: 2
+      PivotDirectionOrient: 1
+      ManualPivotDirection: {x: 0, y: 1, z: 0}
+      ManualPivotLocalPosition: {x: 0, y: 1, z: 0}
+      PivotDistance: 0.25
+      Target: {fileID: 0}
+      Text: Blarg
+      AppearBehavior: 0
+      VanishBehavior: 0
+      RemainBehavior: 0
+      AppearDelay: 1.25
+      VanishDelay: 2
+      ControllerElement: 0
+    DisplayMode: 0
+    EditorColor: {r: 1, g: 0, b: 0, a: 1}
+  lineLength: 1
+  groupIndex: 0
+  TestingPrefab: {fileID: 1087732101620662, guid: 503d7fa7ab6bf5a42803168b10c78f40,
+    type: 2}
+  handedness: 0
+  toggleTipsPress: 2
 --- !u!4 &1062896883
 Transform:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1062896881}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0.2157319, y: -0.77758616, z: -0.24583651, w: 0.537014}
+  m_LocalPosition: {x: 0.101, y: 1.2597, z: 0.2459}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 1444086252}
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -37.881, y: -112.52501, z: 5.195}
 --- !u!1 &1067835404
 GameObject:
   m_ObjectHideFlags: 0
@@ -568,3 +519,31 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e2b08c7188345fa429a8f6ae08ada0a8, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &1444086251
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1444086252}
+  m_Layer: 0
+  m_Name: Testing Transform
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1444086252
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1444086251}
+  m_LocalRotation: {x: 0.0000015034047, y: 0.089178905, z: 0.062443834, w: 0.9940563}
+  m_LocalPosition: {x: -0.0017231021, y: 0.011416459, z: 0.018988706}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1062896883}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

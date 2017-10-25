@@ -3,6 +3,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 //
 using MRDL.Design;
+using MRDL.Utility;
 using System;
 using UnityEngine;
 
@@ -179,9 +180,7 @@ namespace MRDL.ToolTips
             //    }
             //}
             get { return true; }
-        }
-
-        
+        }       
 
         public TipDisplayModeEnum TipState {
             get
@@ -285,8 +284,7 @@ namespace MRDL.ToolTips
         protected LineBase toolTipLine;
 
         #endregion
-
-
+        
         protected virtual void OnEnable() {
 
             // Get our line if it exists
@@ -330,11 +328,10 @@ namespace MRDL.ToolTips
                 text.anchor = TextAnchor.MiddleCenter;
                 // Get the world scale of the text
                 // Convert that to local scale using the content parent
-
-                // FIX HUX BUTTON NO LONGER EXISTS
-                //Vector3 localScale = text.GetLocalScale();
-                //localContentSize.x = localScale.x + backgroundPadding.x;
-                //localContentSize.y = localScale.y + backgroundPadding.y;
+                
+                Vector3 localScale = text.GetLocalScale();
+                localContentSize.x = localScale.x + backgroundPadding.x;
+                localContentSize.y = localScale.y + backgroundPadding.y;
             }
             // Now that we have the size of our content, get our pivots
             ToolTipUtility.GetAttachPointPositions(ref localAttachPointPositions, localContentSize);
