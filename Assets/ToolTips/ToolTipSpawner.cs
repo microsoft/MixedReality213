@@ -29,6 +29,7 @@ namespace MRDL.ToolTips
         Timeout,
     }
 
+    [Serializable]
     public class TipSpawnSettings : TipConnectionSettings
     {
         public bool IsEmpty
@@ -52,7 +53,6 @@ namespace MRDL.ToolTips
         [Range(0f, 5f)]
         public float VanishDelay = 2f;
 
-        [NonSerialized]
         public ToolTip InstantiatedToolTip;
     }
 
@@ -65,7 +65,13 @@ namespace MRDL.ToolTips
         public TipSpawnSettings Settings;
 
         public GameObject ToolTipPrefab;
-        
+
+        private float focusEnterTime = 0f;
+        private float focusExitTime = 0f;
+        private float tappedTime = 0f;
+        private float targetDisappearTime = Mathf.Infinity;
+        private bool hasFocus;
+
         public void Tapped()
         {
             tappedTime = Time.unscaledTime;
@@ -107,8 +113,23 @@ namespace MRDL.ToolTips
             hasFocus = false;
         }
 
-        private void ShowToolTip()
+        public void HideToolTip()
         {
+            if (!Settings.IsInstantiated)
+            {
+                Debug.Log("Instantiating tooltip");
+                GameObject toolTipGo = GameObject.Instantiate(ToolTipPrefab) as GameObject;
+                ToolTip toolTip = toolTipGo.GetComponent<ToolTip>();
+                toolTip.transform.position = transform.position;
+                toolTip.transform.parent = transform;
+                toolTip.gameObject.SetActive(false);
+                Settings.InstantiatedToolTip = toolTip;
+            }
+        }
+
+        public void ShowToolTip()
+        {
+            Debug.Log("Showing tool tip");
             StartCoroutine(UpdateTooltip(focusEnterTime, tappedTime));
         }
 
@@ -116,6 +137,7 @@ namespace MRDL.ToolTips
         {
             if (!Settings.IsInstantiated)
             {
+                Debug.Log("Instantiating tooltip");
                 GameObject toolTipGo = GameObject.Instantiate(ToolTipPrefab) as GameObject;
                 ToolTip toolTip = toolTipGo.GetComponent<ToolTip>();                
                 toolTip.transform.position = transform.position;
@@ -136,25 +158,39 @@ namespace MRDL.ToolTips
                     }
                     break;
             }
-            
+
+            // wait one tick
+            yield return null;
+
+            Debug.Log("Setting to active...");
+
+            ToolTipConnector connector = Settings.InstantiatedToolTip.GetComponent<ToolTipConnector>();
+            if (connector == null)
+                connector = Settings.InstantiatedToolTip.gameObject.AddComponent<ToolTipConnector>();
+
+            connector.Settings = Settings;
+
             Settings.InstantiatedToolTip.gameObject.SetActive(true);
             Settings.InstantiatedToolTip.ToolTipText = Settings.Text;
-            ToolTipConnector connector = Settings.InstantiatedToolTip.GetComponent<ToolTipConnector>();
-            connector.Settings = Settings;
-            if (Settings.PivotMode == TipPivotModeEnum.Manual)
+
+            if (Settings.PivotMode == TipPivotModeEnum.ManualPosition)
                 Settings.InstantiatedToolTip.PivotPosition = transform.TransformPoint(Settings.ManualPivotLocalPosition);
 
             while (Settings.InstantiatedToolTip.gameObject.activeSelf)
             {
+                Debug.Log("Still active...");
                 //check whether we're suppose to disappear
                 switch (Settings.VanishBehavior)
                 {
+                    case TipVanishBehaviorEnum.Manual:
+                        break;
+
                     case TipVanishBehaviorEnum.VanishOnFocusExit:
-                    default:
                         if (!hasFocus)
                         {
                             if (Time.time - focusExitTime > Settings.VanishDelay)
                             {
+                                Debug.Log("Setting tooltip inactive");
                                 Settings.InstantiatedToolTip.gameObject.SetActive(false);
                             }
                         }
@@ -163,12 +199,16 @@ namespace MRDL.ToolTips
                     case TipVanishBehaviorEnum.VanishOnTap:
                         if (tappedTime != tappedTimeOnStart)
                         {
+                            Debug.Log("Setting tooltip inactive");
                             Settings.InstantiatedToolTip.gameObject.SetActive(false);
                         }
                         break;
                 }
                 yield return null;
             }
+
+            Debug.Log("Tool tip no longer active, ending update");
+
             yield break;
         }
         
@@ -208,11 +248,5 @@ namespace MRDL.ToolTips
                 Gizmos.DrawWireCube(toolTipPosition, Vector3.one * 0.05f);
             }
         }
-
-        private float focusEnterTime = 0f;
-        private float focusExitTime = 0f;
-        private float tappedTime = 0f;
-        private float targetDisappearTime = Mathf.Infinity;
-        private bool hasFocus;
     }
 }

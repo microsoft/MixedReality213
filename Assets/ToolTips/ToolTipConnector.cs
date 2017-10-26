@@ -23,8 +23,9 @@ namespace MRDL.ToolTips
 
     public enum TipPivotModeEnum
     {
-        Manual,         // Tooltip pivot will be set manually
-        Automatic,      // Tooltip pivot will be set relative to object/camera based on specified direction and line length
+        ManualPosition,     // Tooltip pivot will be set manually
+        ManualDirection,    // Tooltip pivot direction will be set manually
+        Automatic,          // Tooltip pivot will be set relative to object/camera based on specified direction and line length
     }
 
     public enum TipPivotDirectionEnum
@@ -41,14 +42,22 @@ namespace MRDL.ToolTips
         InFront,
     }
 
+    public enum TipContentBillboardTypeEnum
+    {
+        None,
+        ToCameraY,
+        ToCameraFull,
+    }
+
     [Serializable]
     public class TipConnectionSettings
     {
         [Header("Automatic placement settings")]
         public TipFollowTypeEnum FollowType = TipFollowTypeEnum.AnchorOnly;
-        public TipPivotModeEnum PivotMode = TipPivotModeEnum.Manual;
+        public TipPivotModeEnum PivotMode = TipPivotModeEnum.ManualPosition;
         public TipPivotDirectionEnum PivotDirection = TipPivotDirectionEnum.North;
         public TipOrientTypeEnum PivotDirectionOrient = TipOrientTypeEnum.OrientToObject;
+        public TipContentBillboardTypeEnum ContentBillboardType = TipContentBillboardTypeEnum.None;
         [Header("Manual placement settings")]
         public Vector3 ManualPivotDirection = Vector3.up;
         public Vector3 ManualPivotLocalPosition = Vector3.up;
@@ -64,6 +73,12 @@ namespace MRDL.ToolTips
     public class ToolTipConnector : MonoBehaviour
     {
         public TipConnectionSettings Settings;
+
+        private Vector3 toolTipPos;
+        private Vector3 toolTipRot;
+        private Vector3 anchorPos;
+        private Vector3 pivotPos;
+        private Vector3 contentRot;
 
         private void OnEnable()
         {
@@ -92,119 +107,19 @@ namespace MRDL.ToolTips
             if (!FindToolTip())
                 return;
 
-            Vector3 toolTipPos = toolTip.transform.position;
-            Vector3 toolTipRot = toolTip.transform.eulerAngles;
-            Vector3 anchorPos = toolTip.AnchorPosition;
-            Vector3 pivotPos = toolTip.PivotPosition;
+            toolTipPos = toolTip.transform.position;
+            toolTipRot = toolTip.transform.eulerAngles;
+            anchorPos = toolTip.AnchorPosition;
+            pivotPos = toolTip.PivotPosition;
+            contentRot = toolTip.ContentParentTransform.eulerAngles;
 
-            GetTransformationsFromSettings(Settings, ref toolTipPos, ref toolTipRot, ref anchorPos, ref pivotPos);
+            GetTransformationsFromSettings(Settings, ref toolTipPos, ref toolTipRot, ref anchorPos, ref pivotPos, ref contentRot);
 
             toolTip.transform.position = toolTipPos;
             toolTip.transform.eulerAngles = toolTipRot;
             toolTip.Anchor.transform.position = anchorPos;
             toolTip.PivotPosition = pivotPos;
-
-            /*switch (Settings.FollowType)
-            {
-                case TipFollowTypeEnum.AnchorOnly:
-                default:
-                    // Set the position of the anchor to the target's position
-                    // And do nothing else
-                    toolTip.Anchor.transform.position = Settings.Target.transform.position;
-                    break;
-
-                case TipFollowTypeEnum.PositionOnly:
-                    // Move the entire tooltip transform while maintaining the anchor position offset
-                    toolTip.transform.position = Settings.Target.transform.position;
-                    switch (Settings.PivotMode)
-                    {
-                        case TipPivotModeEnum.Automatic:
-                            Transform relativeTo = null;
-                            switch (Settings.PivotDirectionOrient)
-                            {
-                                case TipOrientTypeEnum.OrientToCamera:
-                                    relativeTo = Camera.main.transform;//Veil.Instance.HeadTransform;
-                                    break;
-
-                                case TipOrientTypeEnum.OrientToObject:
-                                    relativeTo = Settings.Target.transform;
-                                    break;
-                            }
-                            toolTip.PivotPosition = Settings.Target.transform.position + GetDirectionFromPivotDirection(
-                                Settings.PivotDirection,
-                                Settings.ManualPivotDirection,
-                                relativeTo) * Settings.PivotDistance;
-                            break;
-
-                        case TipPivotModeEnum.Manual:
-                            // Do nothing
-                            break;
-                    }
-                    break;
-
-                case TipFollowTypeEnum.PositionAndYRotation:
-                    // Set the transform of the entire tool tip
-                    // Set the pivot relative to target/camera
-                    toolTip.transform.position = Settings.Target.transform.position;
-                    Vector3 eulerAngles = Settings.Target.transform.eulerAngles;
-                    eulerAngles.x = 0f;
-                    eulerAngles.z = 0f;
-                    toolTip.transform.eulerAngles = eulerAngles;
-                    switch (Settings.PivotMode)
-                    {
-                        case TipPivotModeEnum.Automatic:
-                            Transform relativeTo = null;
-                            switch (Settings.PivotDirectionOrient)
-                            {
-                                case TipOrientTypeEnum.OrientToCamera:
-                                    relativeTo = Camera.main.transform;//Veil.Instance.HeadTransform;
-                                    break;
-
-                                case TipOrientTypeEnum.OrientToObject:
-                                    relativeTo = Settings.Target.transform;
-                                    break;
-                            }
-                            Vector3 localPosition = GetDirectionFromPivotDirection(Settings.PivotDirection, Settings.ManualPivotDirection, relativeTo) * Settings.PivotDistance;
-                            toolTip.PivotPosition = Settings.Target.transform.position + localPosition;
-                            break;
-
-                        case TipPivotModeEnum.Manual:
-                            // Do nothing
-                            break;
-                    }
-                    break;
-
-                case TipFollowTypeEnum.PositionAndRotation:
-                    // Set the transform of the entire tool tip
-                    // Set the pivot relative to target/camera
-                    toolTip.transform.position = Settings.Target.transform.position;
-                    toolTip.transform.rotation = Settings.Target.transform.rotation;
-                    switch (Settings.PivotMode)
-                    {
-                        case TipPivotModeEnum.Automatic:
-                            Transform relativeTo = null;
-                            switch (Settings.PivotDirectionOrient)
-                            {
-                                case TipOrientTypeEnum.OrientToCamera:
-                                    relativeTo = Camera.main.transform;//Veil.Instance.HeadTransform;
-                                    break;
-
-                                case TipOrientTypeEnum.OrientToObject:
-                                    relativeTo = Settings.Target.transform;
-                                    break;
-                            }
-                            toolTip.PivotPosition = Settings.Target.transform.position + GetDirectionFromPivotDirection(
-                                Settings.PivotDirection,
-                                Settings.ManualPivotDirection,
-                                relativeTo) * Settings.PivotDistance;
-                            break;
-
-                        case TipPivotModeEnum.Manual:
-                            // Do nothing
-                            break;
-                    }
-                    break;
-            }*/
+            toolTip.ContentParentTransform.eulerAngles = contentRot;
         }
 
         private void Update()
@@ -223,6 +138,13 @@ namespace MRDL.ToolTips
             UpdatePosition();
         }
 
+        /// <summary>
+        /// Uses pivot direction enum to determine pivot direction in world space
+        /// </summary>
+        /// <param name="pivotDirection"></param>
+        /// <param name="manualPivotDirection"></param>
+        /// <param name="relativeTo"></param>
+        /// <returns></returns>
         public static Vector3 GetDirectionFromPivotDirection (TipPivotDirectionEnum pivotDirection, Vector3 manualPivotDirection, Transform relativeTo)
         {
             Vector3 dir = Vector3.zero;
@@ -271,7 +193,7 @@ namespace MRDL.ToolTips
 
             return relativeTo.TransformDirection(dir);
         }
-
+        
         /// <summary>
         /// Uses tip connection settings to calculate the transformations of ToolTip elements
         /// target is a dummy value that is overridden if the Target in settings is not null
@@ -281,8 +203,18 @@ namespace MRDL.ToolTips
         /// <param name="toolTipRot"></param>
         /// <param name="anchorPos"></param>
         /// <param name="pivotPos"></param>
+        /// <param name="contentRot"></param>
         /// <param name="cam"></param>
-        public static void GetTransformationsFromSettings (TipConnectionSettings settings, ref Vector3 toolTipPos, ref Vector3 toolTipRot, ref Vector3 anchorPos, ref Vector3 pivotPos, Camera cam = null, Transform target = null)
+        /// <param name="target"></param>
+        public static void GetTransformationsFromSettings (
+            TipConnectionSettings settings, 
+            ref Vector3 toolTipPos, 
+            ref Vector3 toolTipRot, 
+            ref Vector3 anchorPos, 
+            ref Vector3 pivotPos, 
+            ref Vector3 contentRot, 
+            Camera cam = null, 
+            Transform target = null)
         {
             if (settings == null)
             {
@@ -300,6 +232,22 @@ namespace MRDL.ToolTips
             target = (settings.Target != null) ? settings.Target.transform : target;
             Vector3 targetPos = target.transform.position;
             Vector3 targetRot = target.transform.eulerAngles;
+            anchorPos = targetPos;
+
+            switch (settings.ContentBillboardType)
+            {
+                case TipContentBillboardTypeEnum.None:
+                    break;
+
+                case TipContentBillboardTypeEnum.ToCameraY:
+                    Vector3 cameraEulerAngles = (cam != null) ? cam.transform.eulerAngles : Camera.current.transform.eulerAngles;
+                    contentRot.y = cameraEulerAngles.y;
+                    break;
+
+                case TipContentBillboardTypeEnum.ToCameraFull:
+                    contentRot = (cam != null) ? cam.transform.eulerAngles : Camera.current.transform.eulerAngles;
+                    break;
+            }
 
             switch (settings.FollowType)
             {
@@ -320,7 +268,7 @@ namespace MRDL.ToolTips
                             switch (settings.PivotDirectionOrient)
                             {
                                 case TipOrientTypeEnum.OrientToCamera:
-                                    relativeTo = (cam != null) ? cam.transform : Camera.main.transform;
+                                    relativeTo = (cam != null) ? cam.transform : Camera.current.transform;
                                     break;
 
                                 case TipOrientTypeEnum.OrientToObject:
@@ -333,8 +281,12 @@ namespace MRDL.ToolTips
                                 relativeTo) * settings.PivotDistance;
                             break;
 
-                        case TipPivotModeEnum.Manual:
-                            // Do nothing
+                        case TipPivotModeEnum.ManualPosition:
+                            pivotPos = target.TransformPoint(settings.ManualPivotLocalPosition);
+                            break;
+
+                        case TipPivotModeEnum.ManualDirection:
+                            pivotPos = toolTipPos + (target.TransformDirection(settings.ManualPivotDirection) * settings.PivotDistance);
                             break;
                     }
                     break;
@@ -354,7 +306,7 @@ namespace MRDL.ToolTips
                             switch (settings.PivotDirectionOrient)
                             {
                                 case TipOrientTypeEnum.OrientToCamera:
-                                    relativeTo = (cam != null) ? cam.transform : Camera.main.transform;
+                                    relativeTo = (cam != null) ? cam.transform : Camera.current.transform;
                                     break;
 
                                 case TipOrientTypeEnum.OrientToObject:
@@ -365,8 +317,12 @@ namespace MRDL.ToolTips
                             pivotPos = targetPos + localPosition;
                             break;
 
-                        case TipPivotModeEnum.Manual:
-                            // Do nothing
+                        case TipPivotModeEnum.ManualPosition:
+                            pivotPos = target.TransformPoint(settings.ManualPivotLocalPosition);
+                            break;
+
+                        case TipPivotModeEnum.ManualDirection:
+                            pivotPos = toolTipPos + (target.TransformDirection(settings.ManualPivotDirection) * settings.PivotDistance);
                             break;
                     }
                     break;
@@ -383,7 +339,7 @@ namespace MRDL.ToolTips
                             switch (settings.PivotDirectionOrient)
                             {
                                 case TipOrientTypeEnum.OrientToCamera:
-                                    relativeTo = (cam != null) ? cam.transform : Camera.main.transform;
+                                    relativeTo = (cam != null) ? cam.transform : Camera.current.transform;
                                     break;
 
                                 case TipOrientTypeEnum.OrientToObject:
@@ -396,8 +352,12 @@ namespace MRDL.ToolTips
                                 relativeTo) * settings.PivotDistance;
                             break;
 
-                        case TipPivotModeEnum.Manual:
-                            // Do nothing
+                        case TipPivotModeEnum.ManualPosition:
+                            pivotPos = target.TransformPoint (settings.ManualPivotLocalPosition);
+                            break;
+
+                        case TipPivotModeEnum.ManualDirection:
+                            pivotPos = toolTipPos + (target.TransformDirection(settings.ManualPivotDirection) * settings.PivotDistance);
                             break;
                     }
                     break;

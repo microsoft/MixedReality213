@@ -13,30 +13,6 @@ namespace MRDL.ToolTips
     public class ToolTip : MonoBehaviour
     {
         #region fields
-        // TipState - Set locally
-        // GroupState - Set by GroupManager (class available TBD)
-        // Global State - Set by MasterManager (class available TBD)
-        [Serializable]
-        public enum TipDisplayModeEnum
-        {
-            /// <summary>
-            /// No state to have from Manager
-            /// </summary>
-            None,
-            /// <summary>
-            /// Tips are always on
-            /// </summary>
-            On,
-            /// <summary>
-            /// Looking at Object Activates tip (Object must be interactive)
-            /// </summary>
-            OnFocus,
-            /// <summary>
-            /// Tips are always off
-            /// </summary>
-            Off
-        }
-
         public string ToolTipText {
             set {
                 if (value != toolTipText) {

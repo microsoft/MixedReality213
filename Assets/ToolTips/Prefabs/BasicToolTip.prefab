@@ -74,7 +74,7 @@ GameObject:
   - component: {fileID: 114081652308659120}
   - component: {fileID: 114140998854354000}
   m_Layer: 0
-  m_Name: TestToolTip
+  m_Name: BasicToolTip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -146,8 +146,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1456959768028676}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.001}
-  m_LocalScale: {x: 0.096499994, y: 0.019257812, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.0015}
+  m_LocalScale: {x: 0.096499994, y: 0.019257812, z: 0.0015}
   m_Children: []
   m_Father: {fileID: 4773091282930244}
   m_RootOrder: 1
@@ -267,7 +267,7 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1456959768028676}
-  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!102 &102232753968543368
 TextMesh:
   serializedVersion: 3
@@ -346,7 +346,7 @@ MonoBehaviour:
   toolTip: {fileID: 114688644982233374}
   BackgroundTransform: {fileID: 4486183299537560}
   BackgroundRenderer: {fileID: 23132022432632858}
-  Depth: 1
+  Depth: 0.0015
 --- !u!114 &114140998854354000
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -433,7 +433,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   source: {fileID: 114081652308659120}
-  LineMaterial: {fileID: 0}
+  LineMaterial: {fileID: 2100000, guid: 8c8d7699e634fb04a928a0e8b568d81c, type: 2}
   RoundedEdges: 1
   RoundedCaps: 1
   lineRenderer: {fileID: 0}
@@ -448,14 +448,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59ec37f2702943646bb382f4f3342048, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Target: {fileID: 0}
-  FollowType: 0
-  PivotMode: 0
-  PivotDirection: 1
-  PivotDirectionOrient: 0
-  ManualPivotDirection: {x: 0, y: 1, z: 0}
-  ManualPivotLocalPosition: {x: 0, y: 1, z: 0}
-  PivotDistance: 0.25
+  Settings:
+    FollowType: 0
+    PivotMode: 0
+    PivotDirection: 1
+    PivotDirectionOrient: 0
+    ManualPivotDirection: {x: 0, y: 1, z: 0}
+    ManualPivotLocalPosition: {x: 0, y: 1, z: 0}
+    PivotDistance: 0.25
+    Target: {fileID: 0}
   toolTip: {fileID: 114688644982233374}
 --- !u!114 &114688644982233374
 MonoBehaviour:
@@ -477,7 +478,7 @@ MonoBehaviour:
   contentParent: {fileID: 1740257566672574}
   toolTipText: Basic Tooltip
   backgroundPadding: {x: 0.01, y: 0.0025}
-  backgroundOffset: {x: 0, y: 0, z: 0.001}
+  backgroundOffset: {x: 0, y: 0, z: 0.0015}
   contentScale: 1
   fontSize: 30
   attachPointType: 9

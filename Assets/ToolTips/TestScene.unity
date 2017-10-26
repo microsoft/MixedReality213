@@ -112,56 +112,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1001 &426434687
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 4015493888224476, guid: 897b8e365dc77d446af181c5875b63ae, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4015493888224476, guid: 897b8e365dc77d446af181c5875b63ae, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0.241
-      objectReference: {fileID: 0}
-    - target: {fileID: 4015493888224476, guid: 897b8e365dc77d446af181c5875b63ae, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4015493888224476, guid: 897b8e365dc77d446af181c5875b63ae, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4015493888224476, guid: 897b8e365dc77d446af181c5875b63ae, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4015493888224476, guid: 897b8e365dc77d446af181c5875b63ae, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4015493888224476, guid: 897b8e365dc77d446af181c5875b63ae, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4015493888224476, guid: 897b8e365dc77d446af181c5875b63ae, type: 2}
-      propertyPath: m_RootOrder
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1724371267623458, guid: 897b8e365dc77d446af181c5875b63ae, type: 2}
-      propertyPath: m_Name
-      value: BasicToolTip
-      objectReference: {fileID: 0}
-    - target: {fileID: 1724371267623458, guid: 897b8e365dc77d446af181c5875b63ae, type: 2}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: 897b8e365dc77d446af181c5875b63ae, type: 2}
-  m_IsPrefabParent: 0
 --- !u!1001 &876727802
 Prefab:
   m_ObjectHideFlags: 0
@@ -244,117 +194,123 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   groups:
-  - Name: Blah
+  - Name: Group A
     TipPrefab: {fileID: 1724371267623458, guid: 897b8e365dc77d446af181c5875b63ae,
       type: 2}
     Templates:
-    - FollowType: 2
-      PivotMode: 1
+    - FollowType: 3
+      PivotMode: 2
       PivotDirection: 1
       PivotDirectionOrient: 0
+      ContentBillboardType: 1
       ManualPivotDirection: {x: 0, y: 1, z: 0}
       ManualPivotLocalPosition: {x: 0.79, y: 3.61, z: -0.5}
-      PivotDistance: 0.1
+      PivotDistance: 0.122
       Target: {fileID: 0}
-      Text: Blah de blah
+      Text: Menu Button
       AppearBehavior: 0
       VanishBehavior: 0
       RemainBehavior: 0
       AppearDelay: 1.25
       VanishDelay: 2
-      ControllerElement: 0
-    - FollowType: 1
-      PivotMode: 1
-      PivotDirection: 3
-      PivotDirectionOrient: 1
-      ManualPivotDirection: {x: 0, y: 1, z: 0}
-      ManualPivotLocalPosition: {x: 0, y: 1, z: 0}
-      PivotDistance: 0.25
-      Target: {fileID: 0}
-      Text: New ToolTip
-      AppearBehavior: 0
-      VanishBehavior: 0
-      RemainBehavior: 0
-      AppearDelay: 1.25
-      VanishDelay: 2
-      ControllerElement: 2
-    - FollowType: 1
-      PivotMode: 1
-      PivotDirection: 1
-      PivotDirectionOrient: 1
-      ManualPivotDirection: {x: 0, y: 1, z: 0}
-      ManualPivotLocalPosition: {x: 0, y: 1, z: 0}
-      PivotDistance: 0.25
-      Target: {fileID: 0}
-      Text: Yippee
-      AppearBehavior: 0
-      VanishBehavior: 0
-      RemainBehavior: 0
-      AppearDelay: 1.25
-      VanishDelay: 2
-      ControllerElement: 4
-    DisplayMode: 0
-    EditorColor: {r: 0.5310346, g: 1, b: 0, a: 1}
-  - Name: New Group
-    TipPrefab: {fileID: 0}
-    Templates:
-    - FollowType: 1
-      PivotMode: 1
-      PivotDirection: 3
-      PivotDirectionOrient: 0
-      ManualPivotDirection: {x: 0, y: 1, z: 0}
-      ManualPivotLocalPosition: {x: 0, y: 1, z: 0}
-      PivotDistance: 0.25
-      Target: {fileID: 0}
-      Text: Another ToolTip
-      AppearBehavior: 0
-      VanishBehavior: 0
-      RemainBehavior: 0
-      AppearDelay: 1.25
-      VanishDelay: 2
-      ControllerElement: 0
-    - FollowType: 1
+      InstantiatedToolTip: {fileID: 0}
+      Preset: 0
+      ControllerElement: 1
+    - FollowType: 3
       PivotMode: 1
       PivotDirection: 8
       PivotDirectionOrient: 0
-      ManualPivotDirection: {x: 0, y: 1, z: 0}
-      ManualPivotLocalPosition: {x: 0, y: 1, z: 0}
-      PivotDistance: 0.25
+      ContentBillboardType: 1
+      ManualPivotDirection: {x: -0.4845973, y: 0.85898393, z: 0.1652637}
+      ManualPivotLocalPosition: {x: 0.01, y: 0.07, z: 0}
+      PivotDistance: 0.109
       Target: {fileID: 0}
-      Text: Home Tool Tip
+      Text: Home Button
       AppearBehavior: 0
       VanishBehavior: 0
       RemainBehavior: 0
       AppearDelay: 1.25
       VanishDelay: 2
+      InstantiatedToolTip: {fileID: 0}
+      Preset: 1
       ControllerElement: 0
-    DisplayMode: 0
+    DisplayMode: 1
+    EditorColor: {r: 0.5310346, g: 1, b: 0, a: 1}
+  - Name: Group B
+    TipPrefab: {fileID: 1724371267623458, guid: 897b8e365dc77d446af181c5875b63ae,
+      type: 2}
+    Templates:
+    - FollowType: 3
+      PivotMode: 1
+      PivotDirection: 3
+      PivotDirectionOrient: 0
+      ContentBillboardType: 1
+      ManualPivotDirection: {x: 0, y: 1, z: 0}
+      ManualPivotLocalPosition: {x: 0, y: 1, z: 0}
+      PivotDistance: 0.121
+      Target: {fileID: 0}
+      Text: Something soemthing
+      AppearBehavior: 0
+      VanishBehavior: 0
+      RemainBehavior: 0
+      AppearDelay: 1.25
+      VanishDelay: 2
+      InstantiatedToolTip: {fileID: 0}
+      Preset: 0
+      ControllerElement: 0
+    DisplayMode: 3
     EditorColor: {r: 0, g: 1, b: 1, a: 1}
-  - Name: New Group
+  - Name: Group C
     TipPrefab: {fileID: 0}
     Templates:
-    - FollowType: 1
-      PivotMode: 1
-      PivotDirection: 2
-      PivotDirectionOrient: 1
+    - FollowType: 3
+      PivotMode: 2
+      PivotDirection: 8
+      PivotDirectionOrient: 0
+      ContentBillboardType: 1
       ManualPivotDirection: {x: 0, y: 1, z: 0}
       ManualPivotLocalPosition: {x: 0, y: 1, z: 0}
-      PivotDistance: 0.25
+      PivotDistance: 0.082
       Target: {fileID: 0}
-      Text: Blarg
+      Text: Press Select
       AppearBehavior: 0
       VanishBehavior: 0
       RemainBehavior: 0
       AppearDelay: 1.25
       VanishDelay: 2
-      ControllerElement: 0
-    DisplayMode: 0
+      InstantiatedToolTip: {fileID: 0}
+      Preset: 0
+      ControllerElement: 4
+    DisplayMode: 1
     EditorColor: {r: 1, g: 0, b: 0, a: 1}
+  - Name: Group D
+    TipPrefab: {fileID: 0}
+    Templates:
+    - FollowType: 3
+      PivotMode: 2
+      PivotDirection: 2
+      PivotDirectionOrient: 0
+      ContentBillboardType: 1
+      ManualPivotDirection: {x: 0, y: 1, z: 0}
+      ManualPivotLocalPosition: {x: 0, y: 1, z: 0}
+      PivotDistance: 0.101
+      Target: {fileID: 0}
+      Text: Grasp to paint
+      AppearBehavior: 0
+      VanishBehavior: 0
+      RemainBehavior: 0
+      AppearDelay: 1.25
+      VanishDelay: 2
+      InstantiatedToolTip: {fileID: 0}
+      Preset: 0
+      ControllerElement: 2
+    DisplayMode: 1
+    EditorColor: {r: 0.5724139, g: 0, b: 1, a: 1}
   lineLength: 1
-  groupIndex: 0
+  currentGroup: 0
   TestingPrefab: {fileID: 1087732101620662, guid: 503d7fa7ab6bf5a42803168b10c78f40,
     type: 2}
-  handedness: 0
+  handedness: 1
   toggleTipsPress: 2
 --- !u!4 &1062896883
 Transform:
@@ -362,14 +318,14 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1062896881}
-  m_LocalRotation: {x: -0.2157319, y: -0.77758616, z: -0.24583651, w: 0.537014}
+  m_LocalRotation: {x: -0.039410997, y: -0.17914824, z: -0.08722922, w: 0.97915465}
   m_LocalPosition: {x: 0.101, y: 1.2597, z: 0.2459}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1444086252}
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: -37.881, y: -112.52501, z: 5.195}
+  m_LocalEulerAnglesHint: {x: -6.2250004, y: -20.242, z: -9.069}
 --- !u!1 &1067835404
 GameObject:
   m_ObjectHideFlags: 0
@@ -540,8 +496,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1444086251}
-  m_LocalRotation: {x: 0.0000015034047, y: 0.089178905, z: 0.062443834, w: 0.9940563}
-  m_LocalPosition: {x: -0.0017231021, y: 0.011416459, z: 0.018988706}
+  m_LocalRotation: {x: 0.0000005939162, y: -0.014295869, z: -0.0100104585, w: 0.9998477}
+  m_LocalPosition: {x: 0.008227339, y: -0.006521856, z: -0.00013341685}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1062896883}

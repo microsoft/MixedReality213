@@ -4,13 +4,37 @@ using UnityEngine;
 
 namespace MRDL.ToolTips
 {
+    // TipState - Set locally
+    // GroupState - Set by GroupManager (class available TBD)
+    // Global State - Set by MasterManager (class available TBD)
     [Serializable]
     public enum TipDisplayModeEnum
     {
+        /// <summary>
+        /// No state to have from Manager
+        /// </summary>
+        None,
+        /// <summary>
+        /// Tips are always on
+        /// </summary>
         On,
-        Off,
+        /// <summary>
+        /// Looking at Object Activates tip (Object must be interactive)
+        /// </summary>
         OnFocus,
-        None
+        /// <summary>
+        /// Tips are always off
+        /// </summary>
+        Off
+    }
+
+    [Serializable]
+    public enum TipPresetEnum
+    {
+        Default,
+        ManualDirection,
+        ManualPosition,
+        Advanced,
     }
 
     /// <summary>
@@ -18,7 +42,7 @@ namespace MRDL.ToolTips
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    public class TipGroup<T> where T : TipSpawnSettings, new()
+    public class TipGroup<T> where T : TipTemplate, new()
     {
         public string Name = "New Group";
         public GameObject TipPrefab;
@@ -27,13 +51,65 @@ namespace MRDL.ToolTips
         public Color EditorColor = Color.cyan;
     }
 
+    [Serializable]
+    public class TipTemplate : TipSpawnSettings
+    {
+        [Header("Presets")]
+        public TipPresetEnum Preset = TipPresetEnum.Default;
+
+        /// <summary>
+        /// Uses a preset value to update settings
+        /// </summary>
+        /// <param name="preset"></param>
+        /// <param name="settings"></param>
+        public virtual void ApplyPreset()
+        {
+            switch (Preset)
+            {
+                case TipPresetEnum.Default:
+                    ContentBillboardType = TipContentBillboardTypeEnum.ToCameraY;
+                    FollowType = TipFollowTypeEnum.PositionAndRotation;
+                    PivotDirectionOrient = TipOrientTypeEnum.OrientToObject;
+                    PivotMode = TipPivotModeEnum.Automatic;
+                    VanishBehavior = TipVanishBehaviorEnum.Manual;
+                    AppearBehavior = TipAppearBehaviorEnum.Manual;
+                    RemainBehavior = TipRemainBehaviorEnum.Indefinite;
+                    break;
+
+                case TipPresetEnum.ManualDirection:
+                    ContentBillboardType = TipContentBillboardTypeEnum.ToCameraY;
+                    FollowType = TipFollowTypeEnum.PositionAndRotation;
+                    PivotDirectionOrient = TipOrientTypeEnum.OrientToObject;
+                    PivotMode = TipPivotModeEnum.ManualDirection;
+                    VanishBehavior = TipVanishBehaviorEnum.Manual;
+                    AppearBehavior = TipAppearBehaviorEnum.Manual;
+                    RemainBehavior = TipRemainBehaviorEnum.Indefinite;
+                    break;
+
+                case TipPresetEnum.ManualPosition:
+                    ContentBillboardType = TipContentBillboardTypeEnum.ToCameraY;
+                    FollowType = TipFollowTypeEnum.PositionAndRotation;
+                    PivotDirectionOrient = TipOrientTypeEnum.OrientToObject;
+                    PivotMode = TipPivotModeEnum.ManualPosition;
+                    VanishBehavior = TipVanishBehaviorEnum.Manual;
+                    AppearBehavior = TipAppearBehaviorEnum.Manual;
+                    RemainBehavior = TipRemainBehaviorEnum.Indefinite;
+                    break;
+
+                case TipPresetEnum.Advanced:
+                    // Nothing, let dev set things manually
+                    break;
+            }
+        }
+    }
+
     /// <summary>
     /// Base class for a tooltip group manager
     /// Handles the generation and set-up of tooltips as well as visibility for all groups
     /// </summary>
     /// <typeparam name="G"></typeparam>
     /// <typeparam name="T"></typeparam>
-    public abstract class TipGroupManager<G, T> : MonoBehaviour where G : TipGroup<T>, new() where T : TipSpawnSettings, new()
+    public abstract class TipGroupManager<G, T> : MonoBehaviour where G : TipGroup<T>, new() where T : TipTemplate, new()
     {
         /*
          * A NOTE ON SERIALIZING GENERICS:
@@ -62,6 +138,8 @@ namespace MRDL.ToolTips
             }
         }
 
+        public int CurrentGroup { get { return currentGroup; } }
+
         [SerializeField]
         protected List<G> groups = new List<G>();
 
@@ -71,37 +149,41 @@ namespace MRDL.ToolTips
         private float lineLength = 1f;
 
         [SerializeField]
-        private int groupIndex = 0;
+        private int currentGroup = 0;
 
         public void NextGroup()
         {
-            int newGroupIndex = groupIndex;
+            int newGroupIndex = currentGroup;
 
             newGroupIndex++;
             if (newGroupIndex >= groups.Count)
                 newGroupIndex = groups.Count - 1;
 
-            if (newGroupIndex != groupIndex)
+            if (newGroupIndex != currentGroup)
             {
-                groupIndex = newGroupIndex;
+                currentGroup = newGroupIndex;
             }
+
+            GoToGroup(currentGroup);
         }
 
         public void PrevGroup()
         {
-            int newGroupIndex = groupIndex;
+            int newGroupIndex = currentGroup;
 
             newGroupIndex--;
             if (newGroupIndex < 0)
                 newGroupIndex = 0;
 
-            if (newGroupIndex != groupIndex)
+            if (newGroupIndex != currentGroup)
             {
-                groupIndex = newGroupIndex;
+                currentGroup = newGroupIndex;
             }
+
+            GoToGroup(currentGroup);
         }
 
-        public void GoToGroup(int newGroupIndex)
+        public void GoToGroup(int newGroupIndex, bool exclusive = true)
         {
             if (newGroupIndex >= groups.Count)
                 newGroupIndex = groups.Count - 1;
@@ -109,17 +191,36 @@ namespace MRDL.ToolTips
             if (newGroupIndex < 0)
                 newGroupIndex = 0;
 
-            if (newGroupIndex != groupIndex)
+            if (newGroupIndex != currentGroup)
             {
                 // Deactivate Current Group
                 // DeactivateCurrentGroup();
-                groupIndex = newGroupIndex;
+                currentGroup = newGroupIndex;
+            }
+
+            if (exclusive)
+            {
+                for (int i = 0; i < groups.Count; i++)
+                {
+                    if (i == currentGroup)
+                    {
+                        SetGroupDisplayMode(groups[i], TipDisplayModeEnum.On);
+                    }
+                    else
+                    {
+                        SetGroupDisplayMode(groups[i], TipDisplayModeEnum.Off);
+                    }
+                }
+            }
+            else
+            {
+                SetGroupDisplayMode(groups[currentGroup], TipDisplayModeEnum.On);
             }
         }
 
         public void GoToGroup(string groupName)
         {
-            int newGroupIndex = groupIndex;
+            int newGroupIndex = currentGroup;
             for (int i = 0; i < groups.Count; i++)
             {
                 // TODO enforce GroupName in editor
@@ -130,20 +231,9 @@ namespace MRDL.ToolTips
                 }
             }
 
-            if (newGroupIndex != groupIndex)
+            if (newGroupIndex != currentGroup)
             {
-                groupIndex = newGroupIndex;
-            }
-        }
-
-        protected G CurrentGroup
-        {
-            get
-            {
-                if (groups == null || groups.Count == 0)
-                    return null;
-
-                return groups[groupIndex];
+                currentGroup = newGroupIndex;
             }
         }
 
@@ -166,14 +256,28 @@ namespace MRDL.ToolTips
             // Parent the new tooltip under this transform by default
             GameObject toolTipGo = GameObject.Instantiate(group.TipPrefab, transform) as GameObject;
             ToolTip toolTip = toolTipGo.GetComponent<ToolTip>();
+            template.InstantiatedToolTip = toolTip;
             toolTip.ToolTipText = template.Text;
-            // Get or attach a ToolTipConnector 
-            ToolTipConnector connector = toolTip.GetComponent<ToolTipConnector>();
-            if (connector == null)
-                connector = toolTip.gameObject.AddComponent<ToolTipConnector>();
+
+            // Get or attach a ToolTipSpawner
+            ToolTipSpawner spawner = toolTip.GetComponent<ToolTipSpawner>();
+            if (spawner == null)
+                spawner = toolTip.gameObject.AddComponent<ToolTipSpawner>();
 
             // Copy all the connector fields - template inherits from connector settings so this is a single assignment
-            connector.Settings = template;
+            spawner.Settings = template;
+
+            if (group.DisplayMode == TipDisplayModeEnum.On)
+            {
+                // Show tool tip immediately
+                spawner.ShowToolTip();
+            }
+            else
+            {
+                // Hide tool tip immediately
+                spawner.HideToolTip();
+            }
+
             return toolTip;
         }
 
@@ -183,19 +287,24 @@ namespace MRDL.ToolTips
         protected void CreateToolTips()
         {
             // Create all of our tool tips in one go
-            // Hide all of them immediately
+            // They will be automatically hidden
             foreach (G group in groups)
             {
+                if (group.TipPrefab == null)
+                {
+                    Debug.LogError("ToolTip prefab was null in group " + group.Name + ", skipping");
+                    continue;
+                }
+
                 foreach (T template in group.Templates)
                 {
-                    if (!template.IsEmpty)
-                    {
-                        template.InstantiatedToolTip = CreateToolTip(template, group);
-                        template.InstantiatedToolTip.gameObject.SetActive(false);
-                    }
-                    else
+                    if (template.IsEmpty)
                     {
                         Debug.LogWarning("Empty tool tip found in group " + group.Name);
+                    }
+                    else
+                    {   
+                        CreateToolTip(template, group);
                     }
                 }
             }
@@ -219,67 +328,17 @@ namespace MRDL.ToolTips
             //}
         }
 
-        protected void GroupDisplayModeChanged(G group, TipDisplayModeEnum newDisplayMode, int index)
+        private void SetGroupDisplayMode(G group, TipDisplayModeEnum displayMode)
         {
-            Debug.Log("Got here");
-            switch (newDisplayMode)
+            group.DisplayMode = displayMode;
+
+            if (Application.isPlaying)
             {
-                case TipDisplayModeEnum.None:
-                    GroupDisplayNone(group, index);
-
-                    break;
-                case TipDisplayModeEnum.Off:
-                    GroupDisplayOff(group, index);
-
-                    break;
-                case TipDisplayModeEnum.On:
-                    GroupDisplayOn(group, index);
-                    break;
-                case TipDisplayModeEnum.OnFocus:
-                    GroupDisplayOnFocus(group, index);
-
-                    break;
-
-            }
-        }
-
-        protected void GroupDisplayOn(G group, int index)
-        {
-            for (int i = 0; i < group.Templates.Count; i++)
-            {
-                if (group.Templates[i].InstantiatedToolTip != null)
-                    group.Templates[i].InstantiatedToolTip.GetComponent<ToolTip>().GroupTipState = ToolTip.TipDisplayModeEnum.On;
-
-            }
-        }
-
-        protected void GroupDisplayOff(G group, int index)
-        {
-            for (int i = 0; i < group.Templates.Count; i++)
-            {
-                if (group.Templates[i].InstantiatedToolTip != null)
-                    group.Templates[i].InstantiatedToolTip.GetComponent<ToolTip>().GroupTipState = ToolTip.TipDisplayModeEnum.Off;
-
-            }
-        }
-
-        protected void GroupDisplayOnFocus(G group, int index)
-        {
-            for (int i = 0; i < group.Templates.Count; i++)
-            {
-                if (group.Templates[i].InstantiatedToolTip != null)
-                    group.Templates[i].InstantiatedToolTip.GetComponent<ToolTip>().GroupTipState = ToolTip.TipDisplayModeEnum.OnFocus;
-
-            }
-        }
-
-        protected void GroupDisplayNone(G group, int index)
-        {
-            for (int i = 0; i < group.Templates.Count; i++)
-            {
-                if (group.Templates[i].InstantiatedToolTip != null)
-                    group.Templates[i].InstantiatedToolTip.GetComponent<ToolTip>().GroupTipState = ToolTip.TipDisplayModeEnum.None;
-
+                foreach (T template in group.Templates)
+                {
+                    if (template.IsInstantiated)
+                        template.InstantiatedToolTip.GroupTipState = displayMode;
+                }
             }
         }
     }

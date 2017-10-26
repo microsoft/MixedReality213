@@ -37,6 +37,11 @@ namespace MRDL.ToolTips
             }
         }
 
+        protected override void DrawTipTemplateExtensions(ControllerTipTemplate template)
+        {
+            template.ControllerElement = (HoloToolkit.Unity.InputModule.MotionControllerInfo.ControllerElementEnum)EditorGUILayout.EnumPopup("Controller Element", template.ControllerElement);
+        }
+
         private bool FindTransform (Transform start, string name, ref Transform result)
         {
             if (start.name.ToLower() == name)

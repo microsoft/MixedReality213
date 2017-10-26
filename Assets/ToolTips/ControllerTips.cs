@@ -9,7 +9,7 @@ using UnityEngine.XR.WSA.Input;
 namespace MRDL.ToolTips
 {
     [Serializable]
-    public class ControllerTipTemplate : TipSpawnSettings
+    public class ControllerTipTemplate : TipTemplate
     {
         [Header("Controller Settings")]
         public MotionControllerInfo.ControllerElementEnum ControllerElement;
@@ -39,7 +39,7 @@ namespace MRDL.ToolTips
 
             // Subscribe to input now that we have the controller
             InteractionManager.InteractionSourcePressed += InteractionSourcePressed;
-
+            // Create our tool tips!
             CreateToolTips();
         }
 
@@ -53,7 +53,7 @@ namespace MRDL.ToolTips
 
         protected override ToolTip CreateToolTip(ControllerTipTemplate template, ControllerTipGroup group)
         {
-            // Get the target element from the template
+            // Get the target element from the template, set it before we create the tool tip
             Transform element = controller.GetElement(template.ControllerElement);
             template.Target = element.gameObject;
 
@@ -83,6 +83,7 @@ namespace MRDL.ToolTips
         [SerializeField]
         private InteractionSourcePressType toggleTipsPress = InteractionSourcePressType.Menu;
 
+        [NonSerialized]
         private MotionControllerInfo controller;
     }
 }
