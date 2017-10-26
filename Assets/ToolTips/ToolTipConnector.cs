@@ -193,7 +193,7 @@ namespace MRDL.ToolTips
 
             return relativeTo.TransformDirection(dir);
         }
-        
+
         /// <summary>
         /// Uses tip connection settings to calculate the transformations of ToolTip elements
         /// target is a dummy value that is overridden if the Target in settings is not null
@@ -206,14 +206,14 @@ namespace MRDL.ToolTips
         /// <param name="contentRot"></param>
         /// <param name="cam"></param>
         /// <param name="target"></param>
-        public static void GetTransformationsFromSettings (
-            TipConnectionSettings settings, 
-            ref Vector3 toolTipPos, 
-            ref Vector3 toolTipRot, 
-            ref Vector3 anchorPos, 
-            ref Vector3 pivotPos, 
-            ref Vector3 contentRot, 
-            Camera cam = null, 
+        public static void GetTransformationsFromSettings(
+            TipConnectionSettings settings,
+            ref Vector3 toolTipPos,
+            ref Vector3 toolTipRot,
+            ref Vector3 anchorPos,
+            ref Vector3 pivotPos,
+            ref Vector3 contentRot,
+            Camera cam = null,
             Transform target = null)
         {
             if (settings == null)
@@ -227,7 +227,16 @@ namespace MRDL.ToolTips
                 // One or the other must be set to get transformations
                 return;
             }
-            
+
+            if (!Application.isPlaying)
+            {
+                if (cam == null)
+                    cam = Camera.current;
+            }
+
+            if (cam == null)
+                cam = Camera.main;
+
             // Settings target overrides specified target by default
             target = (settings.Target != null) ? settings.Target.transform : target;
             Vector3 targetPos = target.transform.position;
@@ -240,12 +249,12 @@ namespace MRDL.ToolTips
                     break;
 
                 case TipContentBillboardTypeEnum.ToCameraY:
-                    Vector3 cameraEulerAngles = (cam != null) ? cam.transform.eulerAngles : Camera.current.transform.eulerAngles;
+                    Vector3 cameraEulerAngles = cam.transform.eulerAngles;
                     contentRot.y = cameraEulerAngles.y;
                     break;
 
                 case TipContentBillboardTypeEnum.ToCameraFull:
-                    contentRot = (cam != null) ? cam.transform.eulerAngles : Camera.current.transform.eulerAngles;
+                    contentRot = cam.transform.eulerAngles;
                     break;
             }
 
@@ -268,7 +277,7 @@ namespace MRDL.ToolTips
                             switch (settings.PivotDirectionOrient)
                             {
                                 case TipOrientTypeEnum.OrientToCamera:
-                                    relativeTo = (cam != null) ? cam.transform : Camera.current.transform;
+                                    relativeTo = cam.transform;
                                     break;
 
                                 case TipOrientTypeEnum.OrientToObject:
@@ -306,7 +315,7 @@ namespace MRDL.ToolTips
                             switch (settings.PivotDirectionOrient)
                             {
                                 case TipOrientTypeEnum.OrientToCamera:
-                                    relativeTo = (cam != null) ? cam.transform : Camera.current.transform;
+                                    relativeTo = cam.transform;
                                     break;
 
                                 case TipOrientTypeEnum.OrientToObject:
@@ -339,7 +348,7 @@ namespace MRDL.ToolTips
                             switch (settings.PivotDirectionOrient)
                             {
                                 case TipOrientTypeEnum.OrientToCamera:
-                                    relativeTo = (cam != null) ? cam.transform : Camera.current.transform;
+                                    relativeTo = cam.transform;
                                     break;
 
                                 case TipOrientTypeEnum.OrientToObject:

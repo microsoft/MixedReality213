@@ -281,7 +281,7 @@ MonoBehaviour:
       InstantiatedToolTip: {fileID: 0}
       Preset: 0
       ControllerElement: 4
-    DisplayMode: 1
+    DisplayMode: 3
     EditorColor: {r: 1, g: 0, b: 0, a: 1}
   - Name: Group D
     TipPrefab: {fileID: 0}
