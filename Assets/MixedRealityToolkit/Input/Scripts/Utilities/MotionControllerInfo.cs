@@ -23,6 +23,7 @@ namespace HoloToolkit.Unity.InputModule
         private GameObject menu;
         private Transform menuPressed;
         private Transform menuUnpressed;
+
         private GameObject grasp;
         private Transform graspPressed;
         private Transform graspUnpressed;
@@ -116,6 +117,7 @@ namespace HoloToolkit.Unity.InputModule
                 // control elements
                 case ControllerElementEnum.Home: return home.transform;
                 case ControllerElementEnum.Menu: return menu.transform;
+                case ControllerElementEnum.Select: return select.transform;
                 case ControllerElementEnum.Grasp: return grasp.transform;
                 case ControllerElementEnum.Thumbstick: return thumbstickPress.transform;
                 case ControllerElementEnum.Touchpad: return touchpadPress.transform;
@@ -430,6 +432,71 @@ namespace HoloToolkit.Unity.InputModule
             {
                 renderers[i].enabled = visible;
             }
+        }
+
+        public static string GetElementName (ControllerElementEnum element)
+        {
+            switch (element)
+            {
+                // control elements
+                case ControllerElementEnum.Home: return "home";
+                case ControllerElementEnum.Menu: return "menu";
+                case ControllerElementEnum.Grasp: return "grasp";
+                case ControllerElementEnum.Select: return "select";
+                case ControllerElementEnum.Thumbstick: return "thumbstick_press";
+                case ControllerElementEnum.Touchpad: return "touchpad_press";
+                case ControllerElementEnum.TouchpadTouchX: return "touchpad_touch_x";
+                case ControllerElementEnum.TouchpadTouchY: return "touchpad_touch_y";
+                // control pressed / unpressed
+                case ControllerElementEnum.HomePressed: return "home";
+                case ControllerElementEnum.HomeUnpressed: return "home";
+                case ControllerElementEnum.MenuPressed: return "menu";
+                case ControllerElementEnum.MenuUnpressed: return "menu";
+                case ControllerElementEnum.GraspPressed: return "grasp";
+                case ControllerElementEnum.GraspUnpressed: return "grasp";
+                case ControllerElementEnum.ThumbstickPressed: return "thumbstick_press";
+                case ControllerElementEnum.ThumbstickUnpressed: return "thumbstick_press";
+                case ControllerElementEnum.TouchpadPressed: return "touchpad_press";
+                case ControllerElementEnum.TouchpadUnpressed: return "touchpad_press";
+                // control min max
+                case ControllerElementEnum.ThumbstickXMin: return "thumbstick_press";
+                case ControllerElementEnum.ThumbstickXMax: return "thumbstick_press";
+                case ControllerElementEnum.ThumbstickYMin: return "thumbstick_press";
+                case ControllerElementEnum.ThumbstickYMax: return "thumbstick_press";
+                case ControllerElementEnum.TouchpadTouchXMin: return "touchpad_press";
+                case ControllerElementEnum.TouchpadTouchXMax: return "touchpad_press";
+                case ControllerElementEnum.TouchpadTouchYMin: return "touchpad_press";
+                case ControllerElementEnum.TouchpadTouchYMax: return "touchpad_press";
+                // body elements & poses
+                case ControllerElementEnum.PointingPose: return "pointing_pose";
+                default: return null;
+            }
+        }
+
+        public static Transform FindElementInPrefab(GameObject controllerPrefab, ControllerElementEnum element)
+        {
+            Transform elementTransform = null;
+
+            if (controllerPrefab == null)
+                return elementTransform;
+
+            string elementName = GetElementName(element);
+
+            // Regex to remove numbers from end of child name
+            System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(@"\d+$");
+
+            Transform[] transforms = controllerPrefab.GetComponentsInChildren<Transform>();
+            foreach (Transform child in transforms)
+            {
+                string childName = regex.Replace(child.name.ToLower(), "").Trim();
+                if (childName == elementName)
+                {
+                    elementTransform = child;
+                    break;
+                }
+            }
+
+            return elementTransform;
         }
     }
 }

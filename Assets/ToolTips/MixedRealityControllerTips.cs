@@ -51,7 +51,14 @@ namespace MRDL.ToolTips
         {
             // Get the target element from the template, set it before we create the tool tip
             Transform element = controller.GetElement(template.ControllerElement);
-            template.Target = element.gameObject;
+            if (element == null)
+            {
+                Debug.LogError("Couldn't find controller element " + template.ControllerElement + " in runtime model");
+            }
+            else
+            {
+                template.Target = element.gameObject;
+            }
 
             // Now create the base tool tip - this will have pivot, text, etc set up
             ToolTip toolTip = base.CreateToolTip(template, group);

@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using HoloToolkit.Unity.InputModule;
+using UnityEditor;
 using UnityEngine;
 
 namespace MRDL.ToolTips
@@ -16,8 +17,8 @@ namespace MRDL.ToolTips
                 // Set the testing matrix - this will ensure that our preview 
                 //GroupMatrix = manager.transform.localToWorldMatrix;
                 // Set our testing target to the position of the element we want to test
-                Transform elementTransformFromPrefab = null;
-                if (FindTransform(manager.TestingPrefab.transform, template.ControllerElement.ToString().ToLower(), ref elementTransformFromPrefab))
+                Transform elementTransformFromPrefab = MotionControllerInfo.FindElementInPrefab (manager.TestingPrefab, template.ControllerElement);
+                if (elementTransformFromPrefab != null)
                 {
                     TestingTarget.position = manager.transform.TransformPoint(elementTransformFromPrefab.position);
                     TestingTarget.localRotation = elementTransformFromPrefab.rotation;

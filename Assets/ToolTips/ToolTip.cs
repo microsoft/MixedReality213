@@ -9,7 +9,6 @@ using UnityEngine;
 
 namespace MRDL.ToolTips
 {
-    [RequireComponent(typeof(ToolTipConnector))]
     public class ToolTip : MonoBehaviour
     {
         #region fields

@@ -453,6 +453,7 @@ MonoBehaviour:
     PivotMode: 0
     PivotDirection: 1
     PivotDirectionOrient: 0
+    ContentBillboardType: 0
     ManualPivotDirection: {x: 0, y: 1, z: 0}
     ManualPivotLocalPosition: {x: 0, y: 1, z: 0}
     PivotDistance: 0.25
@@ -480,6 +481,6 @@ MonoBehaviour:
   backgroundPadding: {x: 0.01, y: 0.0025}
   backgroundOffset: {x: 0, y: 0, z: 0.0015}
   contentScale: 1
-  fontSize: 30
-  attachPointType: 9
+  fontSize: 20
+  attachPointType: 0
   toolTipLine: {fileID: 114081652308659120}
