@@ -116,6 +116,7 @@ namespace HoloToolkit.Unity.InputModule
                 // control elements
                 case ControllerElementEnum.Home: return home.transform;
                 case ControllerElementEnum.Menu: return menu.transform;
+                case ControllerElementEnum.Select: return select.transform;
                 case ControllerElementEnum.Grasp: return grasp.transform;
                 case ControllerElementEnum.Thumbstick: return thumbstickPress.transform;
                 case ControllerElementEnum.Touchpad: return touchpadPress.transform;
