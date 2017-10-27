@@ -176,7 +176,29 @@ namespace MRDL.ToolTips
             switch (template.Preset)
             {
                 case TipPresetEnum.Advanced:
-                    EditorInspector.Show(template);
+                    template.Preset = (TipPresetEnum)EditorGUILayout.EnumPopup("Preset", template.Preset);
+                    template.Text = EditorGUILayout.TextField("Text", template.Text);
+                    template.Target = (GameObject)EditorGUILayout.ObjectField("Target", template.Target, typeof(GameObject), true);
+                    template.FollowType = (TipFollowTypeEnum)EditorGUILayout.EnumPopup("Follow Type", template.FollowType);
+
+                    template.PivotMode = (TipPivotModeEnum)EditorGUILayout.EnumPopup("Pivot Mode", template.PivotMode);
+                    template.PivotDirectionOrient = (TipOrientTypeEnum)EditorGUILayout.EnumPopup("Pivot Orient Type", template.PivotDirectionOrient);
+                    template.PivotDistance = EditorGUILayout.Slider("Distance", template.PivotDistance, 0.01f, 2f);
+                    template.PivotDirection = (TipPivotDirectionEnum)EditorGUILayout.EnumPopup("Direction", template.PivotDirection);
+                    template.ManualPivotDirection = EditorGUILayout.Vector3Field("Manual Pivot Direction", template.ManualPivotDirection).normalized;
+                    template.ManualPivotLocalPosition = EditorGUILayout.Vector3Field("Manual Pivot Position", template.ManualPivotLocalPosition);
+
+                    template.ContentBillboardType = (TipContentBillboardTypeEnum)EditorGUILayout.EnumPopup("Content Billobard Type", template.ContentBillboardType);
+
+                    GUI.color = Color.gray;
+                    EditorGUILayout.LabelField("Note: Appear / vanish behaviors will be non-functional until MRDL->MRTK merge is completed.", EditorStyles.miniLabel);
+                    template.AppearBehavior = (TipAppearBehaviorEnum)EditorGUILayout.EnumPopup("Appear Behavior", template.AppearBehavior);
+                    template.VanishBehavior = (TipVanishBehaviorEnum)EditorGUILayout.EnumPopup("Vanish Behavior", template.VanishBehavior);
+                    template.RemainBehavior = (TipRemainBehaviorEnum)EditorGUILayout.EnumPopup("Remain Behavior", template.RemainBehavior);
+                    template.AppearDelay = EditorGUILayout.FloatField("Appear Delay", template.AppearDelay);
+                    template.VanishDelay = EditorGUILayout.FloatField("Vanish Delay", template.VanishDelay);
+                    GUI.color = Color.white;
+
                     break;
 
                 case TipPresetEnum.Default:
