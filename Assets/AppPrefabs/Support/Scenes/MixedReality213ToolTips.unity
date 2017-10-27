@@ -336,7 +336,7 @@ Prefab:
     - target: {fileID: 114723300088694316, guid: ced694f2d81353746b0a46628d128002,
         type: 2}
       propertyPath: groups.Array.data[0].Templates.Array.data[0].Preset
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ced694f2d81353746b0a46628d128002, type: 2}
