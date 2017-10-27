@@ -149,7 +149,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4307559140576838, guid: fa4aec5413103264c884daee464826d9, type: 2}
       propertyPath: m_RootOrder
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 114895734277317420, guid: fa4aec5413103264c884daee464826d9,
         type: 2}
@@ -166,6 +166,34 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fa4aec5413103264c884daee464826d9, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &1039787044
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1039787045}
+  m_Layer: 0
+  m_Name: Testing Transform
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1039787045
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1039787044}
+  m_LocalRotation: {x: 0.29891932, y: -0.10382708, z: -0.032737758, w: 0.94804823}
+  m_LocalPosition: {x: -0.0027697384, y: -0.015203834, z: 0.046661586}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1223241529}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1062896881
 GameObject:
   m_ObjectHideFlags: 0
@@ -175,8 +203,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1062896883}
   - component: {fileID: 1062896882}
+  - component: {fileID: 1062896884}
   m_Layer: 0
-  m_Name: ControllerTips
+  m_Name: LeftControllerTips
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -205,9 +234,9 @@ MonoBehaviour:
       ContentBillboardType: 1
       ManualPivotDirection: {x: 0, y: 1, z: 0}
       ManualPivotLocalPosition: {x: 0.79, y: 3.61, z: -0.5}
-      PivotDistance: 0.122
+      PivotDistance: 0.1
       Target: {fileID: 0}
-      Text: Menu Button
+      Text: Toggle Help
       AppearBehavior: 0
       VanishBehavior: 0
       RemainBehavior: 0
@@ -217,23 +246,23 @@ MonoBehaviour:
       Preset: 0
       ControllerElement: 1
     - FollowType: 3
-      PivotMode: 1
+      PivotMode: 2
       PivotDirection: 8
       PivotDirectionOrient: 0
       ContentBillboardType: 1
       ManualPivotDirection: {x: -0.4845973, y: 0.85898393, z: 0.1652637}
       ManualPivotLocalPosition: {x: 0.01, y: 0.07, z: 0}
-      PivotDistance: 0.109
+      PivotDistance: 0.1
       Target: {fileID: 0}
-      Text: Home Button
+      Text: Next / Prev Tool Tip
       AppearBehavior: 0
       VanishBehavior: 0
       RemainBehavior: 0
       AppearDelay: 1.25
       VanishDelay: 2
       InstantiatedToolTip: {fileID: 0}
-      Preset: 1
-      ControllerElement: 0
+      Preset: 0
+      ControllerElement: 14
     DisplayMode: 1
     EditorColor: {r: 0.5310346, g: 1, b: 0, a: 1}
   - Name: Group B
@@ -241,15 +270,15 @@ MonoBehaviour:
       type: 2}
     Templates:
     - FollowType: 3
-      PivotMode: 1
-      PivotDirection: 3
+      PivotMode: 2
+      PivotDirection: 7
       PivotDirectionOrient: 0
       ContentBillboardType: 1
       ManualPivotDirection: {x: 0, y: 1, z: 0}
       ManualPivotLocalPosition: {x: 0, y: 1, z: 0}
-      PivotDistance: 0.121
+      PivotDistance: 0.1
       Target: {fileID: 0}
-      Text: Something soemthing
+      Text: Choose Color
       AppearBehavior: 0
       VanishBehavior: 0
       RemainBehavior: 0
@@ -257,33 +286,10 @@ MonoBehaviour:
       VanishDelay: 2
       InstantiatedToolTip: {fileID: 0}
       Preset: 0
-      ControllerElement: 0
-    DisplayMode: 3
+      ControllerElement: 5
+    DisplayMode: 1
     EditorColor: {r: 0, g: 1, b: 1, a: 1}
   - Name: Group C
-    TipPrefab: {fileID: 0}
-    Templates:
-    - FollowType: 3
-      PivotMode: 2
-      PivotDirection: 8
-      PivotDirectionOrient: 0
-      ContentBillboardType: 1
-      ManualPivotDirection: {x: 0, y: 1, z: 0}
-      ManualPivotLocalPosition: {x: 0, y: 1, z: 0}
-      PivotDistance: 0.082
-      Target: {fileID: 0}
-      Text: Press Select
-      AppearBehavior: 0
-      VanishBehavior: 0
-      RemainBehavior: 0
-      AppearDelay: 1.25
-      VanishDelay: 2
-      InstantiatedToolTip: {fileID: 0}
-      Preset: 0
-      ControllerElement: 4
-    DisplayMode: 3
-    EditorColor: {r: 1, g: 0, b: 0, a: 1}
-  - Name: Group D
     TipPrefab: {fileID: 0}
     Templates:
     - FollowType: 3
@@ -293,9 +299,9 @@ MonoBehaviour:
       ContentBillboardType: 1
       ManualPivotDirection: {x: 0, y: 1, z: 0}
       ManualPivotLocalPosition: {x: 0, y: 1, z: 0}
-      PivotDistance: 0.101
+      PivotDistance: 0.1
       Target: {fileID: 0}
-      Text: Grasp to paint
+      Text: Press + Hold to Spawn Objects
       AppearBehavior: 0
       VanishBehavior: 0
       RemainBehavior: 0
@@ -303,29 +309,40 @@ MonoBehaviour:
       VanishDelay: 2
       InstantiatedToolTip: {fileID: 0}
       Preset: 0
-      ControllerElement: 2
+      ControllerElement: 4
     DisplayMode: 1
-    EditorColor: {r: 0.5724139, g: 0, b: 1, a: 1}
-  lineLength: 1
-  currentGroup: 0
+    EditorColor: {r: 1, g: 0, b: 0, a: 1}
   TestingPrefab: {fileID: 1087732101620662, guid: 503d7fa7ab6bf5a42803168b10c78f40,
     type: 2}
   handedness: 1
-  toggleTipsPress: 2
 --- !u!4 &1062896883
 Transform:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1062896881}
-  m_LocalRotation: {x: -0.039410997, y: -0.17914824, z: -0.08722922, w: 0.97915465}
-  m_LocalPosition: {x: 0.101, y: 1.2597, z: 0.2459}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.044, y: 1.2597, z: 0.2459}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1444086252}
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: -6.2250004, y: -20.242, z: -9.069}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1062896884
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1062896881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a22a9056bb4541b448e0882bfaf99569, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentGroup: 3
+  handedness: 1
+  toggleTipsPress: 2
 --- !u!1 &1067835404
 GameObject:
   m_ObjectHideFlags: 0
@@ -391,6 +408,132 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &1223241526
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1223241529}
+  - component: {fileID: 1223241528}
+  - component: {fileID: 1223241527}
+  m_Layer: 0
+  m_Name: RightControllerTips
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1223241527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1223241526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a22a9056bb4541b448e0882bfaf99569, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentGroup: 3
+  handedness: 2
+  toggleTipsPress: 2
+--- !u!114 &1223241528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1223241526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f67c430541119064ba2382d424159d1a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  groups:
+  - Name: Group A
+    TipPrefab: {fileID: 1724371267623458, guid: 897b8e365dc77d446af181c5875b63ae,
+      type: 2}
+    Templates:
+    - FollowType: 3
+      PivotMode: 2
+      PivotDirection: 1
+      PivotDirectionOrient: 0
+      ContentBillboardType: 1
+      ManualPivotDirection: {x: 0, y: 1, z: 0}
+      ManualPivotLocalPosition: {x: 0.79, y: 3.61, z: -0.5}
+      PivotDistance: 0.1
+      Target: {fileID: 0}
+      Text: Toggle Help
+      AppearBehavior: 0
+      VanishBehavior: 0
+      RemainBehavior: 0
+      AppearDelay: 1.25
+      VanishDelay: 2
+      InstantiatedToolTip: {fileID: 0}
+      Preset: 0
+      ControllerElement: 1
+    DisplayMode: 1
+    EditorColor: {r: 0.5310346, g: 1, b: 0, a: 1}
+  - Name: Group B
+    TipPrefab: {fileID: 1724371267623458, guid: 897b8e365dc77d446af181c5875b63ae,
+      type: 2}
+    Templates:
+    - FollowType: 3
+      PivotMode: 2
+      PivotDirection: 2
+      PivotDirectionOrient: 0
+      ContentBillboardType: 1
+      ManualPivotDirection: {x: 0, y: 1, z: 0}
+      ManualPivotLocalPosition: {x: 0, y: 1, z: 0}
+      PivotDistance: 0.1
+      Target: {fileID: 0}
+      Text: Press Left / Right to Select Brush
+      AppearBehavior: 0
+      VanishBehavior: 0
+      RemainBehavior: 0
+      AppearDelay: 1.25
+      VanishDelay: 2
+      InstantiatedToolTip: {fileID: 0}
+      Preset: 0
+      ControllerElement: 5
+    - FollowType: 3
+      PivotMode: 2
+      PivotDirection: 8
+      PivotDirectionOrient: 0
+      ContentBillboardType: 1
+      ManualPivotDirection: {x: 0, y: 1, z: 0}
+      ManualPivotLocalPosition: {x: 0, y: 1, z: 0}
+      PivotDistance: 0.1
+      Target: {fileID: 0}
+      Text: Hold to Paint
+      AppearBehavior: 0
+      VanishBehavior: 0
+      RemainBehavior: 0
+      AppearDelay: 1.25
+      VanishDelay: 2
+      InstantiatedToolTip: {fileID: 0}
+      Preset: 0
+      ControllerElement: 4
+    DisplayMode: 1
+    EditorColor: {r: 0, g: 1, b: 1, a: 1}
+  TestingPrefab: {fileID: 1475359716284366, guid: 9a03cdf8a76193746b7a17389b991f22,
+    type: 2}
+  handedness: 2
+--- !u!4 &1223241529
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1223241526}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.2827, y: 1.2597, z: 0.2459}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1039787045}
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1366244329
 Prefab:
   m_ObjectHideFlags: 0
@@ -428,7 +571,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4543495872665798, guid: f46f9eddea7bd4d4e813283cdc60cb96, type: 2}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f46f9eddea7bd4d4e813283cdc60cb96, type: 2}
@@ -470,7 +613,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4269789208092740, guid: e2b08c7188345fa429a8f6ae08ada0a8, type: 2}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e2b08c7188345fa429a8f6ae08ada0a8, type: 2}
@@ -496,8 +639,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1444086251}
-  m_LocalRotation: {x: 0.0000005939162, y: -0.014295869, z: -0.0100104585, w: 0.9998477}
-  m_LocalPosition: {x: 0.008227339, y: -0.006521856, z: -0.00013341685}
+  m_LocalRotation: {x: 0.29891905, y: 0.10382848, z: 0.03273671, w: 0.9480482}
+  m_LocalPosition: {x: 0.0027697384, y: -0.015203834, z: 0.046661615}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1062896883}

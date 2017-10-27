@@ -38,11 +38,20 @@ namespace MRDL.ToolTips
     }
 
     /// <summary>
+    /// Interface for controlling group manager display
+    /// </summary>
+    public interface ITipGroupSource {
+        int NumGroups { get; }
+        TipDisplayModeEnum GetGroupDisplayMode(int groupIndex);
+        void SetGroupDisplayMode(int groupIndex, TipDisplayModeEnum displayMode);
+    }
+
+    /// <summary>
     /// Base class for a tooltip group
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    public class TipGroup<T> where T : TipTemplate, new()
+    public class TipGroupBase<T> where T : TipTemplate, new()
     {
         public string Name = "New Group";
         public GameObject TipPrefab;
@@ -105,27 +114,27 @@ namespace MRDL.ToolTips
 
     /// <summary>
     /// Base class for a tooltip group manager
-    /// Handles the generation and set-up of tooltips as well as visibility for all groups
+    /// Handles the generation and set-up of tooltips
     /// </summary>
     /// <typeparam name="G"></typeparam>
     /// <typeparam name="T"></typeparam>
-    public abstract class TipGroupManager<G, T> : MonoBehaviour where G : TipGroup<T>, new() where T : TipTemplate, new()
+    public abstract class TipGroupManagerBase<G, T> : MonoBehaviour, ITipGroupSource where G : TipGroupBase<T>, new() where T : TipTemplate, new()
     {
         /*
          * A NOTE ON SERIALIZING GENERICS:
          * To ensure List<G> groups is serialized, you must use a class that inherits from TipGroup<T>
          * 
          * The following will be serialized:
-         * public class TipGroupConcrete : TipGroup<T> { }
-         * public class TipGroupManager<TipGroupConcrete, TipTemplateBase>
+         * public class TipGroup : TipGroupBase<T> { }
+         * public class TipGroupManager<TipGroup, TipTemplate>
          * {
-         *      protected List<TipGroupConcrete> groups = new List<TipGroupConcrete>(); <-- WILL BE SERIALIZED
+         *      protected List<TipGroup> groups = new List<TipGroup>(); <-- WILL BE SERIALIZED
          * }
          * 
          * The following will NOT be serialized
-         * public class TipGroupManager<TipGroup<TipTemplateBase>, TipTemplateBase>
+         * public class TipGroupManager<TipGroupBase<TipTemplate>, TipTemplate>
          * {
-         *      protected List<TipGroup<TipTemplateBase>> groups = new List<TipGroup<TipTemplateBase>>(); <-- WILL NOT BE SERIALIZED
+         *      protected List<TipGroupBase<TipTemplate>> groups = new List<TipGroupBase<TipTemplate>>(); <-- WILL NOT BE SERIALIZED
          * }
          */
 
@@ -138,121 +147,21 @@ namespace MRDL.ToolTips
             }
         }
 
-        public int CurrentGroup { get { return currentGroup; } }
+        public int NumGroups { get { return groups.Count; } }
 
         [SerializeField]
         protected List<G> groups = new List<G>();
 
-        // The length of the lines attached to tooltips
-        // This will be multiplied by the template's line length
-        [SerializeField]
-        private float lineLength = 1f;
-
-        [SerializeField]
-        private int currentGroup = 0;
-
-        public void NextGroup()
-        {
-            int newGroupIndex = currentGroup;
-
-            newGroupIndex++;
-            if (newGroupIndex >= groups.Count)
-                newGroupIndex = groups.Count - 1;
-
-            if (newGroupIndex != currentGroup)
-            {
-                currentGroup = newGroupIndex;
-            }
-
-            GoToGroup(currentGroup);
-        }
-
-        public void PrevGroup()
-        {
-            int newGroupIndex = currentGroup;
-
-            newGroupIndex--;
-            if (newGroupIndex < 0)
-                newGroupIndex = 0;
-
-            if (newGroupIndex != currentGroup)
-            {
-                currentGroup = newGroupIndex;
-            }
-
-            GoToGroup(currentGroup);
-        }
-
-        public void GoToGroup(int newGroupIndex, bool exclusive = true)
-        {
-            if (newGroupIndex >= groups.Count)
-                newGroupIndex = groups.Count - 1;
-
-            if (newGroupIndex < 0)
-                newGroupIndex = 0;
-
-            if (newGroupIndex != currentGroup)
-            {
-                // Deactivate Current Group
-                // DeactivateCurrentGroup();
-                currentGroup = newGroupIndex;
-            }
-
-            if (exclusive)
-            {
-                for (int i = 0; i < groups.Count; i++)
-                {
-                    if (i == currentGroup)
-                    {
-                        SetGroupDisplayMode(groups[i], TipDisplayModeEnum.On);
-                    }
-                    else
-                    {
-                        SetGroupDisplayMode(groups[i], TipDisplayModeEnum.Off);
-                    }
-                }
-            }
-            else
-            {
-                SetGroupDisplayMode(groups[currentGroup], TipDisplayModeEnum.On);
-            }
-        }
-
-        public void GoToGroup(string groupName)
-        {
-            int newGroupIndex = currentGroup;
-            for (int i = 0; i < groups.Count; i++)
-            {
-                // TODO enforce GroupName in editor
-                if (groups[i].Name.ToLower() == groupName.ToLower())
-                {
-                    newGroupIndex = i;
-                    break;
-                }
-            }
-
-            if (newGroupIndex != currentGroup)
-            {
-                currentGroup = newGroupIndex;
-            }
-        }
-
-        protected virtual void Awake()
-        {
-            CreateToolTips();
-        }
-
         /// <summary>
         /// Creates a tooltip from a template and a group
+        /// Override this function to make use of additional information provided by your template and group classes
+        /// In your override function, call base.CreateToolTip(template, group) to do basic setup
         /// </summary>
         /// <param name="template"></param>
         /// <param name="group"></param>
         /// <returns></returns>
         protected virtual ToolTip CreateToolTip(T template, G group)
         {
-            /// You can override this function to make use of additional information provided by your template and group classes
-            /// In your override function, call base.CreateToolTip(template, group) to do basic setup
-
             // Parent the new tooltip under this transform by default
             GameObject toolTipGo = GameObject.Instantiate(group.TipPrefab, transform) as GameObject;
             ToolTip toolTip = toolTipGo.GetComponent<ToolTip>();
@@ -284,7 +193,7 @@ namespace MRDL.ToolTips
         /// <summary>
         /// Creates all tool tips
         /// </summary>
-        protected void CreateToolTips()
+        public void CreateToolTips()
         {
             // Create all of our tool tips in one go
             // They will be automatically hidden
@@ -302,7 +211,7 @@ namespace MRDL.ToolTips
                     {
                         Debug.LogWarning("Empty tool tip found in group " + group.Name);
                     }
-                    else
+                    else if (!template.IsInstantiated)
                     {   
                         CreateToolTip(template, group);
                     }
@@ -310,34 +219,31 @@ namespace MRDL.ToolTips
             }
         }
 
-        protected void Update()
+        public TipDisplayModeEnum GetGroupDisplayMode(int groupIndex)
         {
-            //Debug.Log("Updating");
-            //if (CurrentGroup.GroupDisplayMode == DisplayModeEnum.On)
-            //{
-            //    GroupDisplayOn();
-            //}
-            //if (CurrentGroup.GroupDisplayMode == DisplayModeEnum.Off)
-            //{
-            //    Debug.Log("OGG");
-            //    GroupDisplayOff();
-            //}
-            //if (CurrentGroup.GroupDisplayMode == DisplayModeEnum.None)
-            //{
-            //    GroupDisplayNone();
-            //}
+            if (groupIndex >= 0 && groupIndex < groups.Count)
+                return groups[groupIndex].DisplayMode;
+
+            return TipDisplayModeEnum.None;
         }
 
-        private void SetGroupDisplayMode(G group, TipDisplayModeEnum displayMode)
+        public void SetGroupDisplayMode(int groupIndex, TipDisplayModeEnum displayMode)
         {
-            group.DisplayMode = displayMode;
-
-            if (Application.isPlaying)
+            for (int i = 0; i < groups.Count; i++)
             {
-                foreach (T template in group.Templates)
+                if (i == groupIndex)
                 {
-                    if (template.IsInstantiated)
-                        template.InstantiatedToolTip.GroupTipState = displayMode;
+                    groups[i].DisplayMode = displayMode;
+
+                    if (Application.isPlaying)
+                    {
+                        foreach (T template in groups[i].Templates)
+                        {
+                            if (template.IsInstantiated)
+                                template.InstantiatedToolTip.GroupTipState = displayMode;
+                        }
+                    }
+                    return;
                 }
             }
         }

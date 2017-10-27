@@ -3,23 +3,14 @@ using UnityEngine;
 
 namespace MRDL.ToolTips
 {
-    [CustomEditor(typeof(ControllerTips))]
-    public class ControllerTipsEditor : TipGroupManagerEditor<ControllerTipGroup, ControllerTipTemplate>
+    [CustomEditor(typeof(MixedRealityControllerTips))]
+    public class MixedRealityControllerTipsEditor : TipGroupManagerEditor<ControllerTipGroup, ControllerTipTemplate>
     {
-        public override void OnInspectorGUI()
-        {
-            ControllerTips manager = (ControllerTips)target;
-
-            manager.TestingPrefab = (GameObject)EditorGUILayout.ObjectField("Testing Prefab", manager.TestingPrefab, typeof(GameObject), false);
-
-            base.OnInspectorGUI();
-        }
-
         protected override void PrepareToDisplayTipHandle(ControllerTipTemplate template)
         {
             base.PrepareToDisplayTipHandle(template);
 
-            ControllerTips manager = (ControllerTips)target;
+            MixedRealityControllerTips manager = (MixedRealityControllerTips)target;
             if (manager.TestingPrefab != null)
             {
                 // Set the testing matrix - this will ensure that our preview 

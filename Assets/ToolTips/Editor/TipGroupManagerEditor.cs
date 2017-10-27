@@ -5,7 +5,7 @@ using UnityEditor;
 
 namespace MRDL.ToolTips
 {
-    public class TipGroupManagerEditor<G,T> : Editor where G : TipGroup<T>, new() where T : TipTemplate, new()
+    public class TipGroupManagerEditor<G,T> : Editor where G : TipGroupBase<T>, new() where T : TipTemplate, new()
     {
         private T currentTemplate;
         
@@ -13,38 +13,14 @@ namespace MRDL.ToolTips
 
         public override void OnInspectorGUI()
         {
-            TipGroupManager<G, T> manager = (TipGroupManager<G, T>)target;
+            base.DrawDefaultInspector();
+
+            TipGroupManagerBase<G, T> manager = (TipGroupManagerBase<G, T>)target;
             
             Undo.RegisterCompleteObjectUndo(target, "TipGroupManagerEditor");
 
-            EditorGUILayout.LabelField("TOOLTIP GROUPS", EditorStyles.boldLabel);
-
-            EditorGUILayout.LabelField("Current group index: " + manager.CurrentGroup);
-            if (manager.Groups.Count > 0)
-            {
-                EditorGUILayout.BeginHorizontal();
-                if (GUILayout.Button("Prev", GUILayout.MaxWidth(150), GUILayout.MinHeight(50)))
-                {
-                    manager.PrevGroup();
-                }
-
-                if (manager.Groups[manager.CurrentGroup].DisplayMode == TipDisplayModeEnum.Off)
-                {
-                    GUILayout.Button("(Current group hidden)", GUILayout.MaxWidth(150), GUILayout.MinHeight(50));
-                }
-                else
-                {
-                    GUI.color = Color.Lerp(manager.Groups[manager.CurrentGroup].EditorColor, Color.gray, 0.75f);
-                    GUILayout.Button(manager.Groups[manager.CurrentGroup].Name + " (" + manager.CurrentGroup.ToString() + ")", GUILayout.MaxWidth(150), GUILayout.MinHeight(50));
-                    GUI.color = Color.white;
-                }
-
-                if (GUILayout.Button("Next", GUILayout.MaxWidth(150), GUILayout.MinHeight(50)))
-                {
-                    manager.NextGroup();
-                }
-                EditorGUILayout.EndHorizontal();
-            }
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("GROUP EDITOR", EditorStyles.boldLabel);
 
             List<G> groupsToDelete = new List<G>();
 
@@ -239,7 +215,7 @@ namespace MRDL.ToolTips
             if (Application.isPlaying)
                 return;
 
-            TipGroupManager<G, T> manager = (TipGroupManager<G, T>)target;
+            TipGroupManagerBase<G, T> manager = (TipGroupManagerBase<G, T>)target;
 
             foreach (G group in manager.Groups)
             {
@@ -276,7 +252,7 @@ namespace MRDL.ToolTips
         /// </summary>
         protected virtual void PrepareToDisplayTipHandle(T template)
         {
-            ControllerTips manager = (ControllerTips)target;
+            MixedRealityControllerTips manager = (MixedRealityControllerTips)target;
 
             if (TestingTarget == null)
             {

@@ -8,6 +8,9 @@ using UnityEngine.XR.WSA.Input;
 
 namespace MRDL.ToolTips
 {
+    /// <summary>
+    /// Tip template class with an extra field for controller element
+    /// </summary>
     [Serializable]
     public class ControllerTipTemplate : TipTemplate
     {
@@ -15,20 +18,23 @@ namespace MRDL.ToolTips
         public MotionControllerInfo.ControllerElementEnum ControllerElement;
     }
 
+    /// <summary>
+    /// Tip group class with a list of ControllerTipTemplates
+    /// </summary>
     [Serializable]
-    public class ControllerTipGroup : TipGroup<ControllerTipTemplate> { }
+    public class ControllerTipGroup : TipGroupBase<ControllerTipTemplate> { }
 
-    public class ControllerTips : TipGroupManager<ControllerTipGroup, ControllerTipTemplate>
+    /// <summary>
+    /// Tip group manager that uses ControllerTipGroup
+    /// </summary>
+    public class MixedRealityControllerTips : TipGroupManagerBase<ControllerTipGroup, ControllerTipTemplate>
     {
+        /// <summary>
+        /// A prefab of the controller for testing out the positions of tooltips
+        /// This prefab should be based on the GLTF models provided by Windows Mixed Reality
+        /// </summary>
         public GameObject TestingPrefab;
-
-        // Don't instantiate tips on awake
-        protected override void Awake()
-        {
-            // Do nothing
-        }
-
-        // Instantiate tips here instead
+        
         private IEnumerator Start()
         {
             // Wait for our motion controller to appear
@@ -37,18 +43,8 @@ namespace MRDL.ToolTips
                 yield return null;
             }
 
-            // Subscribe to input now that we have the controller
-            InteractionManager.InteractionSourcePressed += InteractionSourcePressed;
             // Create our tool tips!
             CreateToolTips();
-        }
-
-        private void InteractionSourcePressed(InteractionSourcePressedEventArgs obj)
-        {
-            if (obj.pressType == toggleTipsPress && obj.state.source.handedness == handedness)
-            {
-
-            }
         }
 
         protected override ToolTip CreateToolTip(ControllerTipTemplate template, ControllerTipGroup group)
@@ -63,8 +59,14 @@ namespace MRDL.ToolTips
             return toolTip;
         }
 
+        /// <summary>
+        /// Draw the test prefab
+        /// </summary>
         private void OnDrawGizmos()
         {
+            if (Application.isPlaying)
+                return;
+
             if (TestingPrefab != null)
             {
                 Gizmos.color = Color.Lerp(Color.blue, Color.clear, 0.5f);
@@ -80,9 +82,6 @@ namespace MRDL.ToolTips
 
         [SerializeField]
         private InteractionSourceHandedness handedness;
-        [SerializeField]
-        private InteractionSourcePressType toggleTipsPress = InteractionSourcePressType.Menu;
-
         [NonSerialized]
         private MotionControllerInfo controller;
     }
