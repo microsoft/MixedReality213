@@ -4,11 +4,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-#if UNITY_WSA
+#if UNITY_EDITOR_WIN
+using System;
+using System.Runtime.InteropServices;
+#endif
+
+#if UNITY_WSA && UNITY_2017_2_OR_NEWER
+using GLTF;
 using System.Collections;
 using UnityEngine.XR.WSA.Input;
+
 #if !UNITY_EDITOR
-using GLTF;
 using Windows.Foundation;
 using Windows.Storage.Streams;
 #endif
@@ -21,95 +27,61 @@ namespace HoloToolkit.Unity.InputModule
     /// and animates the controller position, rotation, button presses, and
     /// thumbstick/touchpad interactions, where applicable.
     /// </summary>
-    public class MotionControllerVisualizer : Singleton<MotionControllerVisualizer>
+    public class MotionControllerVisualizer : MonoBehaviour
     {
-        public enum OverrideBehaviorEnum
-        {
-            EditorAndRuntime,
-            RuntimeOnly,
-            EditorOnly
-        }
-
         [Tooltip("This setting will be used to determine if the model, override or otherwise, should attempt to be animated based on the user's input.")]
         public bool AnimateControllerModel = true;
 
-        [Tooltip("When an interaction source is lost, the controller model will be disabled.")]
-        public bool DisableControllersOnSourceLost = false;
+        [Tooltip("This setting will be used to determine if the model should always be the left alternate. If false, the platform controller models will be prefered, only if they can't be loaded will the alternate be used. Otherwise, it will always use the alternate model.")]
+        public bool AlwaysUseAlternateLeftModel = false;
+        [Tooltip("This setting will be used to determine if the model should always be the right alternate. If false, the platform controller models will be prefered, only if they can't be loaded will the alternate be used. Otherwise, it will always use the alternate model.")]
+        public bool AlwaysUseAlternateRightModel = false;
 
-        [Tooltip("Use a model with the tip in the positive Z direction and the front face in the positive Y direction. This will override the platform left controller model.")]
+        [Tooltip("Use a model with the tip in the positive Z direction and the front face in the positive Y direction. To override the platform left controller model set AlwaysUseAlternateModel to true; otherwise this will be the default if the model can't be found.")]
         [SerializeField]
-        protected GameObject LeftControllerOverride;
-
+        protected GameObject AlternateLeftController;
+        [Tooltip("Use a model with the tip in the positive Z direction and the front face in the positive Y direction. To override the platform right controller model set AlwaysUseAlternateModel to true; otherwise this will be the default if the model can't be found.")]
         [SerializeField]
-        protected OverrideBehaviorEnum LeftControllerBehavior = OverrideBehaviorEnum.EditorAndRuntime;
-
-        [Tooltip("Use a model with the tip in the positive Z direction and the front face in the positive Y direction. This will override the platform right controller model.")]
-        [SerializeField]
-        protected GameObject RightControllerOverride;
-
-        [SerializeField]
-        protected OverrideBehaviorEnum RightControllerBehavior = OverrideBehaviorEnum.EditorAndRuntime;
-
+        protected GameObject AlternateRightController;
         [Tooltip("Use this to override the indicator used to show the user's touch location on the touchpad. Default is a sphere.")]
         [SerializeField]
         protected GameObject TouchpadTouchedOverride;
-
-        [SerializeField]
-        protected bool ShowTouchpadTouched = true;
-
-        public bool TryGetController(InteractionSourceHandedness handedness, out MotionControllerInfo controller)
-        {
-            controller = null;
-
-            if (controllerDictionary == null)
-            {
-                return false;
-            }
-
-            return controllerDictionary.TryGetValue(handedness, out controller);
-        }
-
-        [SerializeField]
-        protected OverrideBehaviorEnum TouchpadTouchBehavior = OverrideBehaviorEnum.EditorAndRuntime;
 
         [Tooltip("This material will be used on the loaded glTF controller model. This does not affect the above overrides.")]
         [SerializeField]
         protected UnityEngine.Material GLTFMaterial;
 
         // This will be used to keep track of our controllers, indexed by their unique source ID.
-        private Dictionary<InteractionSourceHandedness, MotionControllerInfo> controllerDictionary;
+        private Dictionary<uint, MotionControllerInfo> controllerDictionary = new Dictionary<uint, MotionControllerInfo>(0);
+        private List<uint> loadingControllers = new List<uint>();
 
-        private void Start()
+#if UNITY_EDITOR_WIN
+        [DllImport("MotionControllerModel")]
+        private static extern bool TryGetMotionControllerModel([In] uint controllerId, [Out] out uint outputSize, [Out] out IntPtr outputBuffer);
+#endif
+
+        private void Awake()
         {
-            Application.onBeforeRender += Application_onBeforeRender;
-
-            controllerDictionary = new Dictionary<InteractionSourceHandedness, MotionControllerInfo>();
-
-#if UNITY_WSA
-            if (!Application.isEditor)
+#if UNITY_WSA && UNITY_2017_2_OR_NEWER
+            foreach (var sourceState in InteractionManager.GetCurrentReading())
             {
-                if (GLTFMaterial == null)
+                if (sourceState.source.kind == InteractionSourceKind.Controller)
                 {
-                    if (LeftControllerOverride == null && RightControllerOverride == null)
-                    {
-                        Debug.Log("If using glTF, please specify a material on " + name + ". Otherwise, please specify controller overrides.");
-                    }
-                    else if (LeftControllerOverride == null || RightControllerOverride == null)
-                    {
-                        Debug.Log("Only one override is specified, and no material is specified for the glTF model. Please set the material or the " + ((LeftControllerOverride == null) ? "left" : "right") + " controller override on " + name + ".");
-                    }
+                    StartTrackingController(sourceState.source);
                 }
             }
-            else
+
+            Application.onBeforeRender += Application_onBeforeRender;
+
+            if (GLTFMaterial == null)
             {
-                // Since we're using non-Unity APIs, glTF will only load in a UWP app.
-                if (LeftControllerOverride == null && RightControllerOverride == null)
+                if (AlternateLeftController == null && AlternateRightController == null)
                 {
-                    Debug.Log("Running in the editor won't render the glTF models, and no controller overrides are set. Please specify them on " + name + ".");
+                    Debug.Log("If using glTF, please specify a material on " + name + ". Otherwise, please specify controller alternates.");
                 }
-                else if (LeftControllerOverride == null || RightControllerOverride == null)
+                else if (AlternateLeftController == null || AlternateRightController == null)
                 {
-                    Debug.Log("Running in the editor won't render the glTF models, and only one controller override is specified. Please set the " + ((LeftControllerOverride == null) ? "left" : "right") + " override on " + name + ".");
+                    Debug.Log("Only one alternate is specified, and no material is specified for the glTF model. Please set the material or the " + ((AlternateLeftController == null) ? "left" : "right") + " controller alternate on " + name + ".");
                 }
             }
 
@@ -120,71 +92,34 @@ namespace HoloToolkit.Unity.InputModule
 
         private void Update()
         {
-#if UNITY_WSA
             // NOTE: The controller's state is being updated here in order to provide a good position and rotation
             // for any child GameObjects that might want to raycast or otherwise reason about their location in the world.
-            foreach (var sourceState in InteractionManager.GetCurrentReading())
-            {
-                MotionControllerInfo currentController;
-                if (sourceState.source.kind == InteractionSourceKind.Controller && controllerDictionary.TryGetValue(sourceState.source.handedness, out currentController))
-                {
-                    if (AnimateControllerModel)
-                    {
-                        currentController.AnimateSelect(sourceState.selectPressedAmount);
-
-                        if (sourceState.source.supportsGrasp)
-                        {
-                            currentController.AnimateGrasp(sourceState.grasped);
-                        }
-
-                        if (sourceState.source.supportsMenu)
-                        {
-                            currentController.AnimateMenu(sourceState.menuPressed);
-                        }
-
-                        if (sourceState.source.supportsThumbstick)
-                        {
-                            currentController.AnimateThumbstick(sourceState.thumbstickPressed, sourceState.thumbstickPosition);
-                        }
-
-                        if (sourceState.source.supportsTouchpad)
-                        {
-                            currentController.AnimateTouchpad(sourceState.touchpadPressed, sourceState.touchpadTouched, sourceState.touchpadPosition);
-                        }
-                    }
-
-                    Vector3 newPosition;
-                    if (sourceState.sourcePose.TryGetPosition(out newPosition, InteractionSourceNode.Grip))
-                    {
-                        currentController.ControllerParent.transform.localPosition = newPosition;
-                    }
-
-                    Quaternion newRotation;
-                    if (sourceState.sourcePose.TryGetRotation(out newRotation, InteractionSourceNode.Grip))
-                    {
-                        currentController.ControllerParent.transform.localRotation = newRotation;
-                    }
-                }
-            }
-#endif
+            UpdateControllerState();
         }
 
-        protected override void OnDestroy()
+        private void OnDestroy()
         {
-            base.OnDestroy();
-
+#if UNITY_WSA && UNITY_2017_2_OR_NEWER
+            InteractionManager.InteractionSourceDetected -= InteractionManager_InteractionSourceDetected;
+            InteractionManager.InteractionSourceLost -= InteractionManager_InteractionSourceLost;
             Application.onBeforeRender -= Application_onBeforeRender;
+#endif
         }
 
         private void Application_onBeforeRender()
         {
-#if UNITY_WSA
             // NOTE: This work is being done here to present the most correct rendered location of the controller each frame.
             // Any app logic depending on the controller state should happen in Update() or using InteractionManager's events.
+            UpdateControllerState();
+        }
+
+        private void UpdateControllerState()
+        {
+#if UNITY_WSA && UNITY_2017_2_OR_NEWER
             foreach (var sourceState in InteractionManager.GetCurrentReading())
             {
                 MotionControllerInfo currentController;
-                if (sourceState.source.kind == InteractionSourceKind.Controller && controllerDictionary.TryGetValue(sourceState.source.handedness, out currentController))
+                if (sourceState.source.kind == InteractionSourceKind.Controller && controllerDictionary.TryGetValue(sourceState.source.id, out currentController))
                 {
                     if (AnimateControllerModel)
                     {
@@ -227,135 +162,182 @@ namespace HoloToolkit.Unity.InputModule
 #endif
         }
 
-#if UNITY_WSA
-        /// <summary>
-        /// When a controller is detected, we check for existing controller models
-        /// If one exists it is re-enabled
-        /// Otherwise it is loaded
-        /// </summary>
-        /// <param name="obj"></param>
+#if UNITY_WSA && UNITY_2017_2_OR_NEWER
         private void InteractionManager_InteractionSourceDetected(InteractionSourceDetectedEventArgs obj)
         {
-            // We only want to attempt loading a model if this source is actually a controller.
-            if (obj.state.source.kind == InteractionSourceKind.Controller && !controllerDictionary.ContainsKey(obj.state.source.handedness))
+            StartTrackingController(obj.state.source);
+        }
+
+        private void StartTrackingController(InteractionSource source)
+        {
+            if (source.kind == InteractionSourceKind.Controller && !controllerDictionary.ContainsKey(source.id) && !loadingControllers.Contains(source.id))
             {
-                MotionControllerInfo controller = null;
-                if (controllerDictionary.TryGetValue(obj.state.source.handedness, out controller))
-                {
-                    controller.ControllerParent.SetActive(true);
-                }
-                else
-                {
-                    StartCoroutine(LoadControllerModel(obj.state.source));
-                }
+                StartCoroutine(LoadControllerModel(source));
             }
         }
 
         /// <summary>
-        /// When a controller is lost, the model is disabled
+        /// When a controller is lost, the model is destroyed and the controller object
+        /// is removed from the tracking dictionary.
         /// </summary>
         /// <param name="obj">The source event args to be used to determine the controller model to be removed.</param>
         private void InteractionManager_InteractionSourceLost(InteractionSourceLostEventArgs obj)
         {
-            if (!DisableControllersOnSourceLost)
-                return;
-
             InteractionSource source = obj.state.source;
             if (source.kind == InteractionSourceKind.Controller)
             {
                 MotionControllerInfo controller;
-                if (controllerDictionary != null && controllerDictionary.TryGetValue(source.handedness, out controller))
+                if (controllerDictionary != null && controllerDictionary.TryGetValue(source.id, out controller))
                 {
-                    controller.ControllerParent.SetActive(false);
+                    controllerDictionary.Remove(source.id);
+
+                    Destroy(controller.ControllerParent);
                 }
             }
         }
 
         private IEnumerator LoadControllerModel(InteractionSource source)
         {
-            GameObject controllerModelGameObject = null;
-            if (source.handedness == InteractionSourceHandedness.Left && LeftControllerOverride != null
-                && (LeftControllerBehavior == OverrideBehaviorEnum.EditorAndRuntime
-                || LeftControllerBehavior == OverrideBehaviorEnum.EditorOnly && Application.isEditor
-                || LeftControllerBehavior == OverrideBehaviorEnum.RuntimeOnly && !Application.isEditor))
+            loadingControllers.Add(source.id);
+            
+            if (AlwaysUseAlternateLeftModel && source.handedness == InteractionSourceHandedness.Left)
             {
-                controllerModelGameObject = Instantiate(LeftControllerOverride);
+                if (AlternateLeftController == null)
+                {
+                    Debug.LogWarning("Always use the alternate left model is set on " + name + ", but the alternate left controller model was not specified.");
+                    yield return LoadSourceControllerModel(source);
+                }
+                else
+                {
+                    LoadAlternateControllerModel(source);
+                }
             }
-            else if (source.handedness == InteractionSourceHandedness.Right && RightControllerOverride != null
-                && (RightControllerBehavior == OverrideBehaviorEnum.EditorAndRuntime
-                || RightControllerBehavior == OverrideBehaviorEnum.EditorOnly && Application.isEditor
-                || RightControllerBehavior == OverrideBehaviorEnum.RuntimeOnly && !Application.isEditor))
+            else if (AlwaysUseAlternateRightModel && source.handedness == InteractionSourceHandedness.Right)
             {
-                controllerModelGameObject = Instantiate(RightControllerOverride);
+                if (AlternateRightController == null)
+                {
+                    Debug.LogWarning("Always use the alternate right model is set on " + name + ", but the alternate right controller model was not specified.");
+                    yield return LoadSourceControllerModel(source);
+                }
+                else
+                {
+                    LoadAlternateControllerModel(source);
+                }
             }
             else
             {
+                yield return LoadSourceControllerModel(source);
+            }
+        }
+
+        private IEnumerator LoadSourceControllerModel(InteractionSource source)
+        {
+            byte[] fileBytes;
+            GameObject controllerModelGameObject;
+
+            if (GLTFMaterial == null)
+            {
+                Debug.Log("If using glTF, please specify a material on " + name + ".");
+                yield break;
+            }
+
 #if !UNITY_EDITOR
-                if (GLTFMaterial == null)
-                {
-                    Debug.Log("If using glTF, please specify a material on " + name + ".");
-                    yield break;
-                }
+            // This API returns the appropriate glTF file according to the motion controller you're currently using, if supported.
+            IAsyncOperation<IRandomAccessStreamWithContentType> modelTask = source.TryGetRenderableModelAsync();
 
-                // This API returns the appropriate glTF file according to the motion controller you're currently using, if supported.
-                IAsyncOperation<IRandomAccessStreamWithContentType> modelTask = source.TryGetRenderableModelAsync();
+            if (modelTask == null)
+            {
+                Debug.Log("Model task is null; loading alternate.");
+                LoadAlternateControllerModel(source);
+                yield break;
+            }
 
-                if (modelTask == null)
-                {
-                    Debug.Log("Model task is null.");
-                    yield break;
-                }
+            while (modelTask.Status == AsyncStatus.Started)
+            {
+                yield return null;
+            }
 
-                while (modelTask.Status == AsyncStatus.Started)
+            IRandomAccessStreamWithContentType modelStream = modelTask.GetResults();
+
+            if (modelStream == null)
+            {
+                Debug.Log("Model stream is null; loading alternate.");
+                LoadAlternateControllerModel(source);
+                yield break;
+            }
+
+            if (modelStream.Size == 0)
+            {
+                Debug.Log("Model stream is empty; loading alternate.");
+                LoadAlternateControllerModel(source);
+                yield break;
+            }
+
+            fileBytes = new byte[modelStream.Size];
+
+            using (DataReader reader = new DataReader(modelStream))
+            {
+                DataReaderLoadOperation loadModelOp = reader.LoadAsync((uint)modelStream.Size);
+
+                while (loadModelOp.Status == AsyncStatus.Started)
                 {
                     yield return null;
                 }
 
-                IRandomAccessStreamWithContentType modelStream = modelTask.GetResults();
-
-                if (modelStream == null)
-                {
-                    Debug.Log("Model stream is null.");
-                    yield break;
-                }
-
-                if (modelStream.Size == 0)
-                {
-                    Debug.Log("Model stream is empty.");
-                    yield break;
-                }
-
-                byte[] fileBytes = new byte[modelStream.Size];
-
-                using (DataReader reader = new DataReader(modelStream))
-                {
-                    DataReaderLoadOperation loadModelOp = reader.LoadAsync((uint)modelStream.Size);
-
-                    while (loadModelOp.Status == AsyncStatus.Started)
-                    {
-                        yield return null;
-                    }
-
-                    reader.ReadBytes(fileBytes);
-                }
-
-                controllerModelGameObject = new GameObject();
-                GLTFComponentStreamingAssets gltfScript = controllerModelGameObject.AddComponent<GLTFComponentStreamingAssets>();
-                gltfScript.ColorMaterial = GLTFMaterial;
-                gltfScript.NoColorMaterial = GLTFMaterial;
-                gltfScript.GLTFData = fileBytes;
-
-                yield return gltfScript.LoadModel();
+                reader.ReadBytes(fileBytes);
+            }
 #else
+            IntPtr controllerModel = new IntPtr();
+            uint outputSize = 0;
+
+            if (TryGetMotionControllerModel(source.id, out outputSize, out controllerModel))
+            {
+                fileBytes = new byte[Convert.ToInt32(outputSize)];
+
+                Marshal.Copy(controllerModel, fileBytes, 0, Convert.ToInt32(outputSize));
+            }
+            else
+            {
+                Debug.Log("Unable to load controller models; loading alternate.");
+                LoadAlternateControllerModel(source);
                 yield break;
+            }
 #endif
+
+            controllerModelGameObject = new GameObject();
+            controllerModelGameObject.name = "glTFController";
+            GLTFComponentStreamingAssets gltfScript = controllerModelGameObject.AddComponent<GLTFComponentStreamingAssets>();
+            gltfScript.ColorMaterial = GLTFMaterial;
+            gltfScript.NoColorMaterial = GLTFMaterial;
+            gltfScript.GLTFData = fileBytes;
+
+            yield return gltfScript.LoadModel();
+
+            FinishControllerSetup(controllerModelGameObject, source.handedness.ToString(), source.id);
+        }
+
+        private void LoadAlternateControllerModel(InteractionSource source)
+        {
+            GameObject controllerModelGameObject;
+            if (source.handedness == InteractionSourceHandedness.Left && AlternateLeftController != null)
+            {
+                controllerModelGameObject = Instantiate(AlternateLeftController);
+            }
+            else if (source.handedness == InteractionSourceHandedness.Right && AlternateRightController != null)
+            {
+                controllerModelGameObject = Instantiate(AlternateRightController);
+            }
+            else
+            {
+                loadingControllers.Remove(source.id);
+                return;
             }
 
-            FinishControllerSetup(controllerModelGameObject, source.handedness, source.id);
+            FinishControllerSetup(controllerModelGameObject, source.handedness.ToString(), source.id);
         }
 #endif
 
-        private void FinishControllerSetup(GameObject controllerModelGameObject, InteractionSourceHandedness handedness, uint id)
+        private void FinishControllerSetup(GameObject controllerModelGameObject, string handedness, uint id)
         {
             var parentGameObject = new GameObject
             {
@@ -365,20 +347,18 @@ namespace HoloToolkit.Unity.InputModule
             parentGameObject.transform.parent = transform;
             controllerModelGameObject.transform.parent = parentGameObject.transform;
 
-            var newControllerInfo = new MotionControllerInfo() { ControllerParent = parentGameObject, Handedness = handedness };
-            newControllerInfo.LoadInfo(controllerModelGameObject.GetComponentsInChildren<Transform>(true), this);
-            controllerDictionary.Add(handedness, newControllerInfo);
+            var newControllerInfo = new MotionControllerInfo() { ControllerParent = parentGameObject };
+            if (AnimateControllerModel)
+            {
+                newControllerInfo.LoadInfo(controllerModelGameObject.GetComponentsInChildren<Transform>(), this);
+            }
+
+            loadingControllers.Remove(id);
+            controllerDictionary.Add(id, newControllerInfo);
         }
 
         public GameObject SpawnTouchpadVisualizer(Transform parentTransform)
         {
-            if (!ShowTouchpadTouched
-                || (Application.isEditor && TouchpadTouchBehavior == OverrideBehaviorEnum.RuntimeOnly)
-                || (!Application.isEditor && TouchpadTouchBehavior == OverrideBehaviorEnum.EditorOnly))
-            {
-                return null;
-            }
-
             GameObject touchVisualizer;
             if (TouchpadTouchedOverride != null)
             {
