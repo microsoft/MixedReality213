@@ -95,8 +95,8 @@ namespace MRDL.ControllerExamples
             }
 
             // Parent the brush tools under the element of choice
-            Transform elementTransform = controller.GetElement(element);
-            if (elementTransform == null)
+            Transform elementTransform;
+            if (!controller.TryGetElement(element, out elementTransform))
             {
                 Debug.LogError("Element " + element.ToString() + " not found in controller, can't proceed.");
                 gameObject.SetActive(false);
@@ -111,8 +111,8 @@ namespace MRDL.ControllerExamples
             controller.SetRenderersVisible(false);
 
             // Get the touchpad and assign our custom material to it
-            Transform touchpad = controller.GetElement(MotionControllerInfo.ControllerElementEnum.Touchpad);
-            if (touchpad != null)
+            Transform touchpad;
+            if (controller.TryGetElement(MotionControllerInfo.ControllerElementEnum.Touchpad, out touchpad))
             {
                 touchpadRenderer = touchpad.GetComponentInChildren<MeshRenderer>();
                 touchpadRenderer.material = touchpadMaterial;
@@ -200,11 +200,6 @@ namespace MRDL.ControllerExamples
         {
             displayBrushindex = -1;
             currentAction = SwipeEnum.Left;
-        }
-
-        private void OnDestroy()
-        {
-            Debug.Log("Destroying!");
         }
 
         private void InteractionSourcePressed(InteractionSourcePressedEventArgs obj)

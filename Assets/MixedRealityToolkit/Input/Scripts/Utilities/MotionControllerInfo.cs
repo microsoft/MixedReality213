@@ -78,22 +78,65 @@ namespace HoloToolkit.Unity.InputModule
             PointingPose
         }
 
-        public Transform GetElement(ControllerElementEnum element)
+        public bool TryGetElement(ControllerElementEnum element, out Transform elementTransform)
         {
             switch (element)
             {
                 // control elements
-                case ControllerElementEnum.Home: return home.transform;
-                case ControllerElementEnum.Menu: return menu.transform;
-                case ControllerElementEnum.Select: return select.transform;
-                case ControllerElementEnum.Grasp: return grasp.transform;
-                case ControllerElementEnum.Thumbstick: return thumbstickPress.transform;
-                case ControllerElementEnum.Touchpad: return touchpadPress.transform;
+                case ControllerElementEnum.Home:
+                    if (home != null)
+                    {
+                        elementTransform = home.transform;
+                        return true;
+                    }
+                    break;
+                case ControllerElementEnum.Menu:
+                    if (menu != null)
+                    {
+                        elementTransform = menu.transform;
+                        return true;
+                    }
+                    break;
+                case ControllerElementEnum.Select:
+                    if (select != null)
+                    {
+                        elementTransform = select.transform;
+                        return true;
+                    }
+                    break;
+                case ControllerElementEnum.Grasp:
+                    if (grasp != null)
+                    {
+                        elementTransform = grasp.transform;
+                        return true;
+                    }
+                    break;
+                case ControllerElementEnum.Thumbstick:
+                    if (thumbstickPress != null)
+                    {
+                        elementTransform = thumbstickPress.transform;
+                        return true;
+                    }
+                    break;
+                case ControllerElementEnum.Touchpad:
+                    if (touchpadPress != null)
+                    {
+                        elementTransform = touchpadPress.transform;
+                        return true;
+                    }
+                    break;
                 // body elements & poses
-                case ControllerElementEnum.PointingPose: return pointingPose.transform;
-                default:
-                    return null;
+                case ControllerElementEnum.PointingPose:
+                    if (pointingPose != null)
+                    {
+                        elementTransform = pointingPose.transform;
+                        return true;
+                    }
+                    break;
             }
+
+            elementTransform = null;
+            return false;
         }
 
         /// <summary>

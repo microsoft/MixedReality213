@@ -102,8 +102,8 @@ namespace MRDL.ControllerExamples
             displayObject.GetComponent<Renderer>().sharedMaterial = instantiatedMaterial;
 
             // Parent the picker wheel under the element of choice
-            Transform elementTransform = controller.GetElement(element);
-            if (elementTransform == null)
+            Transform elementTransform;
+            if (!controller.TryGetElement(element, out elementTransform))
             {
                 Debug.LogError("Element " + element.ToString() + " not found in controller, can't proceed.");
                 gameObject.SetActive(false);

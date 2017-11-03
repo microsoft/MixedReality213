@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 #if UNITY_EDITOR_WIN
-using System;
 using System.Runtime.InteropServices;
 #endif
 
@@ -400,6 +400,15 @@ namespace HoloToolkit.Unity.InputModule
             var newControllerInfo = new MotionControllerInfo(parentGameObject, handedness);
 
             newControllerInfo.LoadInfo(controllerModelGameObject.GetComponentsInChildren<Transform>());
+
+            if (handedness == InteractionSourceHandedness.Left)
+            {
+                leftControllerModel = newControllerInfo;
+            }
+            else if (handedness == InteractionSourceHandedness.Right)
+            {
+                rightControllerModel = newControllerInfo;
+            }
 
             if (OnControllerModelLoaded != null)
             {

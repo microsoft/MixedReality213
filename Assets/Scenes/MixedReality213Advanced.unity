@@ -892,41 +892,10 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 114895734277317420, guid: fa4aec5413103264c884daee464826d9,
         type: 2}
-      propertyPath: RightControllerOverride
+      propertyPath: AlternateRightController
       value: 
-      objectReference: {fileID: 1475359716284366, guid: 9a03cdf8a76193746b7a17389b991f22,
+      objectReference: {fileID: 1430356196732642, guid: 58f27e3d07d02114d9feb8eb5448261a,
         type: 2}
-    - target: {fileID: 114895734277317420, guid: fa4aec5413103264c884daee464826d9,
-        type: 2}
-      propertyPath: LeftControllerOverride
-      value: 
-      objectReference: {fileID: 1087732101620662, guid: 503d7fa7ab6bf5a42803168b10c78f40,
-        type: 2}
-    - target: {fileID: 114895734277317420, guid: fa4aec5413103264c884daee464826d9,
-        type: 2}
-      propertyPath: LeftControllerBehavior
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114895734277317420, guid: fa4aec5413103264c884daee464826d9,
-        type: 2}
-      propertyPath: RightControllerBehavior
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114895734277317420, guid: fa4aec5413103264c884daee464826d9,
-        type: 2}
-      propertyPath: GLTFMaterial
-      value: 
-      objectReference: {fileID: 2100000, guid: 2ac78523d661e954c83d799f582b22e8, type: 2}
-    - target: {fileID: 114895734277317420, guid: fa4aec5413103264c884daee464826d9,
-        type: 2}
-      propertyPath: TouchpadTouchBehavior
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114895734277317420, guid: fa4aec5413103264c884daee464826d9,
-        type: 2}
-      propertyPath: ShowTouchpadTouched
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fa4aec5413103264c884daee464826d9, type: 2}
   m_IsPrefabParent: 0
