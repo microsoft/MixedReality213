@@ -318,7 +318,7 @@ MonoBehaviour:
   colorPicker: {fileID: 0}
   menuTimeout: 2
   handedness: 2
-  element: 26
+  element: 6
   touchpadMaterial: {fileID: 2100000, guid: 9ab2a9ffd08a18a4b897b448b582c956, type: 2}
   touchpadColor:
     serializedVersion: 2

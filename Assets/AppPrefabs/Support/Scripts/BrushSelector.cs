@@ -88,7 +88,7 @@ namespace MRDL.ControllerExamples
 
         private IEnumerator Start()
         {
-            while (!MotionControllerVisualizer.Instance.TryGetController(handedness, out controller))
+            while (!MotionControllerVisualizer.Instance.TryGetControllerModel(handedness, out controller))
             {
                 menuOpen = false;
                 yield return null;

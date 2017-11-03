@@ -46,7 +46,7 @@ namespace MRDL.Controllers
         private IEnumerator Start()
         {
             // Wait for our controller to appear
-            while (!MotionControllerVisualizer.Instance.TryGetController(handedness, out controller))
+            while (!MotionControllerVisualizer.Instance.TryGetControllerModel(handedness, out controller))
             {
                 yield return null;
             }
