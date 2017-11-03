@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using HoloToolkit.Unity.Controllers;
 using HoloToolkit.Unity.InputModule;
 using System;
 using System.Collections;
@@ -9,19 +10,19 @@ using UnityEngine.XR.WSA.Input;
 
 namespace HoloToolkit.Unity.ControllerExamples
 {
-    public class ObjectSpawner : MonoBehaviour
+    public class ObjectSpawner : AttachToController
     {
         public enum StateEnum
         {
             Uninitialized,
             Idle,
             Switching,
-            Spawning,
+            Spawning
         }
 
         public int MeshIndex
         {
-            get            {                return meshIndex;            }
+            get { return meshIndex; }
             set
             {
                 if (state != StateEnum.Idle)
@@ -67,58 +68,16 @@ namespace HoloToolkit.Unity.ControllerExamples
         [SerializeField]
         private float growTime = 2f;
 
-        [SerializeField]
-        private InteractionSourceHandedness handedness = InteractionSourceHandedness.Left;
-        [SerializeField]
-        private MotionControllerInfo.ControllerElementEnum element = MotionControllerInfo.ControllerElementEnum.PointingPose;
-        private MotionControllerInfo controller;
-
         private int meshIndex = 0;
         private StateEnum state = StateEnum.Uninitialized;
         private Material instantiatedMaterial;
         private bool released;
         private float timePressed;
 
-        private void SpawnObject()
+        private void Awake()
         {
-            if (state != StateEnum.Idle)
-            {
-                return;
-            }
-
-            state = StateEnum.Spawning;
-            StartCoroutine(SpawnOverTime());
-        }
-
-        private IEnumerator Start()
-        {
-            while (!MotionControllerVisualizer.Instance.TryGetControllerModel(handedness, out controller))
-            {
-                yield return null;
-            }
-
-            instantiatedMaterial = new Material(objectMaterial);
-            displayObject.sharedMesh = availableMeshes[meshIndex];
-            displayObject.GetComponent<Renderer>().sharedMaterial = instantiatedMaterial;
-
-            // Parent the picker wheel under the element of choice
-            Transform elementTransform;
-            if (!controller.TryGetElement(element, out elementTransform))
-            {
-                Debug.LogError("Element " + element.ToString() + " not found in controller, can't proceed.");
-                gameObject.SetActive(false);
-                yield break;
-            }
-
-            transform.parent = elementTransform;
-            transform.localPosition = Vector3.zero;
-            transform.localRotation = Quaternion.identity;
-
-            // Subscribe to input now that we're parented under the controller
-            InteractionManager.InteractionSourcePressed += InteractionSourcePressed;
-            InteractionManager.InteractionSourceReleased += InteractionSourceReleased;
-
-            state = StateEnum.Idle;
+            OnAttachToController += This_OnAttachToController;
+            OnDetachFromController += This_OnDetachFromController;
         }
 
         private void Update()
@@ -135,6 +94,44 @@ namespace HoloToolkit.Unity.ControllerExamples
 
             displayObject.sharedMesh = availableMeshes[meshIndex];
             instantiatedMaterial.color = colorSource.SelectedColor;
+        }
+
+        private void SpawnObject()
+        {
+            if (state != StateEnum.Idle)
+            {
+                return;
+            }
+
+            state = StateEnum.Spawning;
+            StartCoroutine(SpawnOverTime());
+        }
+
+        private void This_OnAttachToController(MotionControllerInfo controllerInfo)
+        {
+            gameObject.SetActive(true);
+
+            instantiatedMaterial = new Material(objectMaterial);
+            displayObject.sharedMesh = availableMeshes[meshIndex];
+            displayObject.GetComponent<Renderer>().sharedMaterial = instantiatedMaterial;
+
+            // Subscribe to input now that we're parented under the controller
+            InteractionManager.InteractionSourcePressed += InteractionSourcePressed;
+            InteractionManager.InteractionSourceReleased += InteractionSourceReleased;
+
+            state = StateEnum.Idle;
+        }
+
+        private void This_OnDetachFromController(MotionControllerInfo controllerInfo)
+        {
+            // Unsubscribe from input now that we've detached from the controller
+            InteractionManager.InteractionSourcePressed -= InteractionSourcePressed;
+            InteractionManager.InteractionSourceReleased -= InteractionSourceReleased;
+
+            Destroy(instantiatedMaterial);
+            //displayObject.sharedMesh = null;
+
+            state = StateEnum.Uninitialized;
         }
 
         private IEnumerator SwitchOverTime()
@@ -225,7 +222,9 @@ namespace HoloToolkit.Unity.ControllerExamples
                     case InteractionSourcePressType.Select:
                         meshIndex++;
                         if (meshIndex >= NumAvailableMeshes)
+                        {
                             meshIndex = 0;
+                        }
                         break;
 
                     default:

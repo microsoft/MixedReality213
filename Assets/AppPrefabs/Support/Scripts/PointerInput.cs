@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using HoloToolkit.Unity.InputModule;
 using UnityEngine;
 using UnityEngine.XR.WSA.Input;
 
@@ -9,23 +10,16 @@ namespace HoloToolkit.Unity.Controllers
     /// <summary>
     /// Routes controller input to a physics pointer
     /// </summary>
-    [RequireComponent(typeof(AttachToController))]
-    public class PointerInput : MonoBehaviour
+    public class PointerInput : AttachToController
     {
         [SerializeField]
         private PhysicsPointer pointer = null;
         [SerializeField]
         private InteractionSourcePressType activePressType = InteractionSourcePressType.Select;
-        [SerializeField]
-        private InteractionSourceHandedness handedness = InteractionSourceHandedness.Left;
-
-        private AttachToController attachToController;
 
         private void Awake()
         {
-            attachToController = GetComponent<AttachToController>();
-            attachToController.Handedness = handedness;
-            attachToController.OnAttach += OnAttach;
+            OnAttachToController += This_OnAttachToController;
 
             if (pointer == null)
             {
@@ -35,7 +29,7 @@ namespace HoloToolkit.Unity.Controllers
             pointer.Active = false;
         }
 
-        private void OnAttach()
+        private void This_OnAttachToController(MotionControllerInfo controllerInfo)
         {
             // Subscribe to interaction events
             InteractionManager.InteractionSourceUpdated += InteractionSourceUpdated;

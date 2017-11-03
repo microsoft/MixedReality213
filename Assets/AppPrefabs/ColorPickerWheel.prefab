@@ -35,7 +35,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4568986355705174}
   - component: {fileID: 95955677609272348}
-  - component: {fileID: 114639197955965534}
+  - component: {fileID: 114032642240435876}
   - component: {fileID: 65853495505084990}
   - component: {fileID: 54232508987435032}
   m_Layer: 0
@@ -87,7 +87,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1514540217597166}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.1648, y: 0.1045, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.03, y: 0.03, z: 0.03}
   m_Children:
   - {fileID: 4656808752176476}
@@ -275,7 +275,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
---- !u!114 &114639197955965534
+--- !u!114 &114032642240435876
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -286,14 +286,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c867040d80ee6c54ba5482735391537d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Handedness: 1
+  element: 5
+  positionOffset: {x: 0, y: 0, z: 0}
+  rotationOffset: {x: 0, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  setScaleOnAttach: 0
   visible: 1
   selectorTransform: {fileID: 4679133003569798}
   inputScale: 1.1
   selectorPosition: {x: 0, y: 0}
-  selectedColor: {r: 0.9882353, g: 0.9764706, b: 0.9647059, a: 1}
+  selectedColor: {r: 1, g: 1, b: 1, a: 1}
   colorWheelTexture: {fileID: 2800000, guid: e7bc94dceceb4ec4fbb4c9ada0caebd5, type: 3}
   colorWheelObject: {fileID: 1580881552183484}
   animator: {fileID: 95955677609272348}
   timeout: 2
-  handedness: 1
-  element: 5

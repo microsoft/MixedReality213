@@ -1,21 +1,23 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using HoloToolkit.Unity.InputModule;
+using HoloToolkit.Unity.Controllers;
 using HoloToolkit.Unity.Design;
+using HoloToolkit.Unity.InputModule;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.XR.WSA.Input;
 
 namespace HoloToolkit.Unity.ControllerExamples
 {
+    [RequireComponent(typeof(AttachToController))]
     public class BrushSelector : MonoBehaviour
     {
         public enum SwipeEnum
         {
             None,
             Left,
-            Right,
+            Right
         }
 
         [SerializeField]
@@ -214,14 +216,17 @@ namespace HoloToolkit.Unity.ControllerExamples
         {
             if (obj.state.source.handedness == handedness)
             {
-
                 if (obj.state.touchpadPressed)
                 {
                     // Check which side we clicked
                     if (obj.state.touchpadPosition.x < 0)
+                    {
                         currentAction = SwipeEnum.Left;
+                    }
                     else
+                    {
                         currentAction = SwipeEnum.Right;
+                    }
 
                     // Ping the touchpad material so it gets bright
                     touchpadTouchTime = Time.unscaledTime;

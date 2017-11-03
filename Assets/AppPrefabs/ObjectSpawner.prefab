@@ -286,6 +286,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 393789416249a224f963f1f8daf39cdc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Handedness: 1
+  element: 6
+  positionOffset: {x: 0, y: 0, z: 0}
+  rotationOffset: {x: 0, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  setScaleOnAttach: 0
   displayParent: {fileID: 4019373725975686}
   scaleParent: {fileID: 4867629368935554}
   spawnParent: {fileID: 4986731351061256}
@@ -322,5 +328,3 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 0
   growTime: 2
-  handedness: 1
-  element: 6

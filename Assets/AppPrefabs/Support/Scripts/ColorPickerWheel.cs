@@ -1,15 +1,14 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using HoloToolkit.Unity.InputModule;
 using HoloToolkit.Unity.Controllers;
-using System.Collections;
+using HoloToolkit.Unity.InputModule;
 using UnityEngine;
 using UnityEngine.XR.WSA.Input;
 
 namespace HoloToolkit.Unity.ControllerExamples
 {
-    public class ColorPickerWheel : MonoBehaviour, IPointerTarget
+    public class ColorPickerWheel : AttachToController, IPointerTarget
     {
         public bool Visible
         {
@@ -54,37 +53,20 @@ namespace HoloToolkit.Unity.ControllerExamples
         [SerializeField]
         private float timeout = 2f;
 
-        /*[Header("Color Dabs")]
-        [SerializeField]
-        private Color[] colorDabs = new Color[8];*/
-
         private float lastTimeVisible;
         private bool visibleLastFrame = false;
 
-        [SerializeField]
-        private InteractionSourceHandedness handedness = InteractionSourceHandedness.Left;
-        [SerializeField]
-        private MotionControllerInfo.ControllerElementEnum element = MotionControllerInfo.ControllerElementEnum.Touchpad;
-        private MotionControllerInfo controller;
-
-        public void OnPointerTarget(PhysicsPointer source)
+        private void Awake()
         {
-            Visible = true;
+            OnAttachToController += This_OnAttachToController;
+            OnDetachFromController += This_OnDetachFromController;
 
-            // If we're opening or closing, don't set the color value
-            AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-            if (stateInfo.IsName("Show") || stateInfo.IsName("Hide"))
-            {
-                return;
-            }
-
-            Vector3 localHitPoint = selectorTransform.parent.InverseTransformPoint(source.TargetPoint);
-            SelectorPosition = new Vector2(localHitPoint.x, localHitPoint.z);
+            visible = false;
         }
 
         private void Update()
         {
-            if (controller == null)
+            if (Controller == null)
             {
                 return;
             }
@@ -133,40 +115,39 @@ namespace HoloToolkit.Unity.ControllerExamples
             }
         }
 
-        private IEnumerator Start()
+        private void This_OnAttachToController(MotionControllerInfo e)
         {
-            while (!MotionControllerVisualizer.Instance.TryGetControllerModel(handedness, out controller))
-            {
-                visible = false;
-                yield return null;
-            }
-
-            // Parent the picker wheel under the element of choice
-            Transform elementTransform;
-            if (!controller.TryGetElement(element, out elementTransform))
-            {
-                Debug.LogError("Element " + element.ToString() + " not found in controller, can't proceed.");
-                gameObject.SetActive(false);
-                yield break;
-            }
-
-            transform.parent = elementTransform;
-            transform.localPosition = Vector3.zero;
-            transform.localRotation = Quaternion.identity;
-
             // Subscribe to input now that we're parented under the controller
             InteractionManager.InteractionSourceUpdated += InteractionSourceUpdated;
         }
 
+        private void This_OnDetachFromController(MotionControllerInfo e)
+        {
+            // Unsubscribe from input now that we've detached from the controller
+            InteractionManager.InteractionSourceUpdated -= InteractionSourceUpdated;
+        }
+
+        public void OnPointerTarget(PhysicsPointer source)
+        {
+            Visible = true;
+
+            // If we're opening or closing, don't set the color value
+            AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+            if (stateInfo.IsName("Show") || stateInfo.IsName("Hide"))
+            {
+                return;
+            }
+
+            Vector3 localHitPoint = selectorTransform.parent.InverseTransformPoint(source.TargetPoint);
+            SelectorPosition = new Vector2(localHitPoint.x, localHitPoint.z);
+        }
+
         private void InteractionSourceUpdated(InteractionSourceUpdatedEventArgs obj)
         {
-            if (obj.state.source.handedness == handedness)
+            if (obj.state.source.handedness == handedness && obj.state.touchpadTouched)
             {
-                if (obj.state.touchpadTouched)
-                {
-                    Visible = true;
-                    SelectorPosition = obj.state.touchpadPosition;
-                }
+                Visible = true;
+                SelectorPosition = obj.state.touchpadPosition;
             }
         }
     }
