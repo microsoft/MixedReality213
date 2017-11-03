@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System;
 using UnityEngine;
 using UnityEngine.XR.WSA.Input;
 
@@ -11,11 +10,10 @@ namespace HoloToolkit.Unity.InputModule
     /// This script keeps track of the GameObjects for each button on the controller.
     /// It also keeps track of the animation Transforms in order to properly animate according to user input.
     /// </summary>
-    [Serializable]
     public class MotionControllerInfo
     {
-        public GameObject ControllerParent;
-        public InteractionSourceHandedness Handedness;
+        public readonly GameObject ControllerParent;
+        public readonly InteractionSourceHandedness Handedness;
 
         private GameObject home;
         private Transform homePressed;
@@ -48,14 +46,7 @@ namespace HoloToolkit.Unity.InputModule
         private Transform touchpadTouchYMin;
         private Transform touchpadTouchYMax;
         private GameObject touchpadTouchVisualizer;
-
         private GameObject pointingPose;
-        /* These elements will be available in future versions
-        private GameObject handlePose;
-        private GameObject caseElement;
-        private GameObject ringElement;
-        private GameObject inputPose;
-        */
 
         // These values are used to determine if a button's state has changed.
         private bool wasGrasped;
@@ -68,91 +59,84 @@ namespace HoloToolkit.Unity.InputModule
         private Vector2 lastTouchpadPosition;
         private double lastSelectPressedAmount;
 
+        public MotionControllerInfo(GameObject controllerParent, InteractionSourceHandedness handedness)
+        {
+            ControllerParent = controllerParent;
+            Handedness = handedness;
+        }
+
         public enum ControllerElementEnum
         {
-            // control elements
+            // Controller button elements
             Home,
             Menu,
             Grasp,
             Thumbstick,
             Select,
             Touchpad,
-            TouchpadTouchX,
-            TouchpadTouchY,
-            // control pressed / unpressed
-            HomePressed,
-            HomeUnpressed,
-            MenuPressed,
-            MenuUnpressed,
-            GraspPressed,
-            GraspUnpressed,
-            ThumbstickPressed,
-            ThumbstickUnpressed,
-            TouchpadPressed,
-            TouchpadUnpressed,
-            // control min max
-            ThumbstickXMin,
-            ThumbstickXMax,
-            ThumbstickYMin,
-            ThumbstickYMax,
-            TouchpadTouchXMin,
-            TouchpadTouchXMax,
-            TouchpadTouchYMin,
-            TouchpadTouchYMax,
-            // body elements & poses
-            PointingPose,
-            /* These elements will be available in future versions
-            HandlePose,
-            InputPose,
-            Ring,
-            Case,
-            */
+            // Controller body elements & poses
+            PointingPose
         }
 
-        public Transform GetElement(ControllerElementEnum element)
+        public bool TryGetElement(ControllerElementEnum element, out Transform elementTransform)
         {
             switch (element)
             {
                 // control elements
-                case ControllerElementEnum.Home: return home.transform;
-                case ControllerElementEnum.Menu: return menu.transform;
-                case ControllerElementEnum.Select: return select.transform;
-                case ControllerElementEnum.Grasp: return grasp.transform;
-                case ControllerElementEnum.Thumbstick: return thumbstickPress.transform;
-                case ControllerElementEnum.Touchpad: return touchpadPress.transform;
-                case ControllerElementEnum.TouchpadTouchX: return touchpadTouchX.transform;
-                case ControllerElementEnum.TouchpadTouchY: return touchpadTouchY.transform;
-                // control pressed / unpressed
-                case ControllerElementEnum.HomePressed: return homePressed;
-                case ControllerElementEnum.HomeUnpressed: return homeUnpressed;
-                case ControllerElementEnum.MenuPressed: return menuPressed;
-                case ControllerElementEnum.MenuUnpressed: return menuUnpressed;
-                case ControllerElementEnum.GraspPressed: return graspPressed;
-                case ControllerElementEnum.GraspUnpressed: return graspUnpressed;
-                case ControllerElementEnum.ThumbstickPressed: return thumbstickPressed;
-                case ControllerElementEnum.ThumbstickUnpressed: return thumbstickUnpressed;
-                case ControllerElementEnum.TouchpadPressed: return touchpadPressed;
-                case ControllerElementEnum.TouchpadUnpressed: return touchpadUnpressed;
-                // control min max
-                case ControllerElementEnum.ThumbstickXMin: return thumbstickXMin;
-                case ControllerElementEnum.ThumbstickXMax: return thumbstickXMax;
-                case ControllerElementEnum.ThumbstickYMin: return thumbstickYMin;
-                case ControllerElementEnum.ThumbstickYMax: return thumbstickYMax;
-                case ControllerElementEnum.TouchpadTouchXMin: return touchpadTouchXMin;
-                case ControllerElementEnum.TouchpadTouchXMax: return touchpadTouchXMax;
-                case ControllerElementEnum.TouchpadTouchYMin: return touchpadTouchYMin;
-                case ControllerElementEnum.TouchpadTouchYMax: return touchpadTouchYMax;
+                case ControllerElementEnum.Home:
+                    if (home != null)
+                    {
+                        elementTransform = home.transform;
+                        return true;
+                    }
+                    break;
+                case ControllerElementEnum.Menu:
+                    if (menu != null)
+                    {
+                        elementTransform = menu.transform;
+                        return true;
+                    }
+                    break;
+                case ControllerElementEnum.Select:
+                    if (select != null)
+                    {
+                        elementTransform = select.transform;
+                        return true;
+                    }
+                    break;
+                case ControllerElementEnum.Grasp:
+                    if (grasp != null)
+                    {
+                        elementTransform = grasp.transform;
+                        return true;
+                    }
+                    break;
+                case ControllerElementEnum.Thumbstick:
+                    if (thumbstickPress != null)
+                    {
+                        elementTransform = thumbstickPress.transform;
+                        return true;
+                    }
+                    break;
+                case ControllerElementEnum.Touchpad:
+                    if (touchpadPress != null)
+                    {
+                        elementTransform = touchpadPress.transform;
+                        return true;
+                    }
+                    break;
                 // body elements & poses
-                case ControllerElementEnum.PointingPose: return pointingPose.transform;
-                /* These elements will be available in future versions
-                case ControllerElementEnum.HandlePose: return handlePose.transform;
-                case ControllerElementEnum.InputPose: return inputPose.transform;
-                case ControllerElementEnum.Case: return caseElement.transform;
-                case ControllerElementEnum.Ring: return ringElement.transform;
-                */
-                default:
-                    return null;
+                case ControllerElementEnum.PointingPose:
+                    if (pointingPose != null)
+                    {
+                        elementTransform = pointingPose.transform;
+                        return true;
+                    }
+                    break;
             }
+
+            elementTransform = null;
+            return false;
         }
 
         /// <summary>
@@ -162,11 +146,8 @@ namespace HoloToolkit.Unity.InputModule
         /// </summary>
         /// <param name="childTransforms">The transforms of the glTF model.</param>
         /// <param name="visualizerScript">The script containing references to any objects to spawn.</param>
-        public void LoadInfo(Transform[] childTransforms, MotionControllerVisualizer visualizerScript)
+        public void LoadInfo(Transform[] childTransforms)
         {
-            // Regex to remove numbers from end of child name
-            System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(@"\d+$");
-
             foreach (Transform child in childTransforms)
             {
                 // Animation bounds are named in two pairs:
@@ -175,29 +156,14 @@ namespace HoloToolkit.Unity.InputModule
                 // animate the interactions. We also look for the
                 // touch transform, in order to spawn the touchpadTouched
                 // visualizer.
-                string childName = regex.Replace(child.name.ToLower(), "").Trim();
-
-                switch (childName)
+                switch (child.name.ToLower())
                 {
-                    case "home":
-                        home = child.gameObject;
-                        break;
-                    case "menu":
-                        menu = child.gameObject;
-                        break;
-                    case "grasp":
-                        grasp = child.gameObject;
-                        break;
-                    case "select":
-                        select = child.gameObject;
-                        break;
                     case "touch":
-                        touchpadTouchVisualizer = visualizerScript.SpawnTouchpadVisualizer(child);
+                        touchpadTouchVisualizer = MotionControllerVisualizer.Instance.SpawnTouchpadVisualizer(child);
                         break;
                     case "pointing_pose":
                         pointingPose = child.gameObject;
                         break;
-
                     case "pressed":
                         switch (child.parent.name.ToLower())
                         {
@@ -217,10 +183,7 @@ namespace HoloToolkit.Unity.InputModule
                                 thumbstickPressed = child;
                                 break;
                             case "touchpad_press":
-                                touchpadPress = child.gameObject;
-                                break;
-                            default:
-                                Debug.LogWarning("Unknown parent " + child.parent.name + " for pressed transform");
+                                touchpadPressed = child;
                                 break;
                         }
                         break;
@@ -245,9 +208,6 @@ namespace HoloToolkit.Unity.InputModule
                             case "touchpad_press":
                                 touchpadUnpressed = child;
                                 break;
-                            default:
-                                Debug.LogWarning("Unknown parent " + child.parent.name + " for unpressed transform");
-                                break;
                         }
                         break;
                     case "min":
@@ -265,9 +225,6 @@ namespace HoloToolkit.Unity.InputModule
                             case "touchpad_touch_y":
                                 touchpadTouchYMin = child;
                                 break;
-                            default:
-                                Debug.LogWarning("Unknown parent " + child.parent.name + " for min transform");
-                                break;
                         }
                         break;
                     case "max":
@@ -284,9 +241,6 @@ namespace HoloToolkit.Unity.InputModule
                                 break;
                             case "touchpad_touch_y":
                                 touchpadTouchYMax = child;
-                                break;
-                            default:
-                                Debug.LogWarning("Unknown parent " + child.parent.name + " for max transform");
                                 break;
                         }
                         break;
@@ -314,18 +268,16 @@ namespace HoloToolkit.Unity.InputModule
                             case "thumbstick_y":
                                 thumbstickY = child.gameObject;
                                 break;
+                            case "touchpad_press":
+                                touchpadPress = child.gameObject;
+                                break;
                             case "touchpad_touch_x":
                                 touchpadTouchX = child.gameObject;
                                 break;
                             case "touchpad_touch_y":
                                 touchpadTouchY = child.gameObject;
                                 break;
-                            default:
-                                Debug.LogWarning("Unknown parent " + child.parent.name + " for value transform");
-                                break;
                         }
-                        break;
-                    default:
                         break;
                 }
             }

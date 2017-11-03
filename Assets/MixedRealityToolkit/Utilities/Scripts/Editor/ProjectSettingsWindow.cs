@@ -16,7 +16,7 @@ namespace HoloToolkit.Unity
     public class ProjectSettingsWindow : AutoConfigureWindow<ProjectSettingsWindow.ProjectSetting>
     {
         private const string SharingServiceURL = "https://raw.githubusercontent.com/Microsoft/MixedRealityToolkit-Unity/master/External/HoloToolkit/Sharing/Server/SharingService.exe";
-        private const string InputManagerAssetURL = "https://raw.githubusercontent.com/Microsoft/MixedRealityToolkit-Unity/Dev_Unity_2017.2.0/ProjectSettings/InputManager.asset";
+        private const string InputManagerAssetURL = "https://raw.githubusercontent.com/Microsoft/MixedRealityToolkit-Unity/master/ProjectSettings/InputManager.asset";
 
         #region Nested Types
 
@@ -244,7 +244,11 @@ namespace HoloToolkit.Unity
                 if (!Values[ProjectSetting.TargetOccludedDevices])
                 {
                     EditorUserBuildSettings.wsaSubtarget = WSASubtarget.HoloLens;
+#if UNITY_2017_2_OR_NEWER
+                    UnityEditorInternal.VR.VREditor.SetVREnabledDevicesOnTargetGroup(BuildTargetGroup.WSA, new[] { "WindowsMR" });
+#else
                     UnityEditorInternal.VR.VREditor.SetVREnabledDevicesOnTargetGroup(BuildTargetGroup.WSA, new[] { "HoloLens" });
+#endif
                     PlayerSettings.WSA.SetCapability(PlayerSettings.WSACapability.HumanInterfaceDevice, Values[ProjectSetting.XboxControllerSupport]);
                     BuildDeployPrefs.BuildPlatform = "x86";
 
@@ -256,7 +260,7 @@ namespace HoloToolkit.Unity
                 else
                 {
                     EditorUserBuildSettings.wsaSubtarget = WSASubtarget.PC;
-                    UnityEditorInternal.VR.VREditor.SetVREnabledDevicesOnTargetGroup(BuildTargetGroup.WSA, new[] { "stereo" });
+                    UnityEditorInternal.VR.VREditor.SetVREnabledDevicesOnTargetGroup(BuildTargetGroup.WSA, new[] { "WindowsMR" });
                     PlayerSettings.WSA.SetCapability(PlayerSettings.WSACapability.HumanInterfaceDevice, false);
                     BuildDeployPrefs.BuildPlatform = "x64";
 

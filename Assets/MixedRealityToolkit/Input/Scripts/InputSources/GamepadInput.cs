@@ -5,7 +5,11 @@ using System;
 using UnityEngine;
 
 #if UNITY_WSA
+#if UNITY_2017_2_OR_NEWER
 using UnityEngine.XR.WSA.Input;
+#else
+using UnityEngine.VR.WSA.Input;
+#endif
 #endif
 
 namespace HoloToolkit.Unity.InputModule
@@ -20,7 +24,7 @@ namespace HoloToolkit.Unity.InputModule
     public class GamepadInput : BaseInputSource
     {
         [Tooltip("Game pad button to press for air tap.")]
-        public string GamePadButtonA = "Fire1";
+        public string GamePadButtonA = "XBOX_A";
 
         [Tooltip("Change this value to give a different source id to your controller.")]
         public uint GamePadId = 50000;
@@ -31,10 +35,10 @@ namespace HoloToolkit.Unity.InputModule
         public float HoldCompletedInterval = 3.0f;
 
         [Tooltip("Name of the joystick axis that navigates around X.")]
-        public string NavigateAroundXAxisName = "ControllerLeftStickX";
+        public string NavigateAroundXAxisName = "CONTROLLER_LEFT_STICK_HORIZONTAL";
 
         [Tooltip("Name of the joystick axis that navigates around Y.")]
-        public string NavigateAroundYAxisName = "ControllerLeftStickY";
+        public string NavigateAroundYAxisName = "CONTROLLER_LEFT_STICK_VERTICAL";
 
         bool isAPressed = false;
         bool holdStarted = false;
@@ -56,10 +60,8 @@ namespace HoloToolkit.Unity.InputModule
 
         GestureState currentGestureState;
 
-        protected override void Start()
+        protected virtual void Start()
         {
-            base.Start();
-
             if (InputManager.IsInitialized)
             {
                 inputManager = InputManager.Instance;

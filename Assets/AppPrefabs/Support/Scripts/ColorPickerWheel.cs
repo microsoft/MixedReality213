@@ -135,15 +135,15 @@ namespace MRDL.ControllerExamples
 
         private IEnumerator Start()
         {
-            while (!MotionControllerVisualizer.Instance.TryGetController(handedness, out controller))
+            while (!MotionControllerVisualizer.Instance.TryGetControllerModel(handedness, out controller))
             {
                 visible = false;
                 yield return null;
             }
 
             // Parent the picker wheel under the element of choice
-            Transform elementTransform = controller.GetElement(element);
-            if (elementTransform == null)
+            Transform elementTransform;
+            if (!controller.TryGetElement(element, out elementTransform))
             {
                 Debug.LogError("Element " + element.ToString() + " not found in controller, can't proceed.");
                 gameObject.SetActive(false);

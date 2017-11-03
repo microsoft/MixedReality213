@@ -46,14 +46,12 @@ namespace MRDL.Controllers
         private IEnumerator Start()
         {
             // Wait for our controller to appear
-            while (!MotionControllerVisualizer.Instance.TryGetController(handedness, out controller))
+            while (!MotionControllerVisualizer.Instance.TryGetControllerModel(handedness, out controller))
             {
                 yield return null;
             }
 
-            elementTransform = controller.GetElement(element);
-
-            if (elementTransform == null)
+            if (!controller.TryGetElement(element, out elementTransform))
             {
                 Debug.LogError("Unable to find element of type " + element + " under controller " + controller.ControllerParent.name + ", not attaching.");
                 yield break;
