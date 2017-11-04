@@ -7,7 +7,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.XR.WSA.Input;
 
-namespace MRDL.ControllerExamples
+namespace HoloToolkit.Unity.ControllerExamples
 {
     public class ObjectSpawner : MonoBehaviour
     {

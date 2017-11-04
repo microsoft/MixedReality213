@@ -3,7 +3,7 @@
 
 using UnityEngine;
 
-namespace MRDL.Controllers
+namespace HoloToolkit.Unity.Controllers
 {
     [ExecuteInEditMode]
     public class PointerCursor : MonoBehaviour

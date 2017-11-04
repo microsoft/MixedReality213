@@ -3,7 +3,7 @@
 
 using UnityEngine;
 
-namespace MRDL.Design
+namespace HoloToolkit.Unity.Design
 {
     public class Line : LineBase
     {

@@ -2,12 +2,12 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using HoloToolkit.Unity.InputModule;
-using MRDL.Controllers;
+using HoloToolkit.Unity.Controllers;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.XR.WSA.Input;
 
-namespace MRDL.ControllerExamples
+namespace HoloToolkit.Unity.ControllerExamples
 {
     public class ColorPickerWheel : MonoBehaviour, IPointerTarget
     {

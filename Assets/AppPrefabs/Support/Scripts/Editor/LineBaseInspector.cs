@@ -4,7 +4,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace MRDL.Design
+namespace HoloToolkit.Unity.Design
 {
     public class LineBaseInspector : Editor
     {

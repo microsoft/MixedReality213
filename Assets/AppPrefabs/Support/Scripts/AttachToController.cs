@@ -7,7 +7,7 @@ using HoloToolkit.Unity.InputModule;
 using UnityEngine;
 using UnityEngine.XR.WSA.Input;
 
-namespace MRDL.Controllers
+namespace HoloToolkit.Unity.Controllers
 {
     /// <summary>
     /// Waits for a controller to be instantiated, then attaches itself to a specified element

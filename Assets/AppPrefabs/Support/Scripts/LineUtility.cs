@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MRDL.Design
+namespace HoloToolkit.Unity.Design
 {
     #region structs
     [Serializable]

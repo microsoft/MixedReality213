@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MRDL.ControllerExamples
+namespace HoloToolkit.Unity.ControllerExamples
 {
     public class Eraser : Brush
     {

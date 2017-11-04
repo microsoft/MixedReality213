@@ -2,12 +2,12 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using HoloToolkit.Unity.InputModule;
-using MRDL.Design;
+using HoloToolkit.Unity.Design;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.XR.WSA.Input;
 
-namespace MRDL.ControllerExamples
+namespace HoloToolkit.Unity.ControllerExamples
 {
     public class BrushSelector : MonoBehaviour
     {

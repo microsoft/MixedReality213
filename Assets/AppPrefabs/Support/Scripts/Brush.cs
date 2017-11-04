@@ -4,7 +4,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace MRDL.ControllerExamples
+namespace HoloToolkit.Unity.ControllerExamples
 {
     public class Brush : MonoBehaviour
     {

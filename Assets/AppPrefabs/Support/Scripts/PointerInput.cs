@@ -4,7 +4,7 @@
 using UnityEngine;
 using UnityEngine.XR.WSA.Input;
 
-namespace MRDL.Controllers
+namespace HoloToolkit.Unity.Controllers
 {
     /// <summary>
     /// Routes controller input to a physics pointer
