@@ -10,8 +10,8 @@ This is a tutorial to understand how to use motion controllers in your Windows M
 3. Development PC needs to be on a Fall Creators Update SDK and builds as below. Either:
     1. Launch Settings > Updates and Security > Windows Insider Program > Get Insider Preview builds
     2. Update to the publicly released Creators Update SDK, build 16299
-4. Beta build of Unity 2017.2
-    1. Please read more about [Immersive headset details](https://developer.microsoft.com/en-us/windows/mixed-reality/immersive_headset_details).
+4. [Beta build of Unity 2017.2](http://beta.unity3d.com/download/00283454d7e3/download.html)
+    1. Please read more about [Immersive headset setup](https://developer.microsoft.com/en-us/windows/mixed-reality/immersive_headset_setup).
 5. [Visual Studio 2017](https://www.visualstudio.com/downloads/).
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). 
