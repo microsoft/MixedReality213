@@ -2,7 +2,7 @@
 
 This is a tutorial to understand how to use motion controllers in your Windows Mixed Reality application.  Link to documentation is forthcoming. 
 
-**Current Unity Editor Project Version: Unity 2017.2f2 beta.**
+**Current Unity Editor Project Version: Unity 2017.2.0f3-MRTP3 beta.**
 
 ## Prerequisites:
 1. See [Development PC specs](https://developer.microsoft.com/en-us/windows/mixed-reality/install_the_tools#developing_for_immersive_headsets) for tips on developing for immersive headsets.
