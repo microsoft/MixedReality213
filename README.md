@@ -1,6 +1,8 @@
 # Mixed Reality 213 
 
-This is a tutorial to understand how to use motion controllers in your Windows Mixed Reality application.  Link to documentation is forthcoming. 
+This is a tutorial to understand how to use motion controllers in your Windows Mixed Reality application. This course will explore ways of visualizing the motion controllers, handing input events and attaching custom UI elements to the controllers, with additional planned courses in the works.
+
+Link to documentation is forthcoming.
 
 **Current Unity Editor Project Version: Unity 2017.2.0f3-MRTP3 beta.**
 
