@@ -286,8 +286,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 393789416249a224f963f1f8daf39cdc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Handedness: 1
+  handedness: 1
   element: 6
+  SetChildrenInactiveWhenDetached: 1
   positionOffset: {x: 0, y: 0, z: 0}
   rotationOffset: {x: 0, y: 0, z: 0}
   scale: {x: 1, y: 1, z: 1}

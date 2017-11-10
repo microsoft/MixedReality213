@@ -19,8 +19,6 @@ namespace HoloToolkit.Unity.Controllers
 
         private void Awake()
         {
-            OnAttachToController += This_OnAttachToController;
-
             if (pointer == null)
             {
                 pointer = GetComponent<PhysicsPointer>();
@@ -29,12 +27,20 @@ namespace HoloToolkit.Unity.Controllers
             pointer.Active = false;
         }
 
-        private void This_OnAttachToController(MotionControllerInfo controllerInfo)
+        protected override void OnAttachToController()
         {
             // Subscribe to interaction events
             InteractionManager.InteractionSourceUpdated += InteractionSourceUpdated;
             InteractionManager.InteractionSourcePressed += InteractionSourcePressed;
             InteractionManager.InteractionSourceReleased += InteractionSourceReleased;
+        }
+
+        protected override void OnDetachFromController()
+        {
+            // Unsubscribe from interaction events
+            InteractionManager.InteractionSourceUpdated -= InteractionSourceUpdated;
+            InteractionManager.InteractionSourcePressed -= InteractionSourcePressed;
+            InteractionManager.InteractionSourceReleased -= InteractionSourceReleased;
         }
 
         /// <summary>

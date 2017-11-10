@@ -223,6 +223,11 @@ namespace HoloToolkit.Unity.InputModule
                 MotionControllerInfo controllerInfo;
                 if (controllerDictionary != null && controllerDictionary.TryGetValue(GenerateKey(source), out controllerInfo))
                 {
+                    if (OnControllerModelUnloaded != null)
+                    {
+                        OnControllerModelUnloaded(controllerInfo);
+                    }
+
                     if (controllerInfo.Handedness == InteractionSourceHandedness.Left)
                     {
                         leftControllerModel = null;
@@ -230,11 +235,6 @@ namespace HoloToolkit.Unity.InputModule
                     else if (controllerInfo.Handedness == InteractionSourceHandedness.Right)
                     {
                         rightControllerModel = null;
-                    }
-
-                    if (OnControllerModelUnloaded != null)
-                    {
-                        OnControllerModelUnloaded(controllerInfo);
                     }
 
                     controllerInfo.ControllerParent.SetActive(false);
@@ -245,7 +245,7 @@ namespace HoloToolkit.Unity.InputModule
         private IEnumerator LoadControllerModel(InteractionSource source)
         {
             loadingControllers.Add(GenerateKey(source));
-            
+
             if (AlwaysUseAlternateLeftModel && source.handedness == InteractionSourceHandedness.Left)
             {
                 if (AlternateLeftController == null)
@@ -350,8 +350,7 @@ namespace HoloToolkit.Unity.InputModule
             }
 #endif
 
-            controllerModelGameObject = new GameObject();
-            controllerModelGameObject.name = "glTFController";
+            controllerModelGameObject = new GameObject { name = "glTFController" };
             GLTFComponentStreamingAssets gltfScript = controllerModelGameObject.AddComponent<GLTFComponentStreamingAssets>();
             gltfScript.ColorMaterial = GLTFMaterial;
             gltfScript.NoColorMaterial = GLTFMaterial;

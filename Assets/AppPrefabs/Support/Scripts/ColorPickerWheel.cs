@@ -23,12 +23,6 @@ namespace HoloToolkit.Unity.ControllerExamples
             }
         }
 
-        public Vector2 SelectorPosition
-        {
-            get { return selectorPosition; }
-            set { selectorPosition = value; }
-        }
-
         public Color SelectedColor
         {
             get { return selectedColor; }
@@ -41,8 +35,6 @@ namespace HoloToolkit.Unity.ControllerExamples
         [SerializeField]
         private float inputScale = 1.1f;
         [SerializeField]
-        private Vector2 selectorPosition;
-        [SerializeField]
         private Color selectedColor = Color.white;
         [SerializeField]
         private Texture2D colorWheelTexture;
@@ -53,20 +45,13 @@ namespace HoloToolkit.Unity.ControllerExamples
         [SerializeField]
         private float timeout = 2f;
 
+        private Vector2 selectorPosition;
         private float lastTimeVisible;
         private bool visibleLastFrame = false;
 
-        private void Awake()
-        {
-            OnAttachToController += This_OnAttachToController;
-            OnDetachFromController += This_OnDetachFromController;
-
-            visible = false;
-        }
-
         private void Update()
         {
-            if (Controller == null)
+            if (controller == null)
             {
                 return;
             }
@@ -115,14 +100,16 @@ namespace HoloToolkit.Unity.ControllerExamples
             }
         }
 
-        private void This_OnAttachToController(MotionControllerInfo e)
+        protected override void OnAttachToController()
         {
             // Subscribe to input now that we're parented under the controller
             InteractionManager.InteractionSourceUpdated += InteractionSourceUpdated;
         }
 
-        private void This_OnDetachFromController(MotionControllerInfo e)
+        protected override void OnDetachFromController()
         {
+            Visible = false;
+
             // Unsubscribe from input now that we've detached from the controller
             InteractionManager.InteractionSourceUpdated -= InteractionSourceUpdated;
         }
@@ -139,7 +126,7 @@ namespace HoloToolkit.Unity.ControllerExamples
             }
 
             Vector3 localHitPoint = selectorTransform.parent.InverseTransformPoint(source.TargetPoint);
-            SelectorPosition = new Vector2(localHitPoint.x, localHitPoint.z);
+            selectorPosition = new Vector2(localHitPoint.x, localHitPoint.z);
         }
 
         private void InteractionSourceUpdated(InteractionSourceUpdatedEventArgs obj)
@@ -147,7 +134,7 @@ namespace HoloToolkit.Unity.ControllerExamples
             if (obj.state.source.handedness == handedness && obj.state.touchpadTouched)
             {
                 Visible = true;
-                SelectorPosition = obj.state.touchpadPosition;
+                selectorPosition = obj.state.touchpadPosition;
             }
         }
     }

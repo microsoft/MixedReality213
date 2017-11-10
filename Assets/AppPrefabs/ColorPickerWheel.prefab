@@ -286,8 +286,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c867040d80ee6c54ba5482735391537d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Handedness: 1
+  handedness: 1
   element: 5
+  SetChildrenInactiveWhenDetached: 1
   positionOffset: {x: 0, y: 0, z: 0}
   rotationOffset: {x: 0, y: 0, z: 0}
   scale: {x: 1, y: 1, z: 1}
@@ -295,7 +296,6 @@ MonoBehaviour:
   visible: 1
   selectorTransform: {fileID: 4679133003569798}
   inputScale: 1.1
-  selectorPosition: {x: 0, y: 0}
   selectedColor: {r: 1, g: 1, b: 1, a: 1}
   colorWheelTexture: {fileID: 2800000, guid: e7bc94dceceb4ec4fbb4c9ada0caebd5, type: 3}
   colorWheelObject: {fileID: 1580881552183484}

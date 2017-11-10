@@ -76,8 +76,7 @@ namespace HoloToolkit.Unity.ControllerExamples
 
         private void Awake()
         {
-            OnAttachToController += This_OnAttachToController;
-            OnDetachFromController += This_OnDetachFromController;
+            instantiatedMaterial = new Material(objectMaterial);
         }
 
         private void Update()
@@ -96,6 +95,13 @@ namespace HoloToolkit.Unity.ControllerExamples
             instantiatedMaterial.color = colorSource.SelectedColor;
         }
 
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            Destroy(instantiatedMaterial);
+        }
+
         private void SpawnObject()
         {
             if (state != StateEnum.Idle)
@@ -107,11 +113,8 @@ namespace HoloToolkit.Unity.ControllerExamples
             StartCoroutine(SpawnOverTime());
         }
 
-        private void This_OnAttachToController(MotionControllerInfo controllerInfo)
+        protected override void OnAttachToController()
         {
-            gameObject.SetActive(true);
-
-            instantiatedMaterial = new Material(objectMaterial);
             displayObject.sharedMesh = availableMeshes[meshIndex];
             displayObject.GetComponent<Renderer>().sharedMaterial = instantiatedMaterial;
 
@@ -122,14 +125,11 @@ namespace HoloToolkit.Unity.ControllerExamples
             state = StateEnum.Idle;
         }
 
-        private void This_OnDetachFromController(MotionControllerInfo controllerInfo)
+        protected override void OnDetachFromController()
         {
             // Unsubscribe from input now that we've detached from the controller
             InteractionManager.InteractionSourcePressed -= InteractionSourcePressed;
             InteractionManager.InteractionSourceReleased -= InteractionSourceReleased;
-
-            Destroy(instantiatedMaterial);
-            //displayObject.sharedMesh = null;
 
             state = StateEnum.Uninitialized;
         }
@@ -137,6 +137,7 @@ namespace HoloToolkit.Unity.ControllerExamples
         private IEnumerator SwitchOverTime()
         {
             animator.SetTrigger("Switch");
+
             // Wait for the animation to play out
             while (!animator.GetCurrentAnimatorStateInfo(0).IsName("SwitchStart"))
             {
@@ -147,13 +148,16 @@ namespace HoloToolkit.Unity.ControllerExamples
             {
                 yield return null;
             }
+
             // Now switch the mesh on the display object
             // Then wait for the reverse to play out
             displayObject.sharedMesh = availableMeshes[meshIndex];
+
             while (animator.GetCurrentAnimatorStateInfo(0).IsName("SwitchFinish"))
             {
                 yield return null;
             }
+
             state = StateEnum.Idle;
             yield break;
         }
@@ -163,7 +167,7 @@ namespace HoloToolkit.Unity.ControllerExamples
             released = false;
             timePressed = Time.unscaledTime;
 
-            GameObject newObject = GameObject.Instantiate(displayObject.gameObject, spawnParent) as GameObject;
+            GameObject newObject = Instantiate(displayObject.gameObject, spawnParent);
             Vector3 startScale = scaleParent.localScale;
             // Hide the display object while we're scaling up the newly spawned object
             displayObject.gameObject.SetActive(false);

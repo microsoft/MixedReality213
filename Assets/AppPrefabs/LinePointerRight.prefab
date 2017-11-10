@@ -21,7 +21,6 @@ GameObject:
   - component: {fileID: 4032885844940304}
   - component: {fileID: 114221813441956770}
   - component: {fileID: 114252619641230810}
-  - component: {fileID: 114154045772793958}
   - component: {fileID: 114668976894459158}
   - component: {fileID: 114811848714529564}
   m_Layer: 0
@@ -44,23 +43,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114154045772793958
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1836252858122320}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 925239cfb24ed9a47adb987a482c572c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  positionOffset: {x: 0, y: 0, z: 0}
-  rotationOffset: {x: 0, y: 0, z: 0}
-  setScaleOnAttach: 0
-  scale: {x: 1, y: 1, z: 1}
-  handedness: 2
-  element: 0
 --- !u!114 &114221813441956770
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -212,9 +194,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3cd01478dcfed14990ee756229ca04f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  handedness: 2
+  element: 6
+  SetChildrenInactiveWhenDetached: 0
+  positionOffset: {x: 0, y: 0, z: 0}
+  rotationOffset: {x: 0, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  setScaleOnAttach: 0
   pointer: {fileID: 114221813441956770}
   activePressType: 3
-  handedness: 2
 --- !u!114 &114668976894459158
 MonoBehaviour:
   m_ObjectHideFlags: 1

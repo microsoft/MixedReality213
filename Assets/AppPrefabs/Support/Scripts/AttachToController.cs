@@ -11,13 +11,16 @@ namespace HoloToolkit.Unity.Controllers
     /// <summary>
     /// Waits for a controller to be instantiated, then attaches itself to a specified element
     /// </summary>
-    public class AttachToController : MonoBehaviour
+    public abstract class AttachToController : MonoBehaviour
     {
         [Header("AttachToController Elements")]
+        [SerializeField]
         protected InteractionSourceHandedness handedness = InteractionSourceHandedness.Left;
 
         [SerializeField]
         protected MotionControllerInfo.ControllerElementEnum element = MotionControllerInfo.ControllerElementEnum.PointingPose;
+
+        public bool SetChildrenInactiveWhenDetached = true;
 
         [SerializeField]
         protected Vector3 positionOffset = Vector3.zero;
@@ -33,18 +36,18 @@ namespace HoloToolkit.Unity.Controllers
 
         public bool IsAttached { get; private set; }
 
-        public Transform Element { get { return elementTransform; } }
-
-        private MotionControllerInfo controller;
-        public MotionControllerInfo Controller { get { return controller; } }
-
-        public event Action<MotionControllerInfo> OnAttachToController;
-        public event Action<MotionControllerInfo> OnDetachFromController;
-
         private Transform elementTransform;
+        public Transform ElementTransform { get; private set; }
 
-        private void OnEnable()
+        protected MotionControllerInfo controller;
+
+        protected abstract void OnAttachToController();
+        protected abstract void OnDetachFromController();
+
+        protected virtual void OnEnable()
         {
+            SetChildrenActive(false);
+
             // Look if the controller has loaded.
             if (MotionControllerVisualizer.Instance.TryGetControllerModel(handedness, out controller))
             {
@@ -55,7 +58,7 @@ namespace HoloToolkit.Unity.Controllers
             MotionControllerVisualizer.Instance.OnControllerModelUnloaded += DetachElementFromController;
         }
 
-        private void OnDisable()
+        protected virtual void OnDisable()
         {
             if (MotionControllerVisualizer.IsInitialized)
             {
@@ -64,7 +67,7 @@ namespace HoloToolkit.Unity.Controllers
             }
         }
 
-        private void OnDestroy()
+        protected virtual void OnDestroy()
         {
             if (MotionControllerVisualizer.IsInitialized)
             {
@@ -73,15 +76,19 @@ namespace HoloToolkit.Unity.Controllers
             }
         }
 
-        private void AttachElementToController(MotionControllerInfo controller)
+        private void AttachElementToController(MotionControllerInfo newController)
         {
-            if (!IsAttached)
+            if (!IsAttached && newController.Handedness == handedness)
             {
-                if (!controller.TryGetElement(element, out elementTransform))
+                if (!newController.TryGetElement(element, out elementTransform))
                 {
-                    Debug.LogError("Unable to find element of type " + element + " under controller " + controller.ControllerParent.name + "; not attaching.");
+                    Debug.LogError("Unable to find element of type " + element + " under controller " + newController.ControllerParent.name + "; not attaching.");
                     return;
                 }
+
+                controller = newController;
+
+                SetChildrenActive(true);
 
                 // Parent ourselves under the element and set our offsets
                 transform.parent = elementTransform;
@@ -93,27 +100,36 @@ namespace HoloToolkit.Unity.Controllers
                 }
 
                 // Announce that we're attached
-                if (OnAttachToController != null)
-                {
-                    OnAttachToController(controller);
-                }
+                OnAttachToController();
 
                 IsAttached = true;
             }
-            else
+        }
+
+        private void DetachElementFromController(MotionControllerInfo oldController)
+        {
+            if (IsAttached && oldController.Handedness == handedness)
             {
-                Debug.Log(name + " is already attached.");
+                OnDetachFromController();
+
+                controller = null;
+                transform.parent = null;
+
+                SetChildrenActive(false);
+
+                IsAttached = false;
             }
         }
 
-        private void DetachElementFromController(MotionControllerInfo e)
+        private void SetChildrenActive(bool isActive)
         {
-            if (OnDetachFromController != null)
+            if (SetChildrenInactiveWhenDetached)
             {
-                OnDetachFromController(e);
+                foreach (Transform child in transform)
+                {
+                    child.gameObject.SetActive(isActive);
+                }
             }
-
-            IsAttached = false;
         }
     }
 }
