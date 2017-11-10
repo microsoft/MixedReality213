@@ -4,7 +4,6 @@
 using HoloToolkit.Unity.Controllers;
 using HoloToolkit.Unity.Design;
 using HoloToolkit.Unity.InputModule;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.XR.WSA.Input;
 
