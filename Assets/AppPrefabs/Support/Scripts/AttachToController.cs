@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System;
-using System.Collections;
 using HoloToolkit.Unity.InputModule;
 using UnityEngine;
 using UnityEngine.XR.WSA.Input;
@@ -12,67 +10,125 @@ namespace HoloToolkit.Unity.Controllers
     /// <summary>
     /// Waits for a controller to be instantiated, then attaches itself to a specified element
     /// </summary>
-    public class AttachToController : MonoBehaviour
+    public abstract class AttachToController : MonoBehaviour
     {
-        public Action OnAttach;
-
-        public Transform Element { get { return elementTransform; } }
-
-        public MotionControllerInfo Controller { get { return controller; } }
-
-        public InteractionSourceHandedness Handedness { set { handedness = value; } }
+        [Header("AttachToController Elements")]
+        [SerializeField]
+        protected InteractionSourceHandedness handedness = InteractionSourceHandedness.Left;
 
         [SerializeField]
-        private Vector3 positionOffset = Vector3.zero;
+        protected MotionControllerInfo.ControllerElementEnum element = MotionControllerInfo.ControllerElementEnum.PointingPose;
+
+        public bool SetChildrenInactiveWhenDetached = true;
 
         [SerializeField]
-        private Vector3 rotationOffset = Vector3.zero;
+        protected Vector3 positionOffset = Vector3.zero;
 
         [SerializeField]
-        private bool setScaleOnAttach = false;
+        protected Vector3 rotationOffset = Vector3.zero;
 
         [SerializeField]
-        private Vector3 scale = Vector3.one;
+        protected Vector3 scale = Vector3.one;
 
         [SerializeField]
-        private InteractionSourceHandedness handedness = InteractionSourceHandedness.Left;
+        protected bool setScaleOnAttach = false;
 
-        [SerializeField]
-        private MotionControllerInfo.ControllerElementEnum element = MotionControllerInfo.ControllerElementEnum.PointingPose;
+        public bool IsAttached { get; private set; }
 
-        private MotionControllerInfo controller;
         private Transform elementTransform;
+        public Transform ElementTransform { get; private set; }
 
-        private IEnumerator Start()
+        protected MotionControllerInfo controller;
+
+        protected abstract void OnAttachToController();
+        protected abstract void OnDetachFromController();
+
+        protected virtual void OnEnable()
         {
-            // Wait for our controller to appear
-            while (!MotionControllerVisualizer.Instance.TryGetControllerModel(handedness, out controller))
+            SetChildrenActive(false);
+
+            // Look if the controller has loaded.
+            if (MotionControllerVisualizer.Instance.TryGetControllerModel(handedness, out controller))
             {
-                yield return null;
+                AttachElementToController(controller);
             }
 
-            if (!controller.TryGetElement(element, out elementTransform))
-            {
-                Debug.LogError("Unable to find element of type " + element + " under controller " + controller.ControllerParent.name + ", not attaching.");
-                yield break;
-            }
+            MotionControllerVisualizer.Instance.OnControllerModelLoaded += AttachElementToController;
+            MotionControllerVisualizer.Instance.OnControllerModelUnloaded += DetachElementFromController;
+        }
 
-            // Parent ourselves under the element and set our offsets
-            transform.parent = elementTransform;
-            transform.localPosition = positionOffset;
-            transform.localEulerAngles = rotationOffset;
-            if (setScaleOnAttach)
+        protected virtual void OnDisable()
+        {
+            if (MotionControllerVisualizer.IsInitialized)
             {
-                transform.localScale = scale;
+                MotionControllerVisualizer.Instance.OnControllerModelLoaded -= AttachElementToController;
+                MotionControllerVisualizer.Instance.OnControllerModelUnloaded -= DetachElementFromController;
             }
+        }
 
-            // Announce that we're attached
-            if (OnAttach != null)
+        protected virtual void OnDestroy()
+        {
+            if (MotionControllerVisualizer.IsInitialized)
             {
-                OnAttach();
+                MotionControllerVisualizer.Instance.OnControllerModelLoaded -= AttachElementToController;
+                MotionControllerVisualizer.Instance.OnControllerModelUnloaded -= DetachElementFromController;
             }
+        }
 
-            yield break;
+        private void AttachElementToController(MotionControllerInfo newController)
+        {
+            if (!IsAttached && newController.Handedness == handedness)
+            {
+                if (!newController.TryGetElement(element, out elementTransform))
+                {
+                    Debug.LogError("Unable to find element of type " + element + " under controller " + newController.ControllerParent.name + "; not attaching.");
+                    return;
+                }
+
+                controller = newController;
+
+                SetChildrenActive(true);
+
+                // Parent ourselves under the element and set our offsets
+                transform.parent = elementTransform;
+                transform.localPosition = positionOffset;
+                transform.localEulerAngles = rotationOffset;
+                if (setScaleOnAttach)
+                {
+                    transform.localScale = scale;
+                }
+
+                // Announce that we're attached
+                OnAttachToController();
+
+                IsAttached = true;
+            }
+        }
+
+        private void DetachElementFromController(MotionControllerInfo oldController)
+        {
+            if (IsAttached && oldController.Handedness == handedness)
+            {
+                OnDetachFromController();
+
+                controller = null;
+                transform.parent = null;
+
+                SetChildrenActive(false);
+
+                IsAttached = false;
+            }
+        }
+
+        private void SetChildrenActive(bool isActive)
+        {
+            if (SetChildrenInactiveWhenDetached)
+            {
+                foreach (Transform child in transform)
+                {
+                    child.gameObject.SetActive(isActive);
+                }
+            }
         }
     }
 }

@@ -256,6 +256,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2241eb5c410180c4dbd2a53787deb25d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  handedness: 2
+  element: 6
+  SetChildrenInactiveWhenDetached: 1
+  positionOffset: {x: 0, y: 0, z: 0}
+  rotationOffset: {x: 0, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  setScaleOnAttach: 0
   brushCollection: {fileID: 114412594797402372}
   currentAction: 0
   swipeCurve:
@@ -317,8 +324,6 @@ MonoBehaviour:
   activeBrushindex: 3
   colorPicker: {fileID: 0}
   menuTimeout: 2
-  handedness: 2
-  element: 6
   touchpadMaterial: {fileID: 2100000, guid: 9ab2a9ffd08a18a4b897b448b582c956, type: 2}
   touchpadColor:
     serializedVersion: 2

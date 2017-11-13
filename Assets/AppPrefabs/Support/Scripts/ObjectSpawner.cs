@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using HoloToolkit.Unity.InputModule;
+using HoloToolkit.Unity.Controllers;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -9,19 +9,19 @@ using UnityEngine.XR.WSA.Input;
 
 namespace HoloToolkit.Unity.ControllerExamples
 {
-    public class ObjectSpawner : MonoBehaviour
+    public class ObjectSpawner : AttachToController
     {
         public enum StateEnum
         {
             Uninitialized,
             Idle,
             Switching,
-            Spawning,
+            Spawning
         }
 
         public int MeshIndex
         {
-            get            {                return meshIndex;            }
+            get { return meshIndex; }
             set
             {
                 if (state != StateEnum.Idle)
@@ -67,58 +67,15 @@ namespace HoloToolkit.Unity.ControllerExamples
         [SerializeField]
         private float growTime = 2f;
 
-        [SerializeField]
-        private InteractionSourceHandedness handedness = InteractionSourceHandedness.Left;
-        [SerializeField]
-        private MotionControllerInfo.ControllerElementEnum element = MotionControllerInfo.ControllerElementEnum.PointingPose;
-        private MotionControllerInfo controller;
-
         private int meshIndex = 0;
         private StateEnum state = StateEnum.Uninitialized;
         private Material instantiatedMaterial;
         private bool released;
         private float timePressed;
 
-        private void SpawnObject()
+        private void Awake()
         {
-            if (state != StateEnum.Idle)
-            {
-                return;
-            }
-
-            state = StateEnum.Spawning;
-            StartCoroutine(SpawnOverTime());
-        }
-
-        private IEnumerator Start()
-        {
-            while (!MotionControllerVisualizer.Instance.TryGetControllerModel(handedness, out controller))
-            {
-                yield return null;
-            }
-
             instantiatedMaterial = new Material(objectMaterial);
-            displayObject.sharedMesh = availableMeshes[meshIndex];
-            displayObject.GetComponent<Renderer>().sharedMaterial = instantiatedMaterial;
-
-            // Parent the picker wheel under the element of choice
-            Transform elementTransform;
-            if (!controller.TryGetElement(element, out elementTransform))
-            {
-                Debug.LogError("Element " + element.ToString() + " not found in controller, can't proceed.");
-                gameObject.SetActive(false);
-                yield break;
-            }
-
-            transform.parent = elementTransform;
-            transform.localPosition = Vector3.zero;
-            transform.localRotation = Quaternion.identity;
-
-            // Subscribe to input now that we're parented under the controller
-            InteractionManager.InteractionSourcePressed += InteractionSourcePressed;
-            InteractionManager.InteractionSourceReleased += InteractionSourceReleased;
-
-            state = StateEnum.Idle;
         }
 
         private void Update()
@@ -137,9 +94,49 @@ namespace HoloToolkit.Unity.ControllerExamples
             instantiatedMaterial.color = colorSource.SelectedColor;
         }
 
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            Destroy(instantiatedMaterial);
+        }
+
+        private void SpawnObject()
+        {
+            if (state != StateEnum.Idle)
+            {
+                return;
+            }
+
+            state = StateEnum.Spawning;
+            StartCoroutine(SpawnOverTime());
+        }
+
+        protected override void OnAttachToController()
+        {
+            displayObject.sharedMesh = availableMeshes[meshIndex];
+            displayObject.GetComponent<Renderer>().sharedMaterial = instantiatedMaterial;
+
+            // Subscribe to input now that we're parented under the controller
+            InteractionManager.InteractionSourcePressed += InteractionSourcePressed;
+            InteractionManager.InteractionSourceReleased += InteractionSourceReleased;
+
+            state = StateEnum.Idle;
+        }
+
+        protected override void OnDetachFromController()
+        {
+            // Unsubscribe from input now that we've detached from the controller
+            InteractionManager.InteractionSourcePressed -= InteractionSourcePressed;
+            InteractionManager.InteractionSourceReleased -= InteractionSourceReleased;
+
+            state = StateEnum.Uninitialized;
+        }
+
         private IEnumerator SwitchOverTime()
         {
             animator.SetTrigger("Switch");
+
             // Wait for the animation to play out
             while (!animator.GetCurrentAnimatorStateInfo(0).IsName("SwitchStart"))
             {
@@ -150,13 +147,16 @@ namespace HoloToolkit.Unity.ControllerExamples
             {
                 yield return null;
             }
+
             // Now switch the mesh on the display object
             // Then wait for the reverse to play out
             displayObject.sharedMesh = availableMeshes[meshIndex];
+
             while (animator.GetCurrentAnimatorStateInfo(0).IsName("SwitchFinish"))
             {
                 yield return null;
             }
+
             state = StateEnum.Idle;
             yield break;
         }
@@ -166,7 +166,7 @@ namespace HoloToolkit.Unity.ControllerExamples
             released = false;
             timePressed = Time.unscaledTime;
 
-            GameObject newObject = GameObject.Instantiate(displayObject.gameObject, spawnParent) as GameObject;
+            GameObject newObject = Instantiate(displayObject.gameObject, spawnParent);
             Vector3 startScale = scaleParent.localScale;
             // Hide the display object while we're scaling up the newly spawned object
             displayObject.gameObject.SetActive(false);
@@ -225,7 +225,9 @@ namespace HoloToolkit.Unity.ControllerExamples
                     case InteractionSourcePressType.Select:
                         meshIndex++;
                         if (meshIndex >= NumAvailableMeshes)
+                        {
                             meshIndex = 0;
+                        }
                         break;
 
                     default:

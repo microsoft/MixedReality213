@@ -9,24 +9,15 @@ namespace HoloToolkit.Unity.Controllers
     /// <summary>
     /// Routes controller input to a physics pointer
     /// </summary>
-    [RequireComponent(typeof(AttachToController))]
-    public class PointerInput : MonoBehaviour
+    public class PointerInput : AttachToController
     {
         [SerializeField]
         private PhysicsPointer pointer = null;
         [SerializeField]
         private InteractionSourcePressType activePressType = InteractionSourcePressType.Select;
-        [SerializeField]
-        private InteractionSourceHandedness handedness = InteractionSourceHandedness.Left;
-
-        private AttachToController attachToController;
 
         private void Awake()
         {
-            attachToController = GetComponent<AttachToController>();
-            attachToController.Handedness = handedness;
-            attachToController.OnAttach += OnAttach;
-
             if (pointer == null)
             {
                 pointer = GetComponent<PhysicsPointer>();
@@ -35,12 +26,20 @@ namespace HoloToolkit.Unity.Controllers
             pointer.Active = false;
         }
 
-        private void OnAttach()
+        protected override void OnAttachToController()
         {
             // Subscribe to interaction events
             InteractionManager.InteractionSourceUpdated += InteractionSourceUpdated;
             InteractionManager.InteractionSourcePressed += InteractionSourcePressed;
             InteractionManager.InteractionSourceReleased += InteractionSourceReleased;
+        }
+
+        protected override void OnDetachFromController()
+        {
+            // Unsubscribe from interaction events
+            InteractionManager.InteractionSourceUpdated -= InteractionSourceUpdated;
+            InteractionManager.InteractionSourcePressed -= InteractionSourcePressed;
+            InteractionManager.InteractionSourceReleased -= InteractionSourceReleased;
         }
 
         /// <summary>
