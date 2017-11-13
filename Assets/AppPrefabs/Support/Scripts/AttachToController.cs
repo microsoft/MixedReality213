@@ -12,6 +12,10 @@ namespace HoloToolkit.Unity.Controllers
     /// </summary>
     public class AttachToController : MonoBehaviour
     {
+        public InteractionSourceHandedness Handedness { get { return handedness; } }
+
+        public MotionControllerInfo.ControllerElementEnum Element { get { return element; } }
+
         [Header("AttachToController Elements")]
         [SerializeField]
         protected InteractionSourceHandedness handedness = InteractionSourceHandedness.Left;
