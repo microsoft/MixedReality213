@@ -10,7 +10,7 @@ namespace HoloToolkit.Unity.Controllers
     /// <summary>
     /// Waits for a controller to be instantiated, then attaches itself to a specified element
     /// </summary>
-    public abstract class AttachToController : MonoBehaviour
+    public class AttachToController : MonoBehaviour
     {
         [Header("AttachToController Elements")]
         [SerializeField]
@@ -40,8 +40,8 @@ namespace HoloToolkit.Unity.Controllers
 
         protected MotionControllerInfo controller;
 
-        protected abstract void OnAttachToController();
-        protected abstract void OnDetachFromController();
+        protected virtual void OnAttachToController() { }
+        protected virtual void OnDetachFromController() { }
 
         protected virtual void OnEnable()
         {
