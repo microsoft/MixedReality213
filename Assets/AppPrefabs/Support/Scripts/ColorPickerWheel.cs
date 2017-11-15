@@ -32,6 +32,8 @@ namespace HoloToolkit.Unity.ControllerExamples
         [SerializeField]
         private Transform selectorTransform;
         [SerializeField]
+        private Renderer selectorRenderer;
+        [SerializeField]
         private float inputScale = 1.1f;
         [SerializeField]
         private Color selectedColor = Color.white;
@@ -97,6 +99,9 @@ namespace HoloToolkit.Unity.ControllerExamples
                 selectedColor = colorWheelTexture.GetPixel(pixelX, pixelY);
                 selectedColor.a = 1f;
             }
+            // Set the selector's color
+            // Blend it with white to make it visible on top of the wheel
+            selectorRenderer.material.color = Color.Lerp (selectedColor, Color.white, 0.5f);
         }
 
         protected override void OnAttachToController()

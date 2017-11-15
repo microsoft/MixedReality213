@@ -62,16 +62,10 @@ namespace HoloToolkit.Unity.ControllerExamples
         [Header("Animation")]
         [SerializeField]
         private Animator animator;
-        [SerializeField]
-        private AnimationCurve growCurve;
-        [SerializeField]
-        private float growTime = 2f;
 
         private int meshIndex = 0;
         private StateEnum state = StateEnum.Uninitialized;
         private Material instantiatedMaterial;
-        private bool released;
-        private float timePressed;
 
         private void Awake()
         {
@@ -103,13 +97,14 @@ namespace HoloToolkit.Unity.ControllerExamples
 
         private void SpawnObject()
         {
-            if (state != StateEnum.Idle)
-            {
-                return;
-            }
-
-            state = StateEnum.Spawning;
-            StartCoroutine(SpawnOverTime());
+            // Instantiate the spawned object
+            GameObject newObject = Instantiate(displayObject.gameObject, spawnParent);
+            // Detatch the newly spawned object
+            newObject.transform.parent = null;
+            // Reset the scale transform to 1
+            scaleParent.localScale = Vector3.one;
+            // Set its material color so its material gets instantiated
+            newObject.GetComponent<Renderer>().material.color = colorSource.SelectedColor;
         }
 
         protected override void OnAttachToController()
@@ -160,58 +155,7 @@ namespace HoloToolkit.Unity.ControllerExamples
             state = StateEnum.Idle;
             yield break;
         }
-
-        private IEnumerator SpawnOverTime()
-        {
-            released = false;
-            timePressed = Time.unscaledTime;
-
-            GameObject newObject = Instantiate(displayObject.gameObject, spawnParent);
-            Vector3 startScale = scaleParent.localScale;
-            // Hide the display object while we're scaling up the newly spawned object
-            displayObject.gameObject.SetActive(false);
-
-            while (!released)
-            {
-                // Grow the object while the control is pressed
-                float normalizedGrowth = (Time.unscaledTime - timePressed) / growTime;
-                scaleParent.localScale = startScale + (Vector3.one * +growCurve.Evaluate(normalizedGrowth));
-                yield return null;
-            }
-
-            // Once we've released, start our spawn animation
-            animator.SetTrigger("Spawn");
-            yield return null;
-            // Wait for the animation to play out
-            while (!animator.GetCurrentAnimatorStateInfo(0).IsName("SpawnStart"))
-            {
-                yield return null;
-            }
-
-            while (animator.GetCurrentAnimatorStateInfo(0).IsName("SpawnStart"))
-            {
-                yield return null;
-            }
-
-            // Detatch the newly spawned object
-            newObject.transform.parent = null;
-            // Reset the scale transform to 1
-            scaleParent.localScale = Vector3.one;
-            // Set its material color so its material gets instantiated
-            newObject.GetComponent<Renderer>().material.color = colorSource.SelectedColor;
-
-            // Show our old display object again
-            displayObject.gameObject.SetActive(true);
-            // Then wait for the new display object to show
-            while (animator.GetCurrentAnimatorStateInfo(0).IsName("SpawnFinish"))
-            {
-                yield return null;
-            }
-            // Reset to idle
-            state = StateEnum.Idle;
-            yield break;
-        }
-
+        
         private void InteractionSourcePressed(InteractionSourcePressedEventArgs obj)
         {
             if (obj.state.source.handedness == handedness)
@@ -219,7 +163,12 @@ namespace HoloToolkit.Unity.ControllerExamples
                 switch (obj.pressType)
                 {
                     case InteractionSourcePressType.Grasp:
-                        SpawnObject();
+                        if (state == StateEnum.Idle)
+                        {
+                            // We've pressed the grasp - enter spawning state
+                            state = StateEnum.Spawning;
+                            SpawnObject();
+                        }
                         break;
 
                     case InteractionSourcePressType.Select:
@@ -243,12 +192,11 @@ namespace HoloToolkit.Unity.ControllerExamples
                 switch (obj.pressType)
                 {
                     case InteractionSourcePressType.Grasp:
-                        if (state != StateEnum.Spawning)
+                        if (state == StateEnum.Spawning)
                         {
-                            return;
+                            // We've released the grasp - return to idle state
+                            state = StateEnum.Idle;
                         }
-                        // Release object
-                        released = true;
                         break;
 
                     default:

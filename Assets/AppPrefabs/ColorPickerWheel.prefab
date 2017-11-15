@@ -87,7 +87,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1514540217597166}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.1648, y: 0.1045, z: 0}
   m_LocalScale: {x: 0.03, y: 0.03, z: 0.03}
   m_Children:
   - {fileID: 4656808752176476}
@@ -295,6 +295,7 @@ MonoBehaviour:
   setScaleOnAttach: 0
   visible: 1
   selectorTransform: {fileID: 4679133003569798}
+  selectorRenderer: {fileID: 23756029928609616}
   inputScale: 1.1
   selectedColor: {r: 1, g: 1, b: 1, a: 1}
   colorWheelTexture: {fileID: 2800000, guid: e7bc94dceceb4ec4fbb4c9ada0caebd5, type: 3}

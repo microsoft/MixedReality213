@@ -206,14 +206,6 @@ Prefab:
       propertyPath: colorSource
       value: 
       objectReference: {fileID: 1687842799}
-    - target: {fileID: 4969750853287846, guid: c0ccc611baa955a4080f09f3434d9d6e, type: 2}
-      propertyPath: m_LocalScale.x
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4969750853287846, guid: c0ccc611baa955a4080f09f3434d9d6e, type: 2}
-      propertyPath: m_LocalScale.y
-      value: 0.10000004
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c0ccc611baa955a4080f09f3434d9d6e, type: 2}
   m_IsPrefabParent: 0
