@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using HoloToolkit.Unity.Controllers;
+using HoloToolkit.Unity.InputModule;
 using UnityEngine;
 using UnityEngine.XR.WSA.Input;
 
