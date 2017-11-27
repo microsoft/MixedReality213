@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using HoloToolkit.Unity.Controllers;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.XR.WSA.Input;
@@ -61,22 +62,25 @@ namespace HoloToolkit.Unity.ControllerExamples
         private ColorPickerWheel colorPicker;
         private Color currentStrokeColor = Color.white;
         private bool draw = false;
+        private float width = 0f;
         private float lastPointAddedTime = 0f;
-
-        private IEnumerator Start()
+                
+        private void OnEnable()
         {
+            colorPicker = FindObjectOfType<ColorPickerWheel>();
+            brushRenderer.material.color = colorPicker.SelectedColor;
+
             // Subscribe to press events for drawing
             InteractionManager.InteractionSourcePressed += InteractionSourcePressed;
             InteractionManager.InteractionSourceReleased += InteractionSourceReleased;
+            InteractionManager.InteractionSourceUpdated += InteractionSourceUpdated;
+        }
 
-            // Wait for the color picker
-            while (colorPicker == null)
-            {
-                colorPicker = FindObjectOfType<ColorPickerWheel>();
-                yield return null;
-            }
-
-            brushRenderer.material.color = colorPicker.SelectedColor;
+        private void OnDisable()
+        {
+            InteractionManager.InteractionSourcePressed -= InteractionSourcePressed;
+            InteractionManager.InteractionSourceReleased -= InteractionSourceReleased;
+            InteractionManager.InteractionSourceUpdated -= InteractionSourceUpdated;
         }
 
         private void InteractionSourcePressed(InteractionSourcePressedEventArgs obj)
@@ -84,6 +88,15 @@ namespace HoloToolkit.Unity.ControllerExamples
             if (obj.state.source.handedness == InteractionSourceHandedness.Right && obj.pressType == InteractionSourcePressType.Select)
             {
                 Draw = true;
+                width = 0f;
+            }
+        }
+
+        private void InteractionSourceUpdated(InteractionSourceUpdatedEventArgs obj)
+        {
+            if (obj.state.source.handedness == InteractionSourceHandedness.Right)
+            {
+                width = obj.state.selectPressedAmount;
             }
         }
 
@@ -92,6 +105,7 @@ namespace HoloToolkit.Unity.ControllerExamples
             if (obj.state.source.handedness == InteractionSourceHandedness.Right && obj.pressType == InteractionSourcePressType.Select)
             {
                 Draw = false;
+                width = 0f;
             }
         }
 
@@ -115,6 +129,7 @@ namespace HoloToolkit.Unity.ControllerExamples
             LineRenderer line = newStroke.GetComponent<LineRenderer>();
             newStroke.transform.position = startPosition;
             line.SetPosition(0, tip.position);
+            float initialWidth = line.widthMultiplier;
 
             while (draw)
             {
@@ -123,6 +138,8 @@ namespace HoloToolkit.Unity.ControllerExamples
                 line.material.color = colorPicker.SelectedColor;
                 brushRenderer.material.color = colorPicker.SelectedColor;
                 lastPointAddedTime = Time.unscaledTime;
+                // Adjust the width between 1x and 2x width based on strength of trigger pull
+                line.widthMultiplier = Mathf.Lerp(initialWidth, initialWidth * 2, width);
 
                 if (Vector3.Distance(lastPointPosition, tip.position) > minPositionDelta || Time.unscaledTime > lastPointAddedTime + maxTimeDelta)
                 {

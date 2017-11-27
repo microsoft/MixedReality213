@@ -66,6 +66,14 @@ namespace HoloToolkit.Unity.ControllerExamples
             }
         }
 
+        public float Width
+        {
+            set
+            {
+                width = Mathf.Clamp01 (value);
+            }
+        }
+
         [Header("Drawing settings")]
         [SerializeField]
         private float minColorDelta = 0.01f;
@@ -83,6 +91,7 @@ namespace HoloToolkit.Unity.ControllerExamples
         private Renderer brushRenderer;
 
         protected bool draw = false;
+        protected float width = 0f;
 
         [Header("Mode settings")]
         [SerializeField]
@@ -128,6 +137,7 @@ namespace HoloToolkit.Unity.ControllerExamples
             LineRenderer line = newStroke.GetComponent<LineRenderer>();
             newStroke.transform.position = startPosition;
             line.SetPosition(0, tip.position);
+            float initialWidth = line.widthMultiplier;
 
             while (draw)
             {
@@ -135,6 +145,8 @@ namespace HoloToolkit.Unity.ControllerExamples
                 line.SetPosition(line.positionCount - 1, tip.position);
                 line.material.color = currentStrokeColor;
                 lastPointAddedTime = Time.unscaledTime;
+                // Adjust the width between 1x and 2x width based on strength of trigger pull
+                line.widthMultiplier = Mathf.Lerp(initialWidth * 0.5f, initialWidth * 2, width);
 
                 if (Vector3.Distance(lastPointPosition, tip.position) > minPositionDelta || Time.unscaledTime > lastPointAddedTime + maxTimeDelta)
                 {

@@ -324,6 +324,32 @@ MonoBehaviour:
   activeBrushindex: 3
   colorPicker: {fileID: 0}
   menuTimeout: 2
+  selectPressedDrawThreshold: 0.001
+  selectPressedStartValue: 0.2
+  selectWidthCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0.18211141
+      outSlope: 0.18211141
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 0.6359759
+      value: 0.77979594
+      inSlope: 1.3545039
+      outSlope: 1.3545039
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 1
+      inSlope: -0.017451808
+      outSlope: -0.017451808
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
   touchpadMaterial: {fileID: 2100000, guid: 9ab2a9ffd08a18a4b897b448b582c956, type: 2}
   touchpadColor:
     serializedVersion: 2

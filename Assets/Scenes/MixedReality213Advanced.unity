@@ -520,28 +520,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 4
       objectReference: {fileID: 0}
-    - target: {fileID: 114661879801688092, guid: 54018739d95b963469324ffd1b785e1b,
-        type: 2}
-      propertyPath: colorPicker
-      value: 
-      objectReference: {fileID: 790017090}
     - target: {fileID: 114412594797402372, guid: 54018739d95b963469324ffd1b785e1b,
         type: 2}
       propertyPath: Objects.Array.data[0]
       value: 
       objectReference: {fileID: 927986835}
-    - target: {fileID: 4619208353451588, guid: 54018739d95b963469324ffd1b785e1b, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: -0.025982331
-      objectReference: {fileID: 0}
-    - target: {fileID: 4619208353451588, guid: 54018739d95b963469324ffd1b785e1b, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0.014997281
-      objectReference: {fileID: 0}
-    - target: {fileID: 4619208353451588, guid: 54018739d95b963469324ffd1b785e1b, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: -0.000000029802322
-      objectReference: {fileID: 0}
     - target: {fileID: 114412594797402372, guid: 54018739d95b963469324ffd1b785e1b,
         type: 2}
       propertyPath: Objects.Array.data[1]
@@ -567,6 +550,11 @@ Prefab:
       propertyPath: Objects.Array.data[5]
       value: 
       objectReference: {fileID: 1368415538}
+    - target: {fileID: 114661879801688092, guid: 54018739d95b963469324ffd1b785e1b,
+        type: 2}
+      propertyPath: colorPicker
+      value: 
+      objectReference: {fileID: 790017090}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 54018739d95b963469324ffd1b785e1b, type: 2}
   m_IsPrefabParent: 0
@@ -861,17 +849,6 @@ Prefab:
     - target: {fileID: 4307559140576838, guid: fa4aec5413103264c884daee464826d9, type: 2}
       propertyPath: m_RootOrder
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114895734277317420, guid: fa4aec5413103264c884daee464826d9,
-        type: 2}
-      propertyPath: AlternateRightController
-      value: 
-      objectReference: {fileID: 1430356196732642, guid: 58f27e3d07d02114d9feb8eb5448261a,
-        type: 2}
-    - target: {fileID: 114895734277317420, guid: fa4aec5413103264c884daee464826d9,
-        type: 2}
-      propertyPath: AlwaysUseAlternateRightModel
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fa4aec5413103264c884daee464826d9, type: 2}

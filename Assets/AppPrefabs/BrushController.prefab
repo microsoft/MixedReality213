@@ -181,6 +181,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 763670ccc75098848bdcfc979bef36c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  handedness: 2
+  element: 6
+  SetChildrenInactiveWhenDetached: 1
+  positionOffset: {x: 0, y: 0, z: 0}
+  rotationOffset: {x: 0, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  setScaleOnAttach: 0
   minColorDelta: 0.05
   minPositionDelta: 0.025
   maxTimeDelta: 0.25

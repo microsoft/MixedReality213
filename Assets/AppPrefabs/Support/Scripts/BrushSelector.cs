@@ -34,6 +34,12 @@ namespace HoloToolkit.Unity.ControllerExamples
         private ColorPickerWheel colorPicker;
         [SerializeField]
         private float menuTimeout = 2f;
+        [SerializeField]
+        private float selectPressedDrawThreshold = 0.001f;
+        [SerializeField]
+        private float selectPressedStartValue = 0.2f;
+        [SerializeField]
+        private AnimationCurve selectWidthCurve;
 
         [SerializeField]
         private Material touchpadMaterial;
@@ -53,6 +59,7 @@ namespace HoloToolkit.Unity.ControllerExamples
 
         private float startTime;
         private bool resetInput;
+        private float selectPressedSmooth = 0f;
 
         private Brush activeBrush;
 
@@ -61,7 +68,6 @@ namespace HoloToolkit.Unity.ControllerExamples
         protected override void OnEnable()
         {
             base.OnEnable();
-
             displayBrushindex = -1;
             currentAction = SwipeEnum.Left;
         }
@@ -179,14 +185,6 @@ namespace HoloToolkit.Unity.ControllerExamples
             Destroy(originalTouchpadMaterial);
         }
 
-        private void InteractionSourcePressed(InteractionSourcePressedEventArgs obj)
-        {
-            if (obj.state.source.handedness == handedness && obj.pressType == InteractionSourcePressType.Select && activeBrush != null)
-            {
-                activeBrush.Draw = true;
-            }
-        }
-
         private void InteractionSourceUpdated(InteractionSourceUpdatedEventArgs obj)
         {
             if (obj.state.source.handedness == handedness)
@@ -206,16 +204,25 @@ namespace HoloToolkit.Unity.ControllerExamples
                     // Ping the touchpad material so it gets bright
                     touchpadTouchTime = Time.unscaledTime;
                 }
+
+                if (activeBrush != null)
+                {
+                    // If the pressed amount is greater than our threshold, draw
+                    if (obj.state.selectPressedAmount >= selectPressedDrawThreshold)
+                    {
+                        activeBrush.Draw = true;
+                        activeBrush.Width = ProcessSelectPressedAmount (obj.state.selectPressedAmount);
+                    }
+                    else
+                    {
+                        // Otherwise, stop drawing
+                        activeBrush.Draw = false;
+                        selectPressedSmooth = 0f;
+                    }
+                }
             }
         }
 
-        private void InteractionSourceReleased(InteractionSourceReleasedEventArgs obj)
-        {
-            if (obj.state.source.handedness == handedness && obj.pressType == InteractionSourcePressType.Select && activeBrush != null)
-            {
-                activeBrush.Draw = false;
-            }
-        }
         protected override void OnAttachToController()
         {
             // Turn off the default controller's renderers
@@ -230,11 +237,9 @@ namespace HoloToolkit.Unity.ControllerExamples
                 touchpadRenderer.material = touchpadMaterial;
                 touchpadRenderer.enabled = true;
             }
-
+            
             // Subscribe to input now that we're parented under the controller
             InteractionManager.InteractionSourceUpdated += InteractionSourceUpdated;
-            InteractionManager.InteractionSourcePressed += InteractionSourcePressed;
-            InteractionManager.InteractionSourceReleased += InteractionSourceReleased;
         }
 
         protected override void OnDetachFromController()
@@ -251,8 +256,13 @@ namespace HoloToolkit.Unity.ControllerExamples
 
             // Unubscribe from input
             InteractionManager.InteractionSourceUpdated -= InteractionSourceUpdated;
-            InteractionManager.InteractionSourcePressed -= InteractionSourcePressed;
-            InteractionManager.InteractionSourceReleased -= InteractionSourceReleased;
+        }
+
+        private float ProcessSelectPressedAmount (float selectPressedAmount)
+        {
+            float selectPressedProcessed = Mathf.Clamp01(selectWidthCurve.Evaluate(selectPressedAmount - selectPressedStartValue / (1f - selectPressedStartValue)));
+            selectPressedSmooth = Mathf.Lerp(selectPressedSmooth, selectPressedProcessed, Time.deltaTime * 5);
+            return selectPressedSmooth;
         }
 
 #if UNITY_EDITOR
