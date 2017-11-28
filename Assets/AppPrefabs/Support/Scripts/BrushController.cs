@@ -67,7 +67,10 @@ namespace HoloToolkit.Unity.ControllerExamples
                 
         private void OnEnable()
         {
+            // Locate the ColorPickerWheel
             colorPicker = FindObjectOfType<ColorPickerWheel>();
+
+            // Assign currently selected color to the brush’s material color
             brushRenderer.material.color = colorPicker.SelectedColor;
 
             // Subscribe to press events for drawing
@@ -131,6 +134,7 @@ namespace HoloToolkit.Unity.ControllerExamples
             line.SetPosition(0, tip.position);
             float initialWidth = line.widthMultiplier;
 
+            // Generate points in an instantiated Unity LineRenderer
             while (draw)
             {
                 // Move the last point to the draw point position

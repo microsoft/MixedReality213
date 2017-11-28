@@ -86,8 +86,10 @@ namespace HoloToolkit.Unity.InputModule
 
         private void AttachElementToController(MotionControllerInfo newController)
         {
+            // Check handedness
             if (!IsAttached && newController.Handedness == handedness)
             {
+                // Get specific element of the controller
                 if (!newController.TryGetElement(element, out elementTransform))
                 {
                     Debug.LogError("Unable to find element of type " + element + " under controller " + newController.ControllerParent.name + "; not attaching.");

@@ -65,6 +65,7 @@ namespace HoloToolkit.Unity.ControllerExamples
 
             if (visible != visibleLastFrame)
             {
+                // Based on visible property, it triggers Show and Hide animation triggers in the color picker's animator component
                 if (visible)
                 {
                     animator.SetTrigger("Show");
@@ -81,27 +82,29 @@ namespace HoloToolkit.Unity.ControllerExamples
                 return;
             }
 
-            // clamp selector position to a radius of 1
+            // Clamp selector position to a radius of 1
             Vector3 localPosition = new Vector3(selectorPosition.x * inputScale, 0.15f, selectorPosition.y * inputScale);
             if (localPosition.magnitude > 1)
             {
                 localPosition = localPosition.normalized;
             }
             selectorTransform.localPosition = localPosition;
+
             // Raycast the wheel mesh and get its UV coordinates
             Vector3 raycastStart = selectorTransform.position + selectorTransform.up * 0.15f;
             RaycastHit hit;
             Debug.DrawLine(raycastStart, raycastStart - (selectorTransform.up * 0.25f));
+
             if (Physics.Raycast(raycastStart, -selectorTransform.up, out hit, 0.25f, 1 << colorWheelObject.layer, QueryTriggerInteraction.Ignore))
             {
+                // Get pixel from the color wheel texture using UV coordinates
                 Vector2 uv = hit.textureCoord;
                 int pixelX = Mathf.FloorToInt(colorWheelTexture.width * uv.x);
                 int pixelY = Mathf.FloorToInt(colorWheelTexture.height * uv.y);
                 selectedColor = colorWheelTexture.GetPixel(pixelX, pixelY);
                 selectedColor.a = 1f;
             }
-            // Set the selector's color
-            // Blend it with white to make it visible on top of the wheel
+            // Set the selector's color and blend it with white to make it visible on top of the wheel
             selectorRenderer.material.color = Color.Lerp (selectedColor, Color.white, 0.5f);
         }
 
@@ -136,8 +139,10 @@ namespace HoloToolkit.Unity.ControllerExamples
 
         private void InteractionSourceUpdated(InteractionSourceUpdatedEventArgs obj)
         {
+            // Check if it is a touchpadTouched event and from the left controller
             if (obj.state.source.handedness == handedness && obj.state.touchpadTouched)
             {
+                // If both are true, Visible is set to true and the touchpad position is assigned to selectorPosition. 
                 Visible = true;
                 selectorPosition = obj.state.touchpadPosition;
             }

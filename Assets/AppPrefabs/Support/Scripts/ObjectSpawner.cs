@@ -159,10 +159,12 @@ namespace HoloToolkit.Unity.ControllerExamples
         
         private void InteractionSourcePressed(InteractionSourcePressedEventArgs obj)
         {
+            // Check handedness, see if it is left controller
             if (obj.state.source.handedness == handedness)
             {
                 switch (obj.pressType)
                 {
+                    // If it is Grasp button event, spawn object
                     case InteractionSourcePressType.Grasp:
                         if (state == StateEnum.Idle)
                         {
@@ -172,7 +174,10 @@ namespace HoloToolkit.Unity.ControllerExamples
                         }
                         break;
 
+                    // If it is Select button event
                     case InteractionSourcePressType.Select:
+
+                        // Increment the index of current mesh type (sphere, cube, cylinder)
                         meshIndex++;
                         if (meshIndex >= NumAvailableMeshes)
                         {
