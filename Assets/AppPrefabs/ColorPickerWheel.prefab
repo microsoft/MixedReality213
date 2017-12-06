@@ -19,6 +19,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4656808752176476}
+  - component: {fileID: 95154193565867714}
   m_Layer: 0
   m_Name: ControllerOffset
   m_TagString: Untagged
@@ -34,7 +35,6 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4568986355705174}
-  - component: {fileID: 95955677609272348}
   - component: {fileID: 114032642240435876}
   - component: {fileID: 65853495505084990}
   - component: {fileID: 54232508987435032}
@@ -258,13 +258,13 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 2, y: 0.15, z: 2}
   m_Center: {x: 0, y: 0.175, z: 0}
---- !u!95 &95955677609272348
+--- !u!95 &95154193565867714
 Animator:
   serializedVersion: 3
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1514540217597166}
+  m_GameObject: {fileID: 1458473635258600}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 277f086481046534e81dd7eb61de3445, type: 3}
   m_Controller: {fileID: 9100000, guid: 842fab76e60c5dd4c9a7989c35316293, type: 2}
@@ -300,5 +300,5 @@ MonoBehaviour:
   selectedColor: {r: 1, g: 1, b: 1, a: 1}
   colorWheelTexture: {fileID: 2800000, guid: e7bc94dceceb4ec4fbb4c9ada0caebd5, type: 3}
   colorWheelObject: {fileID: 1580881552183484}
-  animator: {fileID: 95955677609272348}
+  animator: {fileID: 95154193565867714}
   timeout: 2
