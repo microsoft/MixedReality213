@@ -82,7 +82,7 @@ namespace HoloToolkit.Unity.ControllerExamples
                 return;
             }
 
-            // Clamp selector position to a radius of 1
+            // Transform the touchpad's input x, y position information to ColorPickerWheel's local position x, z
             Vector3 localPosition = new Vector3(selectorPosition.x * inputScale, 0.15f, selectorPosition.y * inputScale);
             if (localPosition.magnitude > 1)
             {

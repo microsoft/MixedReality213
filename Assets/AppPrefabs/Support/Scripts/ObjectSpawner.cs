@@ -164,8 +164,8 @@ namespace HoloToolkit.Unity.ControllerExamples
             {
                 switch (obj.pressType)
                 {
-                    // If it is Grasp button event, spawn object
-                    case InteractionSourcePressType.Grasp:
+                    // If it is Select button event, spawn object
+                    case InteractionSourcePressType.Select:
                         if (state == StateEnum.Idle)
                         {
                             // We've pressed the grasp - enter spawning state
@@ -174,8 +174,8 @@ namespace HoloToolkit.Unity.ControllerExamples
                         }
                         break;
 
-                    // If it is Select button event
-                    case InteractionSourcePressType.Select:
+                    // If it is Grasp button event
+                    case InteractionSourcePressType.Grasp:
 
                         // Increment the index of current mesh type (sphere, cube, cylinder)
                         meshIndex++;
