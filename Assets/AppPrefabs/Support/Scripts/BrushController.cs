@@ -43,7 +43,7 @@ namespace HoloToolkit.Unity.ControllerExamples
             get { return tip.position; }
         }
 
-        [Header("Drawing settings")]
+        [Header("Drawing Settings")]
         [SerializeField]
         private float minColorDelta = 0.01f;
         [SerializeField]

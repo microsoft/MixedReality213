@@ -74,7 +74,7 @@ namespace HoloToolkit.Unity.ControllerExamples
             }
         }
 
-        [Header("Drawing settings")]
+        [Header("Drawing Settings")]
         [SerializeField]
         private float minColorDelta = 0.01f;
         [SerializeField]
@@ -93,7 +93,7 @@ namespace HoloToolkit.Unity.ControllerExamples
         protected bool draw = false;
         protected float width = 0f;
 
-        [Header("Mode settings")]
+        [Header("Mode Settings")]
         [SerializeField]
         private Vector3 inMenuPosition;
         [SerializeField]
