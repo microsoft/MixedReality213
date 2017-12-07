@@ -212,7 +212,7 @@ namespace HoloToolkit.Unity.ControllerExamples
                     if (obj.state.selectPressedAmount >= selectPressedDrawThreshold)
                     {
                         activeBrush.Draw = true;
-                        activeBrush.Width = ProcessSelectPressedAmount (obj.state.selectPressedAmount);
+                        activeBrush.Width = ProcessSelectPressedAmount(obj.state.selectPressedAmount);
                     }
                     else
                     {
@@ -238,7 +238,7 @@ namespace HoloToolkit.Unity.ControllerExamples
                 touchpadRenderer.material = touchpadMaterial;
                 touchpadRenderer.enabled = true;
             }
-            
+
             // Subscribe to input now that we're parented under the controller
             InteractionManager.InteractionSourceUpdated += InteractionSourceUpdated;
         }
@@ -259,7 +259,7 @@ namespace HoloToolkit.Unity.ControllerExamples
             InteractionManager.InteractionSourceUpdated -= InteractionSourceUpdated;
         }
 
-        private float ProcessSelectPressedAmount (float selectPressedAmount)
+        private float ProcessSelectPressedAmount(float selectPressedAmount)
         {
             float selectPressedProcessed = Mathf.Clamp01(selectWidthCurve.Evaluate(selectPressedAmount - selectPressedStartValue / (1f - selectPressedStartValue)));
             selectPressedSmooth = Mathf.Lerp(selectPressedSmooth, selectPressedProcessed, Time.deltaTime * 5);

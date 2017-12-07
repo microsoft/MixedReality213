@@ -42,7 +42,7 @@ namespace HoloToolkit.Unity.Design
 
         [Header("Object Placement")]
         public LineUtils.StepModeEnum StepMode = LineUtils.StepModeEnum.Interpolated;
-        
+
         [SerializeField]
         private LineBase source;
 

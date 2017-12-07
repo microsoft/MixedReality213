@@ -106,7 +106,7 @@ namespace HoloToolkit.Unity.ControllerExamples
                 selectedColor.a = 1f;
             }
             // Set the selector's color and blend it with white to make it visible on top of the wheel
-            selectorRenderer.material.color = Color.Lerp (selectedColor, Color.white, 0.5f);
+            selectorRenderer.material.color = Color.Lerp(selectedColor, Color.white, 0.5f);
         }
 
         protected override void OnAttachToController()

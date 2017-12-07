@@ -34,7 +34,7 @@ namespace HoloToolkit.Unity.Design
         public int MaxLineSteps = 2048;
 
         public AnimationCurve StepLengthCurve = AnimationCurve.Linear(0f, 1f, 1f, 0.5f);
-        
+
         [SerializeField]
         protected LineBase source;
         public virtual LineBase Target

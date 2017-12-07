@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using HoloToolkit.Unity.Controllers;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.XR.WSA.Input;
@@ -64,7 +63,7 @@ namespace HoloToolkit.Unity.ControllerExamples
         private bool draw = false;
         private float width = 0f;
         private float lastPointAddedTime = 0f;
-                
+
         private void OnEnable()
         {
             // Locate the ColorPickerWheel

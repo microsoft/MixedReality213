@@ -70,7 +70,7 @@ namespace HoloToolkit.Unity.ControllerExamples
         {
             set
             {
-                width = Mathf.Clamp01 (value);
+                width = Mathf.Clamp01(value);
             }
         }
 

@@ -14,7 +14,7 @@ namespace HoloToolkit.Unity.Controllers
         {
             get { return pointer; }
         }
-        
+
         [SerializeField]
         protected float sizeOnScreen = 0.015f;
         [SerializeField]
@@ -61,14 +61,15 @@ namespace HoloToolkit.Unity.Controllers
                     break;
             }
 
-            for (int i = 0; i < renderers.Length; i++) {
+            for (int i = 0; i < renderers.Length; i++)
+            {
                 // TODO figure out gradient - it may have transparency
                 if (Application.isPlaying)
                 {
                     renderers[i].material.color = pointer.GetColor(pointer.TargetResult).Evaluate(0.5f);
                 }
                 renderers[i].enabled = pointer.TargetResult != PointerSurfaceResultEnum.None;
-            }            
+            }
         }
     }
 }

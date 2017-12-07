@@ -156,7 +156,7 @@ namespace HoloToolkit.Unity.ControllerExamples
             state = StateEnum.Idle;
             yield break;
         }
-        
+
         private void InteractionSourcePressed(InteractionSourcePressedEventArgs obj)
         {
             // Check handedness, see if it is left controller
