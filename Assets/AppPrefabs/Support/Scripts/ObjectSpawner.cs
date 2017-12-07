@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using HoloToolkit.Unity.Controllers;
 using HoloToolkit.Unity.InputModule;
 using System;
 using System.Collections;
@@ -100,7 +99,7 @@ namespace HoloToolkit.Unity.ControllerExamples
         {
             // Instantiate the spawned object
             GameObject newObject = Instantiate(displayObject.gameObject, spawnParent);
-            // Detatch the newly spawned object
+            // Detach the newly spawned object
             newObject.transform.parent = null;
             // Reset the scale transform to 1
             scaleParent.localScale = Vector3.one;
@@ -168,7 +167,7 @@ namespace HoloToolkit.Unity.ControllerExamples
                     case InteractionSourcePressType.Select:
                         if (state == StateEnum.Idle)
                         {
-                            // We've pressed the grasp - enter spawning state
+                            // We've pressed select - enter spawning state
                             state = StateEnum.Spawning;
                             SpawnObject();
                         }
@@ -197,10 +196,10 @@ namespace HoloToolkit.Unity.ControllerExamples
             {
                 switch (obj.pressType)
                 {
-                    case InteractionSourcePressType.Grasp:
+                    case InteractionSourcePressType.Select:
                         if (state == StateEnum.Spawning)
                         {
-                            // We've released the grasp - return to idle state
+                            // We've released select - return to idle state
                             state = StateEnum.Idle;
                         }
                         break;
