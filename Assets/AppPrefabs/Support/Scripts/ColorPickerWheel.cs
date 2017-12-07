@@ -28,6 +28,7 @@ namespace HoloToolkit.Unity.ControllerExamples
             get { return selectedColor; }
         }
 
+        [Header("ColorPickerWheel Elements")]
         [SerializeField]
         private bool visible = false;
         [SerializeField]

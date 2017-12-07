@@ -12,6 +12,7 @@ namespace HoloToolkit.Unity.Controllers
     /// </summary>
     public class PointerInput : AttachToController
     {
+        [Header("PointerInput Elements")]
         [SerializeField]
         private PhysicsPointer pointer = null;
         [SerializeField]

@@ -18,6 +18,7 @@ namespace HoloToolkit.Unity.ControllerExamples
             Right
         }
 
+        [Header("BrushSelector Elements")]
         [SerializeField]
         private LineObjectCollection brushCollection;
         [SerializeField]
@@ -254,7 +255,7 @@ namespace HoloToolkit.Unity.ControllerExamples
                 touchpadRenderer.material = originalTouchpadMaterial;
             }
 
-            // Unubscribe from input
+            // Unsubscribe from input
             InteractionManager.InteractionSourceUpdated -= InteractionSourceUpdated;
         }
 

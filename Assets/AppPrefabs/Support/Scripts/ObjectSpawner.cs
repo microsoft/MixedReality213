@@ -44,7 +44,7 @@ namespace HoloToolkit.Unity.ControllerExamples
             get { return availableMeshes.Length; }
         }
 
-        [Header("Objects and materials")]
+        [Header("Objects and Materials")]
         [SerializeField]
         private Transform displayParent;
         [SerializeField]
