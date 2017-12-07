@@ -18,7 +18,7 @@ namespace HoloToolkit.Unity
     /// </summary>
     public class BuildDeployTools
     {
-        public static readonly string DefaultMSBuildVersion = "14.0";
+        public static readonly string DefaultMSBuildVersion = "15.0";
 
         public static bool CanBuild()
         {
@@ -134,7 +134,7 @@ namespace HoloToolkit.Unity
             // For MSBuild 15+ we should to use vswhere to give us the correct instance
             string output = @"/C vswhere -version " + msBuildVersion + " -products * -requires Microsoft.Component.MSBuild -property installationPath";
 
-            // get the right program files path based on whether the pc is x86 or x64
+            // get the right program files path based on whether the PC is x86 or x64
             string programFiles = @"C:\Program Files (x86)\Microsoft Visual Studio\Installer";
 
             var vswherePInfo = new ProcessStartInfo
@@ -233,10 +233,11 @@ namespace HoloToolkit.Unity
 
             // Before building, need to run a nuget restore to generate a json.lock file. Failing to do
             // this breaks the build in VS RTM
-            if (!RestoreNugetPackages(nugetPath, storePath) ||
-                !RestoreNugetPackages(nugetPath, storePath + "\\" + productName) ||
-                EditorUserBuildSettings.wsaGenerateReferenceProjects && !RestoreNugetPackages(nugetPath, storePath + "/GeneratedProjects/UWP/Assembly-CSharp") ||
-                EditorUserBuildSettings.wsaGenerateReferenceProjects && !RestoreNugetPackages(nugetPath, storePath + "/GeneratedProjects/UWP/Assembly-CSharp-firstpass"))
+            if (PlayerSettings.GetScriptingBackend(BuildTargetGroup.WSA) == ScriptingImplementation.WinRTDotNET &&
+                (!RestoreNugetPackages(nugetPath, storePath) ||
+                 !RestoreNugetPackages(nugetPath, storePath + "\\" + productName) ||
+                 EditorUserBuildSettings.wsaGenerateReferenceProjects && !RestoreNugetPackages(nugetPath, storePath + "/GeneratedProjects/UWP/Assembly-CSharp") ||
+                 EditorUserBuildSettings.wsaGenerateReferenceProjects && !RestoreNugetPackages(nugetPath, storePath + "/GeneratedProjects/UWP/Assembly-CSharp-firstpass")))
             {
                 Debug.LogError("Failed to restore nuget packages");
                 EditorUtility.ClearProgressBar();
