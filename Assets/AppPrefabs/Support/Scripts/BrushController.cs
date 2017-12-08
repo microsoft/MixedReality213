@@ -21,11 +21,6 @@ namespace HoloToolkit.Unity.ControllerExamples
             get { return draw; }
             set
             {
-                if (colorPicker == null)
-                {
-                    return;
-                }
-
                 if (draw != value)
                 {
                     draw = value;
@@ -66,13 +61,7 @@ namespace HoloToolkit.Unity.ControllerExamples
 
         private void OnEnable()
         {
-            // Locate the ColorPickerWheel
-            colorPicker = FindObjectOfType<ColorPickerWheel>();
-
-            // Assign currently selected color to the brush’s material color
-            brushRenderer.material.color = colorPicker.SelectedColor;
-
-            // Subscribe to press events for drawing
+             // Subscribe to press events for drawing
             InteractionManager.InteractionSourcePressed += InteractionSourcePressed;
             InteractionManager.InteractionSourceReleased += InteractionSourceReleased;
             InteractionManager.InteractionSourceUpdated += InteractionSourceUpdated;
@@ -83,6 +72,16 @@ namespace HoloToolkit.Unity.ControllerExamples
             InteractionManager.InteractionSourcePressed -= InteractionSourcePressed;
             InteractionManager.InteractionSourceReleased -= InteractionSourceReleased;
             InteractionManager.InteractionSourceUpdated -= InteractionSourceUpdated;
+        }
+
+        private void Update()
+        {
+            if (!FindColorPickerWheel())
+            {
+                return;
+            }
+
+            brushRenderer.material.color = colorPicker.SelectedColor;
         }
 
         private void InteractionSourcePressed(InteractionSourcePressedEventArgs obj)
@@ -109,6 +108,16 @@ namespace HoloToolkit.Unity.ControllerExamples
                 Draw = false;
                 width = 0f;
             }
+        }
+
+        private bool FindColorPickerWheel()
+        {
+            if (colorPicker == null)
+            {
+                colorPicker = FindObjectOfType<ColorPickerWheel>();
+            }
+
+            return colorPicker != null;
         }
 
         private IEnumerator DrawOverTime()
