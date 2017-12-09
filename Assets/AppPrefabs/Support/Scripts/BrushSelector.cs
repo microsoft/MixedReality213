@@ -4,7 +4,10 @@
 using HoloToolkit.Unity.Design;
 using HoloToolkit.Unity.InputModule;
 using UnityEngine;
+
+#if UNITY_WSA && UNITY_2017_2_OR_NEWER
 using UnityEngine.XR.WSA.Input;
+#endif
 
 namespace HoloToolkit.Unity.ControllerExamples
 {
@@ -185,6 +188,7 @@ namespace HoloToolkit.Unity.ControllerExamples
             Destroy(originalTouchpadMaterial);
         }
 
+#if UNITY_WSA && UNITY_2017_2_OR_NEWER
         private void InteractionSourceUpdated(InteractionSourceUpdatedEventArgs obj)
         {
             if (obj.state.source.handedness == handedness)
@@ -222,6 +226,7 @@ namespace HoloToolkit.Unity.ControllerExamples
                 }
             }
         }
+#endif
 
         protected override void OnAttachToController()
         {
@@ -238,8 +243,10 @@ namespace HoloToolkit.Unity.ControllerExamples
                 touchpadRenderer.enabled = true;
             }
 
+#if UNITY_WSA && UNITY_2017_2_OR_NEWER
             // Subscribe to input now that we're parented under the controller
             InteractionManager.InteractionSourceUpdated += InteractionSourceUpdated;
+#endif
         }
 
         protected override void OnDetachFromController()
@@ -254,8 +261,10 @@ namespace HoloToolkit.Unity.ControllerExamples
                 touchpadRenderer.material = originalTouchpadMaterial;
             }
 
+#if UNITY_WSA && UNITY_2017_2_OR_NEWER
             // Unsubscribe from input
             InteractionManager.InteractionSourceUpdated -= InteractionSourceUpdated;
+#endif
         }
 
         private float ProcessSelectPressedAmount(float selectPressedAmount)

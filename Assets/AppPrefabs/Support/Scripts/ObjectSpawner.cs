@@ -5,7 +5,10 @@ using HoloToolkit.Unity.InputModule;
 using System;
 using System.Collections;
 using UnityEngine;
+
+#if UNITY_WSA && UNITY_2017_2_OR_NEWER
 using UnityEngine.XR.WSA.Input;
+#endif
 
 namespace HoloToolkit.Unity.ControllerExamples
 {
@@ -112,18 +115,22 @@ namespace HoloToolkit.Unity.ControllerExamples
             displayObject.sharedMesh = availableMeshes[meshIndex];
             displayObject.GetComponent<Renderer>().sharedMaterial = instantiatedMaterial;
 
+#if UNITY_WSA && UNITY_2017_2_OR_NEWER
             // Subscribe to input now that we're parented under the controller
             InteractionManager.InteractionSourcePressed += InteractionSourcePressed;
             InteractionManager.InteractionSourceReleased += InteractionSourceReleased;
+#endif
 
             state = StateEnum.Idle;
         }
 
         protected override void OnDetachFromController()
         {
+#if UNITY_WSA && UNITY_2017_2_OR_NEWER
             // Unsubscribe from input now that we've detached from the controller
             InteractionManager.InteractionSourcePressed -= InteractionSourcePressed;
             InteractionManager.InteractionSourceReleased -= InteractionSourceReleased;
+#endif
 
             state = StateEnum.Uninitialized;
         }
@@ -156,6 +163,7 @@ namespace HoloToolkit.Unity.ControllerExamples
             yield break;
         }
 
+#if UNITY_WSA && UNITY_2017_2_OR_NEWER
         private void InteractionSourcePressed(InteractionSourcePressedEventArgs obj)
         {
             // Check handedness, see if it is left controller
@@ -209,5 +217,6 @@ namespace HoloToolkit.Unity.ControllerExamples
                 }
             }
         }
+#endif
     }
 }

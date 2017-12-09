@@ -3,7 +3,10 @@
 
 using HoloToolkit.Unity.InputModule;
 using UnityEngine;
+
+#if UNITY_WSA && UNITY_2017_2_OR_NEWER
 using UnityEngine.XR.WSA.Input;
+#endif
 
 namespace HoloToolkit.Unity.Controllers
 {
@@ -15,8 +18,11 @@ namespace HoloToolkit.Unity.Controllers
         [Header("PointerInput Elements")]
         [SerializeField]
         private PhysicsPointer pointer = null;
+
+#if UNITY_WSA && UNITY_2017_2_OR_NEWER
         [SerializeField]
         private InteractionSourcePressType activePressType = InteractionSourcePressType.Select;
+#endif
 
         private void Awake()
         {
@@ -30,20 +36,25 @@ namespace HoloToolkit.Unity.Controllers
 
         protected override void OnAttachToController()
         {
+#if UNITY_WSA && UNITY_2017_2_OR_NEWER
             // Subscribe to interaction events
             InteractionManager.InteractionSourceUpdated += InteractionSourceUpdated;
             InteractionManager.InteractionSourcePressed += InteractionSourcePressed;
             InteractionManager.InteractionSourceReleased += InteractionSourceReleased;
+#endif
         }
 
         protected override void OnDetachFromController()
         {
+#if UNITY_WSA && UNITY_2017_2_OR_NEWER
             // Unsubscribe from interaction events
             InteractionManager.InteractionSourceUpdated -= InteractionSourceUpdated;
             InteractionManager.InteractionSourcePressed -= InteractionSourcePressed;
             InteractionManager.InteractionSourceReleased -= InteractionSourceReleased;
+#endif
         }
 
+#if UNITY_WSA && UNITY_2017_2_OR_NEWER
         /// <summary>
         /// Presses active
         /// </summary>
@@ -85,5 +96,6 @@ namespace HoloToolkit.Unity.Controllers
                 pointer.Active = false;
             }
         }
+#endif
     }
 }
