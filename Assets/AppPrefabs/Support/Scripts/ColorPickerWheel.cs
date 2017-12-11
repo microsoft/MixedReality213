@@ -4,7 +4,10 @@
 using HoloToolkit.Unity.Controllers;
 using HoloToolkit.Unity.InputModule;
 using UnityEngine;
+
+#if UNITY_WSA && UNITY_2017_2_OR_NEWER
 using UnityEngine.XR.WSA.Input;
+#endif
 
 namespace HoloToolkit.Unity.ControllerExamples
 {
@@ -111,16 +114,20 @@ namespace HoloToolkit.Unity.ControllerExamples
 
         protected override void OnAttachToController()
         {
+#if UNITY_WSA && UNITY_2017_2_OR_NEWER
             // Subscribe to input now that we're parented under the controller
             InteractionManager.InteractionSourceUpdated += InteractionSourceUpdated;
+#endif
         }
 
         protected override void OnDetachFromController()
         {
             Visible = false;
 
+#if UNITY_WSA && UNITY_2017_2_OR_NEWER
             // Unsubscribe from input now that we've detached from the controller
             InteractionManager.InteractionSourceUpdated -= InteractionSourceUpdated;
+#endif
         }
 
         public void OnPointerTarget(PhysicsPointer source)
@@ -138,6 +145,7 @@ namespace HoloToolkit.Unity.ControllerExamples
             selectorPosition = new Vector2(localHitPoint.x, localHitPoint.z);
         }
 
+#if UNITY_WSA && UNITY_2017_2_OR_NEWER
         private void InteractionSourceUpdated(InteractionSourceUpdatedEventArgs obj)
         {
             // Check if it is a touchpadTouched event and from the left controller
@@ -148,5 +156,6 @@ namespace HoloToolkit.Unity.ControllerExamples
                 selectorPosition = obj.state.touchpadPosition;
             }
         }
+#endif
     }
 }
