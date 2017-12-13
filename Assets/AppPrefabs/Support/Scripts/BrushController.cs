@@ -56,6 +56,8 @@ namespace HoloToolkit.Unity.ControllerExamples
         private ColorPickerWheel colorPicker;
         private Color currentStrokeColor = Color.white;
         private bool draw = false;
+
+        // Default storke width is defined in BrushThinStroke.prefab
         private float width = 0f;
         private float lastPointAddedTime = 0f;
 
@@ -64,14 +66,12 @@ namespace HoloToolkit.Unity.ControllerExamples
              // Subscribe to press events for drawing
             InteractionManager.InteractionSourcePressed += InteractionSourcePressed;
             InteractionManager.InteractionSourceReleased += InteractionSourceReleased;
-            InteractionManager.InteractionSourceUpdated += InteractionSourceUpdated;
         }
 
         private void OnDisable()
         {
             InteractionManager.InteractionSourcePressed -= InteractionSourcePressed;
             InteractionManager.InteractionSourceReleased -= InteractionSourceReleased;
-            InteractionManager.InteractionSourceUpdated -= InteractionSourceUpdated;
         }
 
         private void Update()
@@ -90,14 +90,6 @@ namespace HoloToolkit.Unity.ControllerExamples
             {
                 Draw = true;
                 width = 0f;
-            }
-        }
-
-        private void InteractionSourceUpdated(InteractionSourceUpdatedEventArgs obj)
-        {
-            if (obj.state.source.handedness == InteractionSourceHandedness.Right)
-            {
-                width = obj.state.selectPressedAmount;
             }
         }
 
