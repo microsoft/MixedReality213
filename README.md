@@ -4,8 +4,6 @@ This is a tutorial to understand how to use motion controllers in your Windows M
 
 Link to documentation is forthcoming.
 
-**Current Unity Editor Project Version: Unity 2017.2.0f3-MRTP3 beta.**
-
 ## Prerequisites:
 [See installation checklist for immersive headsets on this page](https://developer.microsoft.com/en-us/windows/mixed-reality/install_the_tools#developing_for_immersive_headsets)
 1. [Windows 10 Fall Creators Update](https://www.microsoft.com/en-us/software-download/windows10)
