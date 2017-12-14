@@ -7,7 +7,7 @@ Link to documentation is forthcoming.
 **Current Unity Editor Project Version: Unity 2017.2.0f3-MRTP3 beta.**
 
 ## Prerequisites:
-1. See [Development PC specs](https://developer.microsoft.com/en-us/windows/mixed-reality/install_the_tools#developing_for_immersive_headsets) for tips on developing for immersive headsets.
+1. [See installation checklist for immersive headsets on this page](https://developer.microsoft.com/en-us/windows/mixed-reality/install_the_tools#developing_for_immersive_headsets)
 2. [Windows 10 Fall Creators Update](https://www.microsoft.com/en-us/software-download/windows10)
 3. [Visual Studio 2017](https://www.visualstudio.com/downloads/).
 4. [Windows SDK 16299](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk), also available in Visual Studio Installer
