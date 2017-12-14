@@ -7,16 +7,12 @@ Link to documentation is forthcoming.
 **Current Unity Editor Project Version: Unity 2017.2.0f3-MRTP3 beta.**
 
 ## Prerequisites:
-1. [See installation checklist for immersive headsets on this page](https://developer.microsoft.com/en-us/windows/mixed-reality/install_the_tools#developing_for_immersive_headsets)
-2. [Windows 10 Fall Creators Update](https://www.microsoft.com/en-us/software-download/windows10)
-3. [Visual Studio 2017](https://www.visualstudio.com/downloads/).
-4. [Windows SDK 16299](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk), also available in Visual Studio Installer
-5. [Unity 2017.2.0p2-MRTP5](http://beta.unity3d.com/download/a07ad30bae31/UnityDownloadAssistant.exe)
+[See installation checklist for immersive headsets on this page](https://developer.microsoft.com/en-us/windows/mixed-reality/install_the_tools#developing_for_immersive_headsets)
+1. [Windows 10 Fall Creators Update](https://www.microsoft.com/en-us/software-download/windows10)
+2. [Visual Studio 2017](https://www.visualstudio.com/downloads/).
+3. [Windows SDK 16299](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk), also available in Visual Studio Installer
+4. [Unity 2017.2.0p2-MRTP5](http://beta.unity3d.com/download/a07ad30bae31/UnityDownloadAssistant.exe)
 *Please read more about [Immersive headset setup](https://developer.microsoft.com/en-us/windows/mixed-reality/immersive_headset_setup).
-
-* A Windows 10 PC configured with the [[install the tools|correct tools]] and a [[Immersive headset setup|configured Immersive Mixed Reality device]] with [[motion controllers]].
-* 
-* [http://beta.unity3d.com/download/a07ad30bae31/UnityDownloadAssistant.exe Unity 2017.2.0p2-MRTP5]
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). 
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
