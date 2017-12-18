@@ -56,22 +56,22 @@ namespace HoloToolkit.Unity.ControllerExamples
         private ColorPickerWheel colorPicker;
         private Color currentStrokeColor = Color.white;
         private bool draw = false;
+
+        // Default storke width is defined in BrushThinStroke.prefab
         private float width = 0f;
         private float lastPointAddedTime = 0f;
 
         private void OnEnable()
         {
-             // Subscribe to press events for drawing
+            // Subscribe to press and release events for drawing
             InteractionManager.InteractionSourcePressed += InteractionSourcePressed;
             InteractionManager.InteractionSourceReleased += InteractionSourceReleased;
-            InteractionManager.InteractionSourceUpdated += InteractionSourceUpdated;
         }
 
         private void OnDisable()
         {
             InteractionManager.InteractionSourcePressed -= InteractionSourcePressed;
             InteractionManager.InteractionSourceReleased -= InteractionSourceReleased;
-            InteractionManager.InteractionSourceUpdated -= InteractionSourceUpdated;
         }
 
         private void Update()
@@ -90,14 +90,6 @@ namespace HoloToolkit.Unity.ControllerExamples
             {
                 Draw = true;
                 width = 0f;
-            }
-        }
-
-        private void InteractionSourceUpdated(InteractionSourceUpdatedEventArgs obj)
-        {
-            if (obj.state.source.handedness == InteractionSourceHandedness.Right)
-            {
-                width = obj.state.selectPressedAmount;
             }
         }
 
@@ -130,12 +122,12 @@ namespace HoloToolkit.Unity.ControllerExamples
             // If we're not still drawing after one frame
             if (!draw)
             {
-                // This was a fluke, abort!
+                // Abort drawing
                 yield break;
             }
 
             Vector3 startPosition = tip.position;
-            // Create a new brush stroke
+            // Create a new brush stroke by instantiating stokePrefab
             GameObject newStroke = Instantiate(strokePrefab);
             LineRenderer line = newStroke.GetComponent<LineRenderer>();
             newStroke.transform.position = startPosition;
@@ -150,7 +142,6 @@ namespace HoloToolkit.Unity.ControllerExamples
                 line.material.color = colorPicker.SelectedColor;
                 brushRenderer.material.color = colorPicker.SelectedColor;
                 lastPointAddedTime = Time.unscaledTime;
-                // Adjust the width between 1x and 2x width based on strength of trigger pull
                 line.widthMultiplier = Mathf.Lerp(initialWidth, initialWidth * 2, width);
 
                 if (Vector3.Distance(lastPointPosition, tip.position) > minPositionDelta || Time.unscaledTime > lastPointAddedTime + maxTimeDelta)
