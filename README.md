@@ -4,6 +4,8 @@ This tutorial will explore ways of visualizing the motion controllers, handling 
 
 Link to documentation is forthcoming.
 
+[Mixed Reality Academy Tutorials](https://developer.microsoft.com/en-us/windows/mixed-reality/academy) on Windows Dev Center
+
 ## Prerequisites:
 [See installation checklist for immersive headsets on this page](https://developer.microsoft.com/en-us/windows/mixed-reality/install_the_tools#developing_for_immersive_headsets)
 1. [Windows 10 Fall Creators Update](https://www.microsoft.com/en-us/software-download/windows10)
