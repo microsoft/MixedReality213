@@ -1,6 +1,6 @@
 # Mixed Reality 213 
 
-This is a tutorial to understand how to use motion controllers in your Windows Mixed Reality application. This course will explore ways of visualizing the motion controllers, handing input events and attaching custom UI elements to the controllers, with additional planned courses in the works.
+This tutorial will explore ways of visualizing the motion controllers, handling input events and attaching custom UI elements to the controllers
 
 Link to documentation is forthcoming.
 
