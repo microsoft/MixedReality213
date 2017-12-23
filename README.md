@@ -1,10 +1,8 @@
-# Mixed Reality 213 
+# Mixed Reality 213: Motion controllers 
 
 This tutorial will explore ways of visualizing the motion controllers, handling input events and attaching custom UI elements to the controllers
 
-Link to documentation is forthcoming.
-
-[Mixed Reality Academy Tutorials](https://developer.microsoft.com/en-us/windows/mixed-reality/academy) on Windows Dev Center
+You can find the tutorial page on [Mixed Reality Academy](https://developer.microsoft.com/en-us/windows/mixed-reality/mixed_reality_213)
 
 ## Prerequisites:
 [See installation checklist for immersive headsets on this page](https://developer.microsoft.com/en-us/windows/mixed-reality/install_the_tools#developing_for_immersive_headsets)
