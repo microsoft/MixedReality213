@@ -61,7 +61,7 @@ namespace HoloToolkit.Unity.Controllers
         /// <param name="obj"></param>
         private void InteractionSourcePressed(InteractionSourcePressedEventArgs obj)
         {
-            if (obj.state.source.handedness == handedness && obj.pressType == activePressType)
+            if (obj.state.source.handedness == Handedness && obj.pressType == activePressType)
             {
                 pointer.Active = true;
             }
@@ -73,7 +73,7 @@ namespace HoloToolkit.Unity.Controllers
         /// <param name="obj"></param>
         private void InteractionSourceUpdated(InteractionSourceUpdatedEventArgs obj)
         {
-            if (obj.state.source.handedness == handedness && obj.state.thumbstickPressed)
+            if (obj.state.source.handedness == Handedness && obj.state.thumbstickPressed)
             {
                 float angle = 0f;
                 Vector2 thumbstickPosition = obj.state.thumbstickPosition;
@@ -91,7 +91,7 @@ namespace HoloToolkit.Unity.Controllers
         /// <param name="obj"></param>
         private void InteractionSourceReleased(InteractionSourceReleasedEventArgs obj)
         {
-            if (obj.state.source.handedness == handedness && obj.pressType == activePressType)
+            if (obj.state.source.handedness == Handedness && obj.pressType == activePressType)
             {
                 pointer.Active = false;
             }

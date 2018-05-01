@@ -167,7 +167,7 @@ namespace HoloToolkit.Unity.ControllerExamples
         private void InteractionSourcePressed(InteractionSourcePressedEventArgs obj)
         {
             // Check handedness, see if it is left controller
-            if (obj.state.source.handedness == handedness)
+            if (obj.state.source.handedness == Handedness)
             {
                 switch (obj.pressType)
                 {
@@ -200,7 +200,7 @@ namespace HoloToolkit.Unity.ControllerExamples
 
         private void InteractionSourceReleased(InteractionSourceReleasedEventArgs obj)
         {
-            if (obj.state.source.handedness == handedness)
+            if (obj.state.source.handedness == Handedness)
             {
                 switch (obj.pressType)
                 {

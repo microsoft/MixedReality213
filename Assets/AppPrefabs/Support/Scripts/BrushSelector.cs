@@ -85,7 +85,7 @@ namespace HoloToolkit.Unity.ControllerExamples
                 }
             }
 
-            if (controller != null)
+            if (ControllerInfo != null)
             {
                 for (int i = 0; i < brushCollection.Objects.Count; i++)
                 {
@@ -191,7 +191,7 @@ namespace HoloToolkit.Unity.ControllerExamples
 #if UNITY_WSA && UNITY_2017_2_OR_NEWER
         private void InteractionSourceUpdated(InteractionSourceUpdatedEventArgs obj)
         {
-            if (obj.state.source.handedness == handedness)
+            if (obj.state.source.handedness == Handedness)
             {
                 if (obj.state.touchpadPressed)
                 {
@@ -231,11 +231,11 @@ namespace HoloToolkit.Unity.ControllerExamples
         protected override void OnAttachToController()
         {
             // Turn off the default controller's renderers
-            controller.SetRenderersVisible(false);
+            ControllerInfo.SetRenderersVisible(false);
 
             // Get the touchpad and assign our custom material to it
             Transform touchpad;
-            if (controller.TryGetElement(MotionControllerInfo.ControllerElementEnum.Touchpad, out touchpad))
+            if (ControllerInfo.TryGetElement(MotionControllerInfo.ControllerElementEnum.Touchpad, out touchpad))
             {
                 touchpadRenderer = touchpad.GetComponentInChildren<MeshRenderer>();
                 originalTouchpadMaterial = touchpadRenderer.material;
@@ -251,11 +251,11 @@ namespace HoloToolkit.Unity.ControllerExamples
 
         protected override void OnDetachFromController()
         {
-            controller.SetRenderersVisible(true);
+            ControllerInfo.SetRenderersVisible(true);
 
             // Get the touchpad and reassign the original material to it
             Transform touchpad;
-            if (controller.TryGetElement(MotionControllerInfo.ControllerElementEnum.Touchpad, out touchpad))
+            if (ControllerInfo.TryGetElement(MotionControllerInfo.ControllerElementEnum.Touchpad, out touchpad))
             {
                 touchpadRenderer = touchpad.GetComponentInChildren<MeshRenderer>();
                 touchpadRenderer.material = originalTouchpadMaterial;
