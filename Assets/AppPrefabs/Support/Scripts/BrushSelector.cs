@@ -85,6 +85,7 @@ namespace HoloToolkit.Unity.ControllerExamples
                 }
             }
 
+#if UNITY_WSA && UNITY_2017_2_OR_NEWER
             if (ControllerInfo != null)
             {
                 for (int i = 0; i < brushCollection.Objects.Count; i++)
@@ -179,6 +180,7 @@ namespace HoloToolkit.Unity.ControllerExamples
                     }
                 }
             }
+#endif
         }
 
         protected override void OnDestroy()
@@ -230,6 +232,7 @@ namespace HoloToolkit.Unity.ControllerExamples
 
         protected override void OnAttachToController()
         {
+#if UNITY_WSA && UNITY_2017_2_OR_NEWER
             // Turn off the default controller's renderers
             ControllerInfo.SetRenderersVisible(false);
 
@@ -243,7 +246,6 @@ namespace HoloToolkit.Unity.ControllerExamples
                 touchpadRenderer.enabled = true;
             }
 
-#if UNITY_WSA && UNITY_2017_2_OR_NEWER
             // Subscribe to input now that we're parented under the controller
             InteractionManager.InteractionSourceUpdated += InteractionSourceUpdated;
 #endif
@@ -251,6 +253,7 @@ namespace HoloToolkit.Unity.ControllerExamples
 
         protected override void OnDetachFromController()
         {
+#if UNITY_WSA && UNITY_2017_2_OR_NEWER
             ControllerInfo.SetRenderersVisible(true);
 
             // Get the touchpad and reassign the original material to it
@@ -261,7 +264,6 @@ namespace HoloToolkit.Unity.ControllerExamples
                 touchpadRenderer.material = originalTouchpadMaterial;
             }
 
-#if UNITY_WSA && UNITY_2017_2_OR_NEWER
             // Unsubscribe from input
             InteractionManager.InteractionSourceUpdated -= InteractionSourceUpdated;
 #endif

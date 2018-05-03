@@ -57,6 +57,7 @@ namespace HoloToolkit.Unity.ControllerExamples
 
         private void Update()
         {
+#if UNITY_WSA && UNITY_2017_2_OR_NEWER
             if (ControllerInfo == null)
             {
                 return;
@@ -110,6 +111,7 @@ namespace HoloToolkit.Unity.ControllerExamples
             }
             // Set the selector's color and blend it with white to make it visible on top of the wheel
             selectorRenderer.material.color = Color.Lerp(selectedColor, Color.white, 0.5f);
+#endif
         }
 
         protected override void OnAttachToController()
