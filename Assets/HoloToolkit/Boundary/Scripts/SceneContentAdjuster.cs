@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System.Collections;
 using UnityEngine;
 
 #if UNITY_2017_2_OR_NEWER
+using System.Collections;
 using UnityEngine.XR;
 #else
 using UnityEngine.VR;
@@ -32,12 +32,11 @@ namespace HoloToolkit.Unity.Boundary
             UsePresetXAndZWithHeadHeight
         }
 
-        private int frameWaitHack = 0;
-
         [SerializeField]
         [Tooltip("Optional container object reference. If null, this script will move the object it's attached to.")]
-        private Transform containerObject;
+        private Transform containerObject = null;
 
+#if UNITY_2017_2_OR_NEWER
         [SerializeField]
         [Tooltip("Select this if the container should be placed in front of the head on app launch in a room scale app.")]
         private AlignmentType alignmentType = AlignmentType.AlignWithHeadHeight;
@@ -52,6 +51,9 @@ namespace HoloToolkit.Unity.Boundary
 
         private Vector3 contentPosition = Vector3.zero;
 
+        private int frameWaitHack = 0;
+#endif
+
         private void Awake()
         {
             if (containerObject == null)
@@ -63,19 +65,16 @@ namespace HoloToolkit.Unity.Boundary
             // If no XR device is present, the editor will default to (0, 0, 0) and no adjustment is needed.
             // This script runs on both opaque and transparent display devices, since the floor offset is based on
             // TrackingSpaceType and not display type.
-            if (!XRDevice.isPresent)
-#else
-            if (true)
-#endif
-            {
-                Destroy(this);
-            }
-            else
+            if (XRDevice.isPresent)
             {
                 StartCoroutine(SetContentHeight());
+                return;
             }
+#endif
+            Destroy(this);
         }
 
+#if UNITY_2017_2_OR_NEWER
         private IEnumerator SetContentHeight()
         {
             if (frameWaitHack < 1)
@@ -106,5 +105,6 @@ namespace HoloToolkit.Unity.Boundary
                 containerObject.position = contentPosition;
             }
         }
+#endif
     }
 }

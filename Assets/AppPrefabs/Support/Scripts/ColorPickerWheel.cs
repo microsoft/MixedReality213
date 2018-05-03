@@ -57,7 +57,7 @@ namespace HoloToolkit.Unity.ControllerExamples
 
         private void Update()
         {
-            if (controller == null)
+            if (ControllerInfo == null)
             {
                 return;
             }
@@ -149,7 +149,7 @@ namespace HoloToolkit.Unity.ControllerExamples
         private void InteractionSourceUpdated(InteractionSourceUpdatedEventArgs obj)
         {
             // Check if it is a touchpadTouched event and from the left controller
-            if (obj.state.source.handedness == handedness && obj.state.touchpadTouched)
+            if (obj.state.source.handedness == Handedness && obj.state.touchpadTouched)
             {
                 // If both are true, Visible is set to true and the touchpad position is assigned to selectorPosition. 
                 Visible = true;
